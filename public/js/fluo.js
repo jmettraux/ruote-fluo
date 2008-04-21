@@ -436,7 +436,9 @@ var Fluo = function () {
 
             att_count = this.exp_attributes.size() - 1;
             if (att_count < 0) att_count = 0;
-            var height = 25 + 21 * att_count;
+            if (this.determineActivity()) att_count += 1;
+
+            var height = 25 + 17 * att_count;
 
             this.renderBox(width, height, null);
 
@@ -450,7 +452,7 @@ var Fluo = function () {
             var ref = this.fetchAttribute('ref');
             if ( ! ref) ref = this.fetchText();
             if ( ! ref) ref = this.exp_name;
-            var activity = this.exp_attributes.get('activity');
+            var activity = this.determineActivity();
 
             //eDiv.appendChild(
             //    tdiv(ref, { class: "fluo_exp_head_div" }));
@@ -459,6 +461,12 @@ var Fluo = function () {
             if (activity) eDiv.appendChild(tdiv(activity));
 
             this.content_div.appendChild(eDiv);
+        },
+
+        determineActivity : function () {
+
+            return this.exp_attributes.get('activity') || 
+                this.exp_attributes.get('tag');
         }
     });
 

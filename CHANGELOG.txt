@@ -1,3 +1,8 @@
 
-todo #18578 : Fluo namespace - s1560
+= ruote-fluo  CHANGELOG.txt
+
+todo  #19457 : using 'tag' as well as 'activity' for participants 'activity'
+               labels
+todo  #19604 : moved Fluo to Sinatra
+todo  #18578 : Fluo namespace - s1560
 
