@@ -1,0 +1,16 @@
+<!--
+    a tiny, sequential process definition, expressed in XML
+    just a "hello world !"
+-->
+<process-definition name="simple_sequence" revision="1">
+    <description>
+        a tiny 'hello world' sequence
+    </description>
+    <sequence>
+        <set field="message" value="hello world !" />
+        <participant ref="bravo" />
+        <iterator on-value="${f:control_field}" to-variable="j">
+            <participant ref="alpha" index="${j}" />
+        </iterator>
+    </sequence>
+</process-definition>

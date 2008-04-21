@@ -1,0 +1,11 @@
+<process-definition name="TeaTesting" revision="0.2">
+    <sequence>
+        <participant ref="Reception" />
+        <concurrence>
+            <participant ref="Ted" />
+            <participant ref="Tang" />
+        </concurrence>
+        <participant ref="Takeshi" />
+        <participant ref="PlanningTeam" />
+    </sequence>
+</process-definition>

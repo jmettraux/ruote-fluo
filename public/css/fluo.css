@@ -1,0 +1,131 @@
+/*
+ * densha-fluo.css
+ */
+
+.fluo_exp_process_definition
+{
+    background-color: #ffffff;
+    font: 11px Verdana, Helvetica, Arial, sans-serif;
+    text-align: left;
+}
+.fluo_exp_pdef_head
+{
+    padding-bottom: 9px;
+}
+
+.fluo_exp_sequence
+{
+    /*text-align: center;*/
+}
+.fluo_exp_unknown
+{
+}
+.fluo_exp_unknown_head
+{
+    text-align: center;
+    padding-top: 2px;
+}
+
+.fluo_exp_subprocess
+{
+}
+.fluo_exp_subprocess_head
+{
+    text-align: center;
+}
+
+.fluo_exp_base
+{
+    text-align: center;
+}
+
+.fluo_pixel
+{
+    background-color: black;
+    margin: 0 auto;
+    padding: 0;
+}
+
+.fluo_exp_participant
+{
+}
+.fluo_exp_participant_head
+{
+    text-align: center;
+    padding-top: 3px;
+}
+
+.fluo_exp_concurrence_children
+{
+}
+.fluo_exp_concurrence_child
+{
+    float: left;
+    padding-top: 2px;
+    padding-bottom: 2px;
+}
+/*
+.fluo_exp_has_workitem
+{
+    border: 7px dotted #cccccc;
+}
+*/
+
+.fluo_toggle_button
+{
+    font-size: 70%;
+    color: #cecece;
+}
+
+.fluo_exp_case_condition
+{
+    float: left;
+    width: 48%;
+}
+.fluo_exp_case_arrow
+{
+    float: right;
+    width: 4%;
+    padding-top: 7px;
+}
+.fluo_exp_case_consequence
+{
+    float: right;
+    width: 48%;
+}
+
+.fluo_exp_if_condition
+{
+    /*text-align: center;*/
+}
+.fluo_exp_if_then
+{
+    float: left;
+    /*width: 49%;*/
+}
+.fluo_exp_if_else
+{
+    float: left;
+    /*width: 50%;*/
+}
+
+.fluo_exp_oneline_head
+{
+    text-align: center;
+}
+
+.fluo_marker
+{
+    font: 10px Verdana, Helvetica, Arial, sans-serif;
+    position: absolute;
+    /*width: 50; height: 17;*/
+    border: 1px solid black;
+    background-color: #ffff99;
+    padding: 3px;
+}
+
+.fluo_text
+{
+    font: 10px Verdana, Helvetica, Arial, sans-serif;
+}
+
