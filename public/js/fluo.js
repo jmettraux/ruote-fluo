@@ -8,7 +8,6 @@
  *
  *  Made in Japan
  *
- *
  *  John Mettraux
  *  Juan-Pedro Paredes
  */
@@ -336,6 +335,8 @@ var Fluo = function () {
             this.content_div.appendChild(eHead);
 
             var pdef = this.exp_attributes.get('name');
+            if ( ! pdef) pdef = this.exp_children[0];
+
             var rev = this.exp_attributes.get('revision');
             if (rev) pdef = pdef + " (rev " + rev + ")";
 
@@ -358,9 +359,15 @@ var Fluo = function () {
 
             var a = new Array();
 
-            this.exp_children.each(function (child) {
-                if (child[0] != 'description') a.push(child);
-            });
+            for (var i = 0; i < this.exp_children.length; i++) {
+
+                var child = this.exp_children[i];
+
+                if (typeof child == 'string') continue;
+                if (child[0] == 'description') continue;
+
+                a.push(child);
+            }
 
             this.exp_children = a;
 
@@ -672,6 +679,8 @@ var Fluo = function () {
         "if" : IfExpression,
         "loop" : SequenceExpression,
         "process-definition" : ProcessDefinitionExpression,
+        "workflow-definition" : ProcessDefinitionExpression,
+        "define" : ProcessDefinitionExpression,
         "sequence" : SequenceExpression,
         "participant" : ParticipantExpression,
         "reval" : OneLineExpression,

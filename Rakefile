@@ -29,7 +29,7 @@ require 'jsmin' # sudo gem install jsmin
 JSs = [ "fluo-canvas.js", "fluo.js" ]
 PJSs = JSs.collect { |e| "public/js/#{e}" }
 
-DENSHA = "../densha"
+RUOTE_WEB = "../ruote-web"
 
 
 #
@@ -52,8 +52,8 @@ end
 task :deploy => [ :minify ] do
 
     sh <<-EOS
-mv fluo-min.js #{DENSHA}/public/javascripts/
-cp public/css/fluo.css #{DENSHA}/public/stylesheets/
+mv fluo-min.js #{RUOTE_WEB}/public/javascripts/
+cp public/css/fluo.css #{RUOTE_WEB}/public/stylesheets/
     EOS
 end
 
