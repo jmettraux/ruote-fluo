@@ -222,8 +222,15 @@ var Fluo = function () {
 
         renderHead : function ($super) {
 
-            if (this.exp_name != "sequence") $super();
-                // else don't write "sequence"
+            //if (this.exp_name != "sequence") $super();
+            if (this.exp_name != 'sequence') {
+
+                var eDiv = newDiv(this.cssPrefix()+"_centered_head");
+
+                eDiv.appendChild(tdiv(this.exp_name));
+
+                this.content_div.appendChild(eDiv);
+            }
         },
 
         renderChild : function ($super, index, child) {
