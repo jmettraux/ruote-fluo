@@ -1,6 +1,7 @@
 
 = ruote-fluo  CHANGELOG.txt
 
+todo  #20079 : differentiated 'cursor' and 'loop' from 'sequence'
 bug   #20060 : not happy with the new "define 'x' do..." syntax. Fixed.
 todo  #19457 : using 'tag' as well as 'activity' for participants 'activity'
                labels

@@ -14,6 +14,9 @@
 
 var FluoCanvas = function () {
 
+    //
+    // private somehow ...
+
     function toCanvas (o) {
 
         if (o.getContext)
@@ -54,7 +57,10 @@ var FluoCanvas = function () {
         if ( ! options) options = {};
 
         var rel = options['relative'];
+
         var fil = options['fill'];
+
+        var color = options['color'];
 
         var i = 0;
 
@@ -85,13 +91,20 @@ var FluoCanvas = function () {
             i += 2;
         }
 
-        if (fil)
+        if (fil) {
+            if (color) c.fillStyle = color;
             c.fill();
-        else
+        }
+        else {
+            if (color) c.strokeStyle = color;
             c.stroke();
+        }
     }
 
-    function drawArrow (c, start, delta) {
+    function drawArrow (c, start, delta, options) {
+
+        if ( ! options) options = {};
+        options['relative'] = true;
 
         c = toCanvas(c);
 
@@ -102,20 +115,24 @@ var FluoCanvas = function () {
         var dy = delta[1];
         var path = start.concat(delta);
 
-        drawPath(c, path, { relative: true });
+        drawPath(c, path, options);
 
         var tx = start[0] + dx;
         var ty = start[1] + dy;
 
+        options['fill'] = true;
+
         if (dx != 0) {
             dx = dx < 0 ? 1 : -1;
             path = [ tx, ty, dx * -l, w, 0, -w * 2, dx * l, w ];
-            drawPath(c, path, { relative: true, fill: true });
+            //drawPath(c, path, { relative: true, fill: true });
+            drawPath(c, path, options);
         }
         else {
             dy = dy < 0 ? 1 : -1;
             path = [ tx, ty, -w, dy * l, w * 2, 0, w, dy * l ];
-            drawPath(c, path, { relative: true, fill: true });
+            //drawPath(c, path, { relative: true, fill: true });
+            drawPath(c, path, options);
         }
     }
 
@@ -129,6 +146,21 @@ var FluoCanvas = function () {
         var c = e.getContext("2d");
 
         drawArrow(c, [ w2, 0 ], [ 0, h ]);
+
+        return e;
+    }
+
+    function newDownUpArrow (boxWidth) {
+
+        var w2 = Math.floor(boxWidth / 2);
+        var h = 10;
+
+        var e = new Element("canvas", { "width": boxWidth, "height": h });
+        if ( ! e.getContext) return e;
+        var c = e.getContext("2d");
+
+        drawArrow(c, [ w2, 0 ], [ 0, h ]);
+        drawArrow(c, [ w2+7, h ], [ 0, -h ], { color: 'rgba(0,0,0,0.3)' });
 
         return e;
     }
@@ -360,12 +392,17 @@ var FluoCanvas = function () {
     }
 
     return {
+
+        //
+        // the public methods
+
         toCanvas: toCanvas,
         drawRoundedRect: drawRoundedRect,
         drawLineAndCurve: drawLineAndCurve,
         drawPath: drawPath,
         drawArrow: drawArrow,
         newDownArrow: newDownArrow,
+        newDownUpArrow: newDownUpArrow,
         drawSubprocessCross: drawSubprocessCross,
         drawDiamond: drawDiamond,
         drawParaDiamond: drawParaDiamond,

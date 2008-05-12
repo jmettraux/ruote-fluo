@@ -239,10 +239,10 @@ var Fluo = function () {
 
             if (child == this.exp_children.last()) return;
 
-            //var dArrow = new Element("div", {});
-            //var iArrow = new Element("img", { src: "/images/fluo/adown.png" });
-            //dArrow.appendChild(iArrow);
-            var dArrow = FluoCanvas.newDownArrow(ssw || this.desired_width);
+            if (this.exp_name == 'cursor' || this.exp_name == 'loop')
+                var dArrow = FluoCanvas.newDownUpArrow(ssw || this.desired_width);
+            else
+                var dArrow = FluoCanvas.newDownArrow(ssw || this.desired_width);
 
             this.content_div.appendChild(dArrow);
         }
@@ -674,13 +674,12 @@ var Fluo = function () {
         "case" : CaseExpression,
         "concurrence" : ConcurrenceExpression,
         "cursor" : SequenceExpression,
+        "define" : ProcessDefinitionExpression,
         "defined" : OneLineExpression,
         "equals" : Expression,
         "if" : IfExpression,
         "loop" : SequenceExpression,
         "process-definition" : ProcessDefinitionExpression,
-        "workflow-definition" : ProcessDefinitionExpression,
-        "define" : ProcessDefinitionExpression,
         "sequence" : SequenceExpression,
         "participant" : ParticipantExpression,
         "reval" : OneLineExpression,
@@ -688,7 +687,8 @@ var Fluo = function () {
         "set-fields" : Expression,
         "sleep" : OneLineExpression,
         "subprocess" : SubprocessExpression,
-        "unset" : OneLineExpression
+        "unset" : OneLineExpression,
+        "workflow-definition" : ProcessDefinitionExpression,
     }
 
     var MINOR_EXPRESSIONS = $A([
