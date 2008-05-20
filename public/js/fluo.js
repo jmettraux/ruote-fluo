@@ -371,7 +371,7 @@ var Fluo = function () {
                 var child = this.exp_children[i];
 
                 if (typeof child == 'string') continue;
-                if (child[0] == 'description') continue;
+                //if (child[0] == 'description') continue;
 
                 a.push(child);
             }
@@ -406,6 +406,16 @@ var Fluo = function () {
             this.renderBox(width, height, null);
 
             this.renderHead();
+        }
+    });
+
+    var HiddenExpression = Class.create(NoChildrenExpression, {
+
+        cssName : function () {
+            return "hidden";
+        },
+
+        render : function () {
         }
     });
 
@@ -683,6 +693,7 @@ var Fluo = function () {
         "cursor" : SequenceExpression,
         "define" : ProcessDefinitionExpression,
         "defined" : OneLineExpression,
+        "description" : HiddenExpression,
         "equals" : Expression,
         "if" : IfExpression,
         "loop" : SequenceExpression,
