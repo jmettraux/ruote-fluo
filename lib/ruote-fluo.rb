@@ -26,15 +26,37 @@ get "/" do
     <script src="/js/prototype.js?nocache=#{Time.now.to_f}"></script>
     <script src="/js/fluo-canvas.js?nocache=#{Time.now.to_f}"></script>
     <script src="/js/fluo.js?nocache=#{Time.now.to_f}"></script>
+    <script src="/js/fluo-tred.js?nocache=#{Time.now.to_f}"></script>
 
     <link href="/css/fluo.css?nocache=#{Time.now.to_f}" rel="Stylesheet" type="text/css" />
+    <link href="/css/fluo-tred.css?nocache=#{Time.now.to_f}" rel="Stylesheet" type="text/css" />
+
+    <style>
+      body {
+        /*color: #888;*/
+        font-family: Courier;
+        font-size: 12px;
+      }
+    </style>
 </head>
+
 <body onresize="Fluo.tagExpressionsWithWorkitems('fluo', [ '#{@wi}' ]);">
+
 <div>
 <div style="float:left; width: 49%">
-    <pre style="font-size: 10px;">
-#{@pdef}
-    </pre>
+
+    <div id="tred">
+    </div>
+    <script>
+
+        Tred.renderFlow(document.getElementById("tred"), #{@prep});
+
+        var tout = document.getElementById("tred__out");
+
+        Tred.onChange = function (jsonTree) {
+          Fluo.renderExpression('fluo', null, jsonTree);
+        }
+    </script>
 
     <div>
         <ul>
