@@ -37,13 +37,17 @@ RUOTE_WEB = "../ruote-web"
 #
 task :minify do
 
-    target = File.open "fluo-min.js", "w"
+  target = File.open "fluo-min.js", "w"
 
-    PJSs.each do |f|
-        File.open f, "r" do |sourcefile|
-            target.puts(JSMin.minify(sourcefile))
-        end
+  PJSs.each do |f|
+    File.open f, "r" do |sourcefile|
+      target.puts(JSMin.minify(sourcefile))
     end
+  end
+
+  #File.open "public/js/fluo-dial.js", "r" do |sourcefile|
+  #  File.open("fluo-dial-min.js", "w").puts(JSMin.minify(sourcefile))
+  #end
 end
 
 #
@@ -51,9 +55,12 @@ end
 #
 task :deploy => [ :minify ] do
 
-    sh <<-EOS
+  sh <<-EOS
 mv fluo-min.js #{RUOTE_WEB}/public/javascripts/
 cp public/css/fluo.css #{RUOTE_WEB}/public/stylesheets/
-    EOS
+  EOS
+#mv fluo-dial.js #{RUOTE_WEB}/public/javascripts/
+#cp public/css/fluo-dial.css #{RUOTE_WEB}/public/stylesheets/
+
 end
 

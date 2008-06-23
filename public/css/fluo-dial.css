@@ -1,0 +1,35 @@
+
+.dial_dialog {
+    position: absolute;
+    padding: 5px;
+    /*border: 1px #AEAEAE solid;*/
+    background-color: white;
+    z-index: 997;
+}
+
+.dial_sheet {
+    position: absolute;
+    padding: 5px;
+    background-color: #bebebe;
+    z-index: 996;
+    opacity: 0.75;
+    -moz-opacity: 0.75;
+    /*border: 1px white solid;*/
+}
+
+.dial_header {
+    font-size: 11px;
+    padding-bottom: 7px;
+}
+.dial_title {
+    border-bottom: 1px solid #AEAEAE;
+    padding-bottom: 3px;
+    margin-bottom: 2px;
+}
+.dial_menu {
+    font-size: 10px;
+    text-align: right;
+}
+.dial_body {
+    font-size: 10px;
+}

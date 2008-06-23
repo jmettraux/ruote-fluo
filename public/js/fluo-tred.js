@@ -107,7 +107,6 @@ var Tred = function () {
 
   function onChange (jsonTree) {
     // please override
-    alert("nada");
   }
 
   function renderOpening (node, exp) {
@@ -185,6 +184,7 @@ var Tred = function () {
   }
 
   function findTredRoot (node) {
+
       if (node.className == 'tred_root') return node;
       return findTredRoot(node.parentNode);
   }
