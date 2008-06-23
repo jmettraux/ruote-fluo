@@ -107,10 +107,19 @@ var FluoDial = function() {
       sheet.hide();
       dialog.hide();
     };
+    dialog.show = function () {
+      sheet.show();
+      dialog.show();
+    };
     dialog.resize = function (w, h) {
       resizeAndCenterItem(sheet, w, h);
       resizeAndCenterItem(dialog, w-20, h-20);
     };
+    dialog.stealElement = function (el) {
+      if ( ! (el instanceof HTMLElement)) el = document.getElementById(el);
+      this.body.appendChild(el);
+      //el.parentNode = dialog.body;
+    }
 
     var htitle = new Element("div", { "class": "dial_title" });
     htitle.appendChild(document.createTextNode(title));
@@ -132,7 +141,7 @@ var FluoDial = function() {
   return {
 
     //
-    // public stuff
+    // public methods
 
     newDialog: newDialog
   };

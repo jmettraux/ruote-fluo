@@ -7,7 +7,8 @@
  *  of a BSD-style license.
  *  For details, see the OpenWFEru web site: http://openwferu.rubyforge.org
  *
- *  Made in Japan
+ *  This piece of hacked was created during the RubyKaigi2008,
+ *  between Tsukuba and Akihabara.
  */
 
 //var flow = [ 'process-definition', { 'name': 'toto', 'revision': '1.0' }, [
@@ -123,7 +124,8 @@ var Tred = function () {
 
     var atts = [];
     for (key in exp[1]) { 
-      atts.push("" + key + ': "' + exp[1][key] + '"');
+      var skey = key.replace(/-/, '_');
+      atts.push("" + skey + ': "' + exp[1][key] + '"');
     }
     //atts = atts.substring(0, atts.length-2);
     atts = atts.join(', ');
@@ -162,7 +164,11 @@ var Tred = function () {
 
     for (var i=0; i < exp[2].length; i++) { 
 
-      renderExpression(node, exp[2][i]);
+      var child = exp[2][i];
+
+      if ( ! (child instanceof Array)) child = [ child, {}, [] ];
+
+      renderExpression(node, child);
     }
 
     renderEnding(node, exp);
@@ -173,14 +179,6 @@ var Tred = function () {
     renderExpression(parentNode, flow, true);
 
     parentNode.className = "tred_root";
-
-    //var itree = document.createElement("input");
-    //itree.id = parentNode.id + "__out";
-    //itree.setAttribute("type", "hidden");
-    ////itree.setAttribute("type", "text");
-    ////itree.style.width = "800px";
-    //itree.setAttribute("value", toJson(parentNode));
-    //parentNode.appendChild(itree);
   }
 
   function findTredRoot (node) {
@@ -227,7 +225,6 @@ var Tred = function () {
     //
     // done
 
-    //return "['"+expname+"', {"+expatts+"}, ["+children+"]]"
     expatts = eval("({"+expatts+"})");
     return [ expname, expatts, children ];
   }
@@ -243,5 +240,3 @@ var Tred = function () {
   };
 }();
 
-//Tred.renderFlow(document.getElementById("tred"), flow);
-//document.write(Tred.toJson(document.getElementById("tred")));
