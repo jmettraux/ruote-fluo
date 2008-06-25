@@ -67,7 +67,7 @@ var EditableSpan = function() {
 
     if (text == '---' || text == '') {
       text = '---';
-      espan.style.opacity = 0.05;
+      espan.style.opacity = 0.1;
     }
 
     espan.className = einput.className;
@@ -105,7 +105,7 @@ var EditableSpan = function() {
 
     if (span.firstChild.nodeValue == '') {
       span.firstChild.nodeValue = '---';
-      span.style.opacity = 0.05;
+      span.style.opacity = 0.1;
     }
   }
 
@@ -292,7 +292,7 @@ var Tred = function () {
         p.insertBefore(elt, elt.nextSibling.nextSibling);
     }
 
-    Tred.onChange(elt); // onChange() points to the original version !
+    Tred.triggerChange(p); // onChange() points to the original version !
   }
 
   function triggerChange (elt) {

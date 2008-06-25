@@ -65,10 +65,12 @@ get "/" do
 
   <br/>
   <br/>
+  <!--
   <div class="fluo_text">
     <a href="#" onclick="Fluo.toggleMinorExpressions('fluo'); return false;">show / hide minor expressions</a> |
     <a href="fluo?pdef=#{request['pdef']}">graph only</a>
   </div>
+  -->
 </div>
 </div>
 
