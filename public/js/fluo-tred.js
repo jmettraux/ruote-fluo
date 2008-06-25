@@ -61,19 +61,21 @@ var EditableSpan = function() {
 
   function toSpan (einput) {
 
-    var text = einput.value;
     var espan = document.createElement("span");
+
+    var text = einput.value;
+
+    if (text == '---' || text == '') {
+      text = '---';
+      espan.style.opacity = 0.05;
+    }
+
     espan.className = einput.className;
     espan.appendChild(document.createTextNode(text));
     espan.setAttribute("onclick", "EditableSpan.toInput(this);");
     einput.parentNode.replaceChild(espan, einput);
 
-    var tredRoot = Tred.findTredRoot(espan);
-    var tree = Tred.toJson(tredRoot);
-    //var tredOut = document.getElementById(tredRoot.id + "__out");
-    //tredOut.value = tree;
-
-    Tred.onChange(tree);
+    Tred.triggerChange(espan);
   }
 
   function onKey (evt, einput) {
@@ -97,22 +99,61 @@ var EditableSpan = function() {
     return false;
   }
 
+  function toEditableSpan (span) {
+
+    span.setAttribute('onclick', 'EditableSpan.toInput(this);');
+
+    if (span.firstChild.nodeValue == '') {
+      span.firstChild.nodeValue = '---';
+      span.style.opacity = 0.05;
+    }
+  }
+
   return {
-    toInput: toInput, // :)
+
+    toInput: toInput,
     onKey: onKey,
-    toSpan: toSpan
+    toSpan: toSpan,
+    toEditableSpan: toEditableSpan
   };
 }();
 
 var Tred = function () {
 
   function onChange (jsonTree) {
-    // please override
+
+    alert("please override me");
+  }
+
+  function createGhostButton (text, callback) {
+
+    var s = document.createElement("span");
+    s.callback = callback;
+    s.appendChild(document.createTextNode(text));
+    s.className = "tred_ghost_button";
+    s.setAttribute("onclick", "this.callback()");
+    s.setAttribute("onmouseout", "this.style.opacity = '0.05';");
+    s.setAttribute("onmouseover", "this.style.opacity = '0.7';");
+    return s;
+  }
+
+  function renderAttributes (node, atts) {
+
+    var satts = document.createElement("span");
+    satts.appendChild(document.createTextNode(atts));
+    satts.className = "tred_expression_atts";
+
+    EditableSpan.toEditableSpan(satts);
+
+    node.appendChild(satts);
   }
 
   function renderOpening (node, exp) {
 
     var opening = document.createElement("div");
+
+    //
+    // expression name
 
     var sname = document.createElement("span");
     sname.appendChild(document.createTextNode(exp[0]));
@@ -120,21 +161,41 @@ var Tred = function () {
     sname.className = "tred_expression_name";
     opening.appendChild(sname);
 
-    //opening.appendChild(document.createTextNode(" "));
+    //
+    // attributes
 
     var atts = [];
     for (key in exp[1]) { 
       var skey = key.replace(/-/, '_');
       atts.push("" + skey + ': "' + exp[1][key] + '"');
     }
+
     //atts = atts.substring(0, atts.length-2);
     atts = atts.join(', ');
+    renderAttributes(opening, atts);
 
-    var satts = document.createElement("span");
-    satts.setAttribute("onclick", "EditableSpan.toInput(this);");
-    satts.appendChild(document.createTextNode(atts));
-    satts.className = "tred_expression_atts";
-    opening.appendChild(satts);
+    opening.appendChild(createGhostButton(
+      " +",
+      function () {
+        Tred.addExpression(this.parentNode.parentNode, [ "---", {}, [] ]);
+      }));
+    opening.appendChild(createGhostButton(
+      " -",
+      function () {
+        Tred.removeExpression(this.parentNode.parentNode);
+      }));
+
+    opening.appendChild(createGhostButton(
+      " u",
+      function () {
+        Tred.moveExpression(this.parentNode.parentNode, -1);
+      }));
+
+    opening.appendChild(createGhostButton(
+      " d",
+      function () {
+        Tred.moveExpression(this.parentNode.parentNode, +1);
+      }));
 
     node.appendChild(opening);
   }
@@ -147,6 +208,37 @@ var Tred = function () {
     node.appendChild(ending);
   }
 
+  function renderExpressionString (node, s) {
+
+    var opening = document.createElement("div");
+
+    var sname = document.createElement("span");
+    sname.appendChild(document.createTextNode(s));
+    sname.setAttribute("onclick", "EditableSpan.toInput(this);");
+    sname.className = "tred_expression_string";
+    opening.appendChild(sname);
+
+    node.appendChild(opening);
+  }
+
+  function addExpression (parentExpNode, exp) {
+
+    var end = parentExpNode.lastChild;
+    var node = renderExpression(parentExpNode, exp);
+    parentExpNode.replaceChild(node, end);
+    parentExpNode.appendChild(end);
+
+    triggerChange(parentExpNode);
+  }
+
+  function removeExpression (expNode) {
+
+    var p = expNode.parentNode;
+    p.removeChild(expNode);
+
+    triggerChange(p);
+  }
+
   function renderExpression (parentNode, exp, isRootExp) {
 
     //
@@ -157,6 +249,12 @@ var Tred = function () {
     if ( ! isRootExp) node.setAttribute("style", "margin-left: 14px;");
     parentNode.appendChild(node);
 
+    if ( ! (exp instanceof Array)) {
+
+        renderExpressionString(node, exp.toString());
+        return;
+    }
+
     renderOpening(node, exp);
 
     //
@@ -166,12 +264,12 @@ var Tred = function () {
 
       var child = exp[2][i];
 
-      if ( ! (child instanceof Array)) child = [ child, {}, [] ];
-
       renderExpression(node, child);
     }
 
     renderEnding(node, exp);
+
+    return node;
   }
 
   function renderFlow (parentNode, flow) {
@@ -179,6 +277,30 @@ var Tred = function () {
     renderExpression(parentNode, flow, true);
 
     parentNode.className = "tred_root";
+  }
+
+  function moveExpression (elt, delta) {
+
+    var p = elt.parentNode;
+
+    if (delta == -1) { // move up
+        if (elt.previousSibling.className != "tred_expression") return;
+        p.insertBefore(elt, elt.previousSibling);
+    }
+    else { // move down
+        if (elt.nextSibling.className != "tred_expression") return;
+        p.insertBefore(elt, elt.nextSibling.nextSibling);
+    }
+
+    Tred.onChange(elt); // onChange() points to the original version !
+  }
+
+  function triggerChange (elt) {
+
+    var tredRoot = findTredRoot(elt);
+    var tree = toJson(tredRoot);
+
+    Tred.onChange(tree); // onChange() points to the original version !
   }
 
   function findTredRoot (node) {
@@ -203,8 +325,14 @@ var Tred = function () {
     //var spans = node.firstChild.getElementsByTagName("span");
     var spans = node.getElementsByTagName("span");
 
+
     var expname = spans[0].firstChild.nodeValue;
+
+    if (spans[0].className == 'tred_expression_string') return expname;
+
     var expatts = spans[1].firstChild.nodeValue;
+
+    if (expatts == '---') expatts = '';
 
     //
     // children
@@ -234,9 +362,12 @@ var Tred = function () {
   //
   return {
     renderFlow: renderFlow,
-    findTredRoot: findTredRoot,
     toJson: toJson,
-    onChange: onChange
+    onChange: onChange,
+    addExpression: addExpression,
+    removeExpression: removeExpression,
+    triggerChange: triggerChange,
+    moveExpression: moveExpression
   };
 }();
 

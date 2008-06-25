@@ -1,5 +1,9 @@
 
-.tred_expression_atts,.tred_text,.tred_expression_name {
+.tred_expression_atts,
+.tred_text,
+.tred_expression_name,
+.tred_expression_string,
+.tred_ghost_button {
   color: #888;
   font-family: Courier;
   font-size: 14px;
@@ -10,6 +14,13 @@
 }
 .tred_expression_atts {
   margin-left: 7px;
+}
+.tred_expression_string {
+  color: green;
+}
+.tred_ghost_button {
+  color: #555;
+  opacity: 0.05;
 }
 input {
   color: #888;
