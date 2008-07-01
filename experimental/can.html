@@ -1,0 +1,387 @@
+
+<html>
+<head>
+</head>
+
+<!-- warning : this is a prototype -->
+<!-- license : the BSD license -->
+
+<body>
+
+<script>
+
+var FluoCanvas = function() {
+  
+  //
+  // draws centered text
+  //
+  function drawText (c, text, bwidth, bheight) {
+    c.save();
+    if (c.fluoVertical == false) {
+      c.translate(bwidth/2, bheight/2);
+      c.rotate(Math.PI/2);
+    }
+    c.mozTextStyle = "14px helvetica";
+    var width = c.mozMeasureText(text);
+    c.translate(-(width/2), 17);
+    c.mozDrawText(text);
+    c.translate(+(width/2), -17);
+    c.restore();
+  }
+
+  function drawArrow (c, length) {
+    var w = 4;
+    c.beginPath();
+    c.moveTo(0, 0);
+    c.lineTo(0, length);
+    c.stroke();
+    c.beginPath();
+    c.moveTo(0, length);
+    c.lineTo(-w, length-w*2);
+    c.lineTo(w, length-w*2);
+    c.lineTo(0, length);
+    c.fill();
+  }
+
+  function drawRoundedRect (c, width, height, radius) {
+    var w2 = width / 2;
+    c.beginPath();
+    c.moveTo(0, 0);
+    c.lineTo(w2 - radius, 0);
+    c.quadraticCurveTo(w2, 0, w2, radius);
+    c.lineTo(w2, height - radius);
+    c.quadraticCurveTo(w2, height, w2 - radius, height);
+    c.lineTo(-w2 + radius, height);
+    c.quadraticCurveTo(-w2, height, -w2, height - radius);
+    c.lineTo(-w2, radius);
+    c.quadraticCurveTo(-w2, 0, -w2 + radius, 0);
+    c.lineTo(0, 0);
+    c.stroke();
+  }
+
+  function drawDiamond (c, height) {
+    var h = height / 2;
+    c.beginPath();
+    c.moveTo(0, 0);
+    c.lineTo(h, h);
+    c.lineTo(0, height);
+    c.lineTo(-h, h);
+    c.lineTo(0, 0);
+    c.stroke();
+  }
+
+  function drawParaDiamond (c, height) {
+    drawDiamond(c, height);
+    c.save();
+    c.lineWidth = 2.5;
+    var l = height / 4;
+    c.beginPath();
+    c.moveTo(0, l); c.lineTo(0, l * 3);
+    c.stroke();
+    c.beginPath();
+    c.moveTo(-l, l * 2); c.lineTo(l, l * 2);
+    c.stroke();
+    c.restore();
+  }
+
+  return {
+    drawText: drawText,
+    drawArrow: drawArrow,
+    drawRoundedRect: drawRoundedRect,
+    drawDiamond: drawDiamond,
+    drawParaDiamond: drawParaDiamond
+  };
+}();
+
+var FluoCan = function() {
+
+  //
+  // MISC METHODS
+
+  function childrenMax (c, exp, funcname) {
+    var max = 0;
+    for (var i = 0; i < exp[2].length; i++) {
+      var val = FluoCan[funcname](c, exp[2][i]);
+      if (val > max) max = val;
+    }
+    return max;
+  }
+
+  function childrenSum (c, exp, funcname) {
+    var sum = 0;
+    for (var i = 0; i < exp[2].length; i++) {
+      sum += FluoCan[funcname](c, exp[2][i]);
+    }
+    return sum;
+  }
+
+  //
+  // EXPRESSION HANDLERS
+
+  var ProcessDefinitionHandler = {
+    render: function (c, exp) {
+    },
+    getHeight: function (c, exp) {
+    },
+    getWidth: function (c, exp) {
+    }
+  };
+
+  var SequenceHandler = {
+    render: function (c, exp) {
+
+      c.save();
+      
+      var children = exp[2];
+      for (var i = 0; i < children.length; i++) {
+
+        var child = children[i];
+        FluoCan.renderExpression(c, child);
+        c.translate(0, FluoCan.getHeight(c, child));
+
+        if (i < children.length - 1) {
+          FluoCanvas.drawArrow(c, 20);
+          c.translate(0, 20);
+        }
+      }
+
+      c.restore();
+    },
+    getHeight: function (c, exp) {
+      return (exp[2].length - 1) * 20 + FluoCan.childrenSum(c, exp, 'getHeight');
+    },
+    getWidth: function (c, exp) {
+      return FluoCan.childrenMax(c, exp, 'getWidth');
+    }
+  };
+
+  var ConcurrenceHandler = {
+
+    render: function (c, exp) {
+
+      c.save();
+      var children = exp[2];
+      var totalWidth = this.getWidth(c, exp) + (children.length - 1) * 3;
+      var height = this.getHeight(c, exp);
+      var offset = 0;
+
+      FluoCanvas.drawParaDiamond(c, 20);
+
+      var firstChildWidth = null;
+      var lastChildWidth = null;
+
+      for (var i = 0; i < children.length; i++) {
+        var child = children[i];
+        var cwidth = FluoCan.getWidth(c, child);
+        var cheight = FluoCan.getHeight(c, child);
+        if (firstChildWidth == null) firstChildWidth = cwidth;
+        lastChildWidth = cwidth;
+        var x = -totalWidth/2 + offset + cwidth/2;
+        if (i == 0 || i == children.length - 1) {
+          c.translate(x, 20);
+          FluoCanvas.drawArrow(c, 14);
+        }
+        else {
+          c.translate(x, 10);
+          FluoCanvas.drawArrow(c, 24);
+          c.translate(0, 10);
+        }
+        offset += (cwidth + 3);
+        c.translate(0, 14);
+        FluoCan.renderExpression(c, child);
+        c.translate(-x, -34);
+      }
+      c.restore();
+      c.save();
+
+      if (firstChildWidth != null) {
+        var tw2 = totalWidth / 2;
+        c.beginPath();
+        c.moveTo(-10, 10);
+        c.lineTo(-tw2+(firstChildWidth/2)+8, 10);
+        c.quadraticCurveTo(-tw2+(firstChildWidth/2), 10, -tw2+(firstChildWidth/2), 20);
+        c.stroke();
+        c.beginPath();
+        c.moveTo(10, 10);
+        c.lineTo(tw2-(lastChildWidth/2)-8, 10);
+        c.quadraticCurveTo(tw2-(lastChildWidth/2), 10, tw2-(lastChildWidth/2), 20);
+        c.stroke();
+        c.translate(0, height);
+        c.beginPath();
+        c.moveTo(0, 0);
+        c.lineTo(-tw2+(firstChildWidth/2)+8, 0);
+        c.quadraticCurveTo(-tw2+(firstChildWidth/2), 0, -tw2+(firstChildWidth/2), -10);
+        c.stroke();
+        c.beginPath();
+        c.moveTo(0, 0);
+        c.lineTo(tw2-(lastChildWidth/2)-8, 0);
+        c.quadraticCurveTo(tw2-(lastChildWidth/2), 0, tw2-(lastChildWidth/2), -10);
+        c.stroke();
+      }
+      c.restore();
+    },
+    getHeight: function (c, exp) {
+      return 40 + FluoCan.childrenMax(c, exp, 'getHeight');
+    },
+    getWidth: function (c, exp) {
+      return FluoCan.childrenSum(c, exp, 'getWidth');
+    }
+  };
+
+  var ParticipantHandler = {
+    render: function (c, exp) {
+      var width = getWidth(c, exp);
+      var height = getHeight(c, exp);
+      FluoCanvas.drawRoundedRect(c, width, height, 8);
+      FluoCanvas.drawText(c, exp[1]['ref'], width, height);
+    },
+    getHeight: function (c, exp) {
+      if (c.fluoVertical == false) return 80;
+      return 50;
+    },
+    getWidth: function (c, exp) {
+      if (c.fluoVertical == false) return 50;
+      return 80;
+    }
+  };
+
+  var HANDLERS = {
+    'process-definition': ProcessDefinitionHandler,
+    'sequence': SequenceHandler,
+    'concurrence': ConcurrenceHandler,
+    'participant': ParticipantHandler
+  };
+
+  function newCan (id, width, height) {
+    var can = document.createElement('canvas');
+    can.id = id;
+    can.setAttribute('width', width);
+    can.setAttribute('height', height);
+    return can;
+  }
+
+  function renderExpression (context, exp) {
+    return getHandler(exp).render(context, exp);
+  }
+
+  //
+  // returns the raw height of an expression
+  //
+  function getHeight (c, exp) {
+    return getHandler(exp).getHeight(c, exp);
+  }
+
+  //
+  // return the raw width of an expression
+  //
+  function getWidth (c, exp) {
+    return getHandler(exp).getWidth(c, exp);
+  }
+
+  function getHandler (exp) {
+    return HANDLERS[exp[0]];
+  }
+
+  return {
+    newCan: newCan,
+    renderExpression: renderExpression,
+    getHeight: getHeight,
+    getWidth: getWidth,
+    childrenSum: childrenSum,
+    childrenMax: childrenMax
+  };
+}();
+
+var cfluo = FluoCan.newCan('fluo', 600, 400);
+document.body.appendChild(cfluo);
+var c = cfluo.getContext("2d");
+//c.beginPath();
+//c.moveTo(1, 1);
+//c.lineTo(1, 399);
+//c.lineTo(599, 399);
+//c.lineTo(599, 1);
+//c.lineTo(1, 1);
+//c.stroke();
+
+//var flow = 
+//  [ 'process-definition', {'name': 'pdef', 'revision': '1'}, [
+//    [ 'sequence', {}, [
+//      [ 'participant', {'ref': 'alpha'}, []],
+//      [ 'participant', {'ref': 'bravo'}, []]
+//    ]]
+//  ]];
+var flow1 =
+  [ 'sequence', {}, [
+    [ 'participant', {'ref': 'first'}, []],
+    [ 'concurrence', {}, [
+      [ 'participant', {'ref': 'a'}, []],
+      [ 'sequence', {}, [
+        [ 'participant', {'ref': 'b一'}, []],
+        [ 'participant', {'ref': 'b二'}, []],
+        [ 'participant', {'ref': 'b三'}, []]]
+      ],
+      [ 'concurrence', {}, [
+        [ 'participant', {'ref': 'c_a'}, []],
+        [ 'participant', {'ref': 'c_b'}, []]]
+      ]]
+    ],
+    [ 'participant', {'ref': '最後'}, []]]
+  ];
+
+c.translate(300, 1);
+FluoCan.renderExpression(c, flow1);
+
+var cfluo = FluoCan.newCan('fluo', 600, 400);
+document.body.appendChild(cfluo);
+var c = cfluo.getContext("2d");
+c.beginPath();
+c.moveTo(1, 1);
+c.lineTo(1, 399);
+c.lineTo(599, 399);
+c.lineTo(599, 1);
+c.lineTo(1, 1);
+c.stroke();
+
+c.translate(4, 200);
+c.rotate(-Math.PI/2);
+c.fluoVertical = false;
+FluoCan.renderExpression(c, flow1);
+
+document.body.appendChild(document.createElement('br'));
+
+var cfluo = FluoCan.newCan('fluo', 300, 200);
+document.body.appendChild(cfluo);
+var c = cfluo.getContext("2d");
+c.beginPath();
+c.moveTo(1, 1);
+c.lineTo(1, 199);
+c.lineTo(299, 199);
+c.lineTo(299, 1);
+c.lineTo(1, 1);
+c.stroke();
+
+c.translate(150, 1);
+c.scale(0.75, 0.75);
+c.fluoVertical = true;
+FluoCan.renderExpression(c, flow1);
+
+var cfluo = FluoCan.newCan('fluo', 300, 200);
+document.body.appendChild(cfluo);
+var c = cfluo.getContext("2d");
+c.beginPath();
+c.moveTo(1, 1);
+c.lineTo(1, 199);
+c.lineTo(299, 199);
+c.lineTo(299, 1);
+c.lineTo(1, 1);
+c.stroke();
+
+c.translate(200, 1);
+c.scale(0.75, 0.75);
+c.rotate(220);
+FluoCan.renderExpression(c, flow1);
+
+</script>
+
+</body>
+</html>
