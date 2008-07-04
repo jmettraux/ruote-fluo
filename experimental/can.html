@@ -163,6 +163,7 @@ var FluoCan = function() {
       var children = exp[2];
       var totalWidth = this.getWidth(c, exp) + (children.length - 1) * 3;
       var totalHeight = this.getHeight(c, exp);
+      var childrenHeight = this.getChildrenHeight(c, exp);
       var offset = 0;
 
       FluoCanvas.drawParaDiamond(c, 20);
@@ -189,10 +190,12 @@ var FluoCan = function() {
         offset += (cwidth + 3);
         c.translate(0, 14);
         FluoCan.renderExpression(c, child);
-        //c.beginPath();
-        //c.moveTo(0, cheight);
-        //c.lineTo(0, cheight + 7);
-        //c.stroke();
+        c.beginPath();
+        c.moveTo(0, cheight);
+        var p = 1;
+        if (i != 0 && i != children.length - 1) p += 10;
+        c.lineTo(0, childrenHeight + p);
+        c.stroke();
         c.translate(-x, -34);
       }
       c.restore();
@@ -224,8 +227,11 @@ var FluoCan = function() {
       }
       c.restore();
     },
+    getChildrenHeight: function (c, exp) {
+      return FluoCan.childrenMax(c, exp, 'getHeight');
+    },
     getHeight: function (c, exp) {
-      return 45 + FluoCan.childrenMax(c, exp, 'getHeight');
+      return 45 + this.getChildrenHeight(c, exp);
     },
     getWidth: function (c, exp) {
       return FluoCan.childrenSum(c, exp, 'getWidth');
@@ -328,10 +334,11 @@ var flow1 =
       [ 'concurrence', {}, [
         [ 'participant', {'ref': 'c_a'}, []],
         [ 'participant', {'ref': 'c_b'}, []]]
-      ],
-      [ 'concurrence', {}, [
-        [ 'participant', {'ref': 'd'}, []]]
-      ]]
+      ]//,
+      //[ 'concurrence', {}, [
+      //  [ 'participant', {'ref': 'd'}, []]]
+      //]]
+      ]
     ],
     [ 'participant', {'ref': '最後'}, []]]
   ];
