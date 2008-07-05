@@ -115,8 +115,60 @@ var FluoCan = function() {
     return sum;
   }
 
+  function attributesMaxWidth (c, exp, title) {
+    var max = 0;
+    if (title) max = c.mozMeasureText(title);
+    for (var attname in exp[1]) {
+      var text = ""+attname+": "+exp[1][attname];
+      var l = c.mozMeasureText(text);
+      if (l > max) max = l;
+    }
+    //return Math.floor(max);
+    return max;
+  }
+
+  function attributesCount (exp) {
+    var count = 0;
+    for (var k in exp[1]) { count++; }
+    return count;
+  }
+
   //
   // EXPRESSION HANDLERS
+
+  var UnknownHandler = {
+    textHeight: 20,
+    render: function (c, exp) {
+      var width = getWidth(c, exp);
+      var height = getHeight(c, exp);
+      FluoCanvas.drawRoundedRect(c, width, height, 8);
+      c.save();
+      FluoCanvas.drawText(c, exp[0], width, height);
+      var off = 1;
+      for (var attname in exp[1]) {
+        if (c.fluoVertical == false)
+          c.translate(-this.textHeight, 0);
+        else
+          c.translate(0, this.textHeight);
+        FluoCanvas.drawText(c, attname+": "+exp[1][attname], width, height);
+      }
+      c.restore();
+    },
+    getRealHeight: function (c, exp) {
+      return 7 + (1 + attributesCount(exp)) * this.textHeight;
+    },
+    getRealWidth: function (c, exp) {
+      return 10 + attributesMaxWidth(c, exp, exp[0]);
+    },
+    getHeight: function (c, exp) {
+      if (c.fluoVertical == false) return this.getRealWidth(c, exp);
+      return this.getRealHeight(c, exp);
+    },
+    getWidth: function (c, exp) {
+      if (c.fluoVertical == false) return this.getRealHeight(c, exp);
+      return this.getRealWidth(c, exp);
+    }
+  };
 
   var ProcessDefinitionHandler = {
     render: function (c, exp) {
@@ -148,10 +200,10 @@ var FluoCan = function() {
       c.restore();
     },
     getHeight: function (c, exp) {
-      return (exp[2].length - 1) * 20 + FluoCan.childrenSum(c, exp, 'getHeight');
+      return (exp[2].length - 1) * 20 + childrenSum(c, exp, 'getHeight');
     },
     getWidth: function (c, exp) {
-      return FluoCan.childrenMax(c, exp, 'getWidth');
+      return childrenMax(c, exp, 'getWidth');
     }
   };
 
@@ -228,13 +280,13 @@ var FluoCan = function() {
       c.restore();
     },
     getChildrenHeight: function (c, exp) {
-      return FluoCan.childrenMax(c, exp, 'getHeight');
+      return childrenMax(c, exp, 'getHeight');
     },
     getHeight: function (c, exp) {
       return 45 + this.getChildrenHeight(c, exp);
     },
     getWidth: function (c, exp) {
-      return FluoCan.childrenSum(c, exp, 'getWidth');
+      return childrenSum(c, exp, 'getWidth');
     }
   };
 
@@ -258,8 +310,8 @@ var FluoCan = function() {
   var HANDLERS = {
     'process-definition': ProcessDefinitionHandler,
     'sequence': SequenceHandler,
-    'concurrence': ConcurrenceHandler,
-    'participant': ParticipantHandler
+    'concurrence': ConcurrenceHandler
+    //'participant': ParticipantHandler
   };
 
   function newCan (id, width, height) {
@@ -272,6 +324,7 @@ var FluoCan = function() {
 
   function renderExpression (context, exp) {
     // TODO : insert here tagging of exp position...
+    // Not necessary : ...
     return getHandler(exp).render(context, exp);
   }
 
@@ -290,16 +343,16 @@ var FluoCan = function() {
   }
 
   function getHandler (exp) {
-    return HANDLERS[exp[0]];
+    var h = HANDLERS[exp[0]];
+    if (h == null) h = UnknownHandler;
+    return h;
   }
 
   return {
     newCan: newCan,
     renderExpression: renderExpression,
     getHeight: getHeight,
-    getWidth: getWidth,
-    childrenSum: childrenSum,
-    childrenMax: childrenMax
+    getWidth: getWidth
   };
 }();
 
@@ -333,7 +386,7 @@ var flow1 =
       ],
       [ 'concurrence', {}, [
         [ 'participant', {'ref': 'c_a'}, []],
-        [ 'participant', {'ref': 'c_b'}, []]]
+        [ 'participant', {'ref': 'c_b', 'timeout': '12d'}, []]]
       ]//,
       //[ 'concurrence', {}, [
       //  [ 'participant', {'ref': 'd'}, []]]
