@@ -212,9 +212,15 @@ var FluoCan = function() {
       var height = this.getHeight(c, exp);
       var attWidth = attributesMaxWidth(c, exp, exp[0]) + 7;
       var attHeight = attributesCount(exp) * 20;
+      if (c.fluoVertical == false) {
+        var w = attWidth;
+        attWidth = attHeight;
+        attHeight = w;
+      }
       FluoCanvas.drawRoundedRect(c, width, height, 8);
       c.save();
       c.translate(-width/2 + attWidth/2, 0);
+      if (c.fluoVertical == false) c.translate(attHeight/2, 0);
       drawAttributes(c, exp, true, attWidth, attHeight);
       c.restore();
       c.save();
@@ -222,12 +228,12 @@ var FluoCan = function() {
       for (var i = 0; i < exp[2].length; i++) {
         var child = exp[2][i];
         FluoCan.renderExpression(c, child, expid + '.' + i);
-        c.translate(0, 5 + FluoCan.getHeight(c, child));
+        c.translate(0, 7 + FluoCan.getHeight(c, child));
       }
       c.restore();
     },
     getHeight: function (c, exp) {
-      return (exp[2].length + 1) * 5 + childrenSum(c, exp, 'getHeight');
+      return (exp[2].length + 1) * 7 + childrenSum(c, exp, 'getHeight');
     },
     getWidth: function (c, exp) {
       return attributesMaxWidth(c, exp, exp[0]) + 14 + childrenMax(c, exp, 'getWidth');
@@ -245,22 +251,17 @@ var FluoCan = function() {
 
   var VerticalHandler = {
     render: function (c, exp, expid) {
-
       c.save();
-      
       var children = exp[2];
       for (var i = 0; i < children.length; i++) {
-
         var child = children[i];
         FluoCan.renderExpression(c, child, expid + "." + i);
         c.translate(0, FluoCan.getHeight(c, child));
-
         if (i < children.length - 1) {
           FluoCanvas.drawArrow(c, 20);
           c.translate(0, 20);
         }
       }
-
       c.restore();
     },
     getHeight: function (c, exp) {
@@ -450,17 +451,8 @@ var FluoCan = function() {
   };
 }();
 
-var cfluo = FluoCan.newCan('fluo', 600, 400);
-document.body.appendChild(cfluo);
-var c = cfluo.getContext("2d");
-c.scale(0.75, 0.75);
-//c.beginPath();
-//c.moveTo(1, 1);
-//c.lineTo(1, 399);
-//c.lineTo(599, 399);
-//c.lineTo(599, 1);
-//c.lineTo(1, 1);
-//c.stroke();
+//
+// TESTING
 
 //var flow = 
 //  [ 'process-definition', {'name': 'pdef', 'revision': '1'}, [
@@ -491,6 +483,18 @@ var flow1 =
     [ 'participant', {'ref': '最後'}, []]]
   ];
 
+var cfluo = FluoCan.newCan('fluo', 600, 400);
+document.body.appendChild(cfluo);
+var c = cfluo.getContext("2d");
+c.scale(0.75, 0.75);
+//c.beginPath();
+//c.moveTo(1, 1);
+//c.lineTo(1, 399);
+//c.lineTo(599, 399);
+//c.lineTo(599, 1);
+//c.lineTo(1, 1);
+//c.stroke();
+
 c.translate(300, 1);
 FluoCan.renderExpression(c, flow1);
 
@@ -505,43 +509,10 @@ c.lineTo(599, 1);
 c.lineTo(1, 1);
 c.stroke();
 
+c.scale(0.75, 0.75);
 c.translate(4, 200);
 c.rotate(-Math.PI/2);
 c.fluoVertical = false;
-FluoCan.renderExpression(c, flow1);
-
-document.body.appendChild(document.createElement('br'));
-
-var cfluo = FluoCan.newCan('fluo', 300, 200);
-document.body.appendChild(cfluo);
-var c = cfluo.getContext("2d");
-c.beginPath();
-c.moveTo(1, 1);
-c.lineTo(1, 199);
-c.lineTo(299, 199);
-c.lineTo(299, 1);
-c.lineTo(1, 1);
-c.stroke();
-
-c.translate(150, 1);
-c.scale(0.75, 0.75);
-c.fluoVertical = true;
-FluoCan.renderExpression(c, flow1);
-
-var cfluo = FluoCan.newCan('fluo', 300, 200);
-document.body.appendChild(cfluo);
-var c = cfluo.getContext("2d");
-c.beginPath();
-c.moveTo(1, 1);
-c.lineTo(1, 199);
-c.lineTo(299, 199);
-c.lineTo(299, 1);
-c.lineTo(1, 1);
-c.stroke();
-
-c.translate(200, 1);
-c.scale(0.75, 0.75);
-c.rotate(220);
 FluoCan.renderExpression(c, flow1);
 
 </script>
