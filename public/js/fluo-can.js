@@ -1,14 +1,17 @@
 
-<html>
-<head>
-</head>
-
-<!-- warning : this is a prototype -->
-<!-- license : the BSD license -->
-
-<body>
-
-<script>
+/*
+ *  OpenWFEru - open source ruby workflow and bpm engine
+ *  (c) 2007-2008 OpenWFE.org
+ *
+ *  OpenWFEru is freely distributable under the terms 
+ *  of a BSD-style license.
+ *  For details, see the OpenWFEru web site: http://openwferu.rubyforge.org
+ *
+ *  Made in Japan
+ *
+ *  John Mettraux
+ *  Juan-Pedro Paredes
+ */
 
 var FluoCanvas = function() {
   
@@ -16,6 +19,7 @@ var FluoCanvas = function() {
   // draws centered text
   //
   function drawText (c, text, bwidth, bheight) {
+
     c.save();
     if (c.fluoVertical == false) {
       c.translate(bwidth/2, bheight/2);
@@ -182,7 +186,7 @@ var FluoCan = function() {
   // EXPRESSION HANDLERS
 
   var GenericHandler = {
-    render: function (c, exp) {
+    render: function (c, exp, expid) {
       var width = getWidth(c, exp);
       var height = getHeight(c, exp);
       FluoCanvas.drawRoundedRect(c, width, height, 8);
@@ -227,7 +231,7 @@ var FluoCan = function() {
       c.translate(width/2 - childrenMax(c, exp, 'getWidth')/2 - 3, 5);
       for (var i = 0; i < exp[2].length; i++) {
         var child = exp[2][i];
-        FluoCan.renderExpression(c, child, expid + '.' + i);
+        renderExp(c, child, expid + '.' + i);
         c.translate(0, 7 + FluoCan.getHeight(c, child));
       }
       c.restore();
@@ -240,12 +244,24 @@ var FluoCan = function() {
     }
   };
 
-  var ProcessDefinitionHandler = {
+  var TextHandler = {
     render: function (c, exp, expid) {
+      var h = getHeight(c, exp);
+      var w = getWidth(c, exp);
+      FluoCanvas.drawText(c, this.getText(exp), h, w);
+    },
+    getText: function (exp) {
+      var t = exp[0];
+      for (var attname in exp[1]) {
+        t += (' ' + attname + ': "' + exp[1][attname] + '"');
+      }
+      return t;
     },
     getHeight: function (c, exp) {
+      return 20;
     },
     getWidth: function (c, exp) {
+      return c.mozMeasureText(this.getText(exp));
     }
   };
 
@@ -255,7 +271,7 @@ var FluoCan = function() {
       var children = exp[2];
       for (var i = 0; i < children.length; i++) {
         var child = children[i];
-        FluoCan.renderExpression(c, child, expid + "." + i);
+        renderExp(c, child, expid + "." + i);
         c.translate(0, FluoCan.getHeight(c, child));
         if (i < children.length - 1) {
           FluoCanvas.drawArrow(c, 20);
@@ -353,7 +369,7 @@ var FluoCan = function() {
     },
     renderChild: function (c, exp, expid, childrenHeight) {
       var cheight = FluoCan.getHeight(c, exp);
-      FluoCan.renderExpression(c, exp, expid);
+      renderExp(c, exp, expid);
       c.beginPath();
       c.moveTo(0, cheight); c.lineTo(0, childrenHeight);
       c.stroke();
@@ -384,6 +400,7 @@ var FluoCan = function() {
     FluoCanvas.drawParaDiamond(c, 20);
   };
 
+  /*
   var ParticipantHandler = {
     render: function (c, exp, expid) {
       var width = getWidth(c, exp);
@@ -400,17 +417,62 @@ var FluoCan = function() {
       return 80;
     }
   };
+  */
 
   var HANDLERS = {
-    'process-definition': ProcessDefinitionHandler,
+    //'participant': ParticipantHandler
     'sequence': VerticalHandler,
     'concurrence': ConcurrenceHandler,
-    'if': HorizontalHandler
-    //'participant': ParticipantHandler
+    'if': HorizontalHandler,
+    'set': TextHandler
   };
 
-  function renderExpression (context, exp, expid) {
-    return getHandler(exp).render(context, exp, expid);
+  function newCan (id, width, height) {
+    var can = document.createElement('canvas');
+    can.id = id;
+    can.setAttribute('width', width);
+    can.setAttribute('height', height);
+    return can;
+  }
+
+  function renderExpression (context, exp) {
+
+    context = resolveContext(context);
+    neutralizeContext(context);
+
+    context.save();
+
+    context.clearRect(0, 0, c.canvas.width, c.canvas.height);
+
+    context.translate(c.canvas.width/2, 0);
+
+    renderExp(context, exp, '0');
+
+    context.restore();
+  }
+
+  function renderExp (c, exp, expid) {
+    getHandler(exp).render(c, exp, expid);
+  }
+
+  //function clear (c) {
+  //  c = resolveContext(c);
+  //  c.clearRect(0, 0, c.canvas.width, c.canvas.height);
+  //}
+
+  function resolveContext (c) {
+    if (c.translate != null) return c;
+    return document.getElementById(c).getContext('2d');
+  }
+
+  function neutralizeContext (c) {
+    if (window.navigator.userAgent.match(/Firefox/)) return;
+    c.mozDrawText = function (t) {
+      // do nothing
+    };
+    c.mozMeasureText = function (t) {
+      return t.length * 5;
+    };
   }
 
   //
@@ -437,76 +499,8 @@ var FluoCan = function() {
   return {
     newCan: newCan,
     renderExpression: renderExpression,
+    //clear: clear,
     getHeight: getHeight,
     getWidth: getWidth
   };
 }();
-
-//
-// TESTING
-
-//var flow = 
-//  [ 'process-definition', {'name': 'pdef', 'revision': '1'}, [
-//    [ 'sequence', {}, [
-//      [ 'participant', {'ref': 'alpha'}, []],
-//      [ 'participant', {'ref': 'bravo'}, []]
-//    ]]
-//  ]];
-var flow1 =
-  [ 'sequence', {}, [
-    [ 'participant', {'ref': 'first'}, []],
-    [ 'concurrence', {}, [
-      [ 'participant', {'ref': 'a'}, []],
-      [ 'sequence', {}, [
-        [ 'participant', {'ref': 'b一'}, []],
-        [ 'participant', {'ref': 'b二'}, []],
-        [ 'participant', {'ref': 'b三'}, []]]
-      ],
-      [ 'concurrence', {'count': 1}, [
-        [ 'participant', {'ref': 'c_a'}, []],
-        [ 'participant', {'ref': 'c_b', 'timeout': '12d'}, []]]
-      ]//,
-      //[ 'concurrence', {}, [
-      //  [ 'participant', {'ref': 'd'}, []]]
-      //]]
-      ]
-    ],
-    [ 'participant', {'ref': '最後'}, []]]
-  ];
-
-var cfluo = FluoCan.newCan('fluo', 600, 400);
-document.body.appendChild(cfluo);
-var c = cfluo.getContext("2d");
-c.scale(0.75, 0.75);
-//c.beginPath();
-//c.moveTo(1, 1);
-//c.lineTo(1, 399);
-//c.lineTo(599, 399);
-//c.lineTo(599, 1);
-//c.lineTo(1, 1);
-//c.stroke();
-
-c.translate(300, 1);
-FluoCan.renderExpression(c, flow1, '0');
-
-var cfluo = FluoCan.newCan('fluo', 600, 400);
-document.body.appendChild(cfluo);
-var c = cfluo.getContext("2d");
-c.beginPath();
-c.moveTo(1, 1);
-c.lineTo(1, 399);
-c.lineTo(599, 399);
-c.lineTo(599, 1);
-c.lineTo(1, 1);
-c.stroke();
-
-c.scale(0.75, 0.75);
-c.translate(4, 200);
-c.rotate(-Math.PI/2);
-c.fluoVertical = false;
-FluoCan.renderExpression(c, flow1, '0');
-
-</script>
-
-</body>
-</html>

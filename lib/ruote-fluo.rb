@@ -16,13 +16,10 @@ get "/" do
 
   <meta http-equiv="content-type" content="text/html; charset=UTF-8">
 
-  <script src="/js/prototype.js?nocache=#{Time.now.to_f}"></script>
-  <script src="/js/fluo-canvas.js?nocache=#{Time.now.to_f}"></script>
-  <script src="/js/fluo.js?nocache=#{Time.now.to_f}"></script>
+  <script src="/js/fluo-can.js?nocache=#{Time.now.to_f}"></script>
   <script src="/js/fluo-dial.js?nocache=#{Time.now.to_f}"></script>
   <script src="/js/fluo-tred.js?nocache=#{Time.now.to_f}"></script>
 
-  <link href="/css/fluo.css?nocache=#{Time.now.to_f}" rel="Stylesheet" type="text/css" />
   <link href="/css/fluo-dial.css?nocache=#{Time.now.to_f}" rel="Stylesheet" type="text/css" />
   <link href="/css/fluo-tred.css?nocache=#{Time.now.to_f}" rel="Stylesheet" type="text/css" />
 
@@ -35,7 +32,7 @@ get "/" do
   </style>
 </head>
 
-<body onresize="Fluo.tagExpressionsWithWorkitems('fluo', [ '#{@wi}' ]);">
+<body>
 
 <div>
 <div style="float:left; width: 49%">
@@ -49,30 +46,22 @@ get "/" do
     var tout = document.getElementById("tred__out");
 
     Tred.onChange = function (jsonTree) {
-      Fluo.renderExpression('fluo', null, jsonTree);
+      FluoCan.renderExpression('fluo', jsonTree);
     }
   </script>
 </div>
 
-<div style="float:left; width: 49%">
+<div id="leftpane" style="float:left; width: 49%">
 
-  <div id="fluo" style="width: 100%">
-  </div>
-  <script>
-    Fluo.renderExpression('fluo', null, #{@prep});
-    Fluo.tagExpressionsWithWorkitems('fluo', [ '#{@wi}' ]);
-  </script>
-
-  <br/>
-  <br/>
-  <!--
-  <div class="fluo_text">
-    <a href="#" onclick="Fluo.toggleMinorExpressions('fluo'); return false;">show / hide minor expressions</a> |
-    <a href="fluo?pdef=#{request['pdef']}">graph only</a>
-  </div>
-  -->
+  <canvas id="fluo" width="500" height="800"></canvas>
 </div>
 </div>
+
+<script>
+  var c = document.getElementById('fluo').getContext("2d");
+  FluoCan.renderExpression(c, #{@prep});
+  //Fluo.tagExpressionsWithWorkitems('fluo', [ '#{@wi}' ]);
+</script>
 
 
 </body>
@@ -104,42 +93,6 @@ get "/defs" do
 </html>
   }
 end
-
-get "/fluo" do
-
-  prepare
-
-  %{
-<html>
-<head>
-  <title>fluo bench</title>
-
-  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
-
-  <script src="/js/prototype.js?nocache=#{Time.now.to_f}"></script>
-  <script src="/js/fluo-canvas.js?nocache=#{Time.now.to_f}"></script>
-  <script src="/js/fluo.js?nocache=#{Time.now.to_f}"></script>
-
-  <link href="/css/fluo.css?nocache=#{Time.now.to_f}" rel="Stylesheet" type="text/css" />
-</head>
-<body onresize="Fluo.tagExpressionsWithWorkitems('fluo', [ '#{@wi}' ]);">
-<div id="fluo" style="width: 50%">
-</div>
-<script>
-  Fluo.renderExpression('fluo', null, #{@prep});
-  Fluo.tagExpressionsWithWorkitems('fluo', [ '#{@wi}' ]);
-</script>
-
-<br/>
-<br/>
-<div class="fluo_text">
-  <a href="#" onclick="Fluo.toggleMinorExpressions('fluo'); return false;">show / hide minor expressions</a>
-</div>
-</body>
-</html>
-  }
-end
-
 
 def prepare
 
