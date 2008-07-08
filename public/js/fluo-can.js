@@ -151,7 +151,7 @@ var FluoCan = function() {
     return sum;
   }
 
-  function attributesMaxWidth (c, exp, title) {
+  function attributeMaxWidth (c, exp, title) {
     var max = 0;
     if (title) max = c.mozMeasureText(title);
     for (var attname in exp[1]) {
@@ -162,7 +162,16 @@ var FluoCan = function() {
     return max;
   }
 
-  function attributesCount (exp) {
+  //
+  // returns the list of attribute names (sorted)
+  //
+  function attributeNames (exp) {
+    var an = [];
+    for (attname in exp[1]) an.push(attname);
+    return an.sort();
+  }
+
+  function attributeCount (exp) {
     var count = 0;
     for (var k in exp[1]) { count++; }
     return count;
@@ -174,7 +183,10 @@ var FluoCan = function() {
       if (c.fluoVertical == false) c.translate(-20, 0);
       else c.translate(0, 20);
     }
-    for (var attname in exp[1]) {
+    //for (var attname in exp[1]) {
+    var attname;
+    var attnames = attributeNames(exp);
+    while (attname = attnames.shift()) {
       FluoCanvas.drawText(c, attname+": "+exp[1][attname], width, height);
       if (c.fluoVertical == false) c.translate(-20, 0);
       else c.translate(0, 20);
@@ -203,10 +215,10 @@ var FluoCan = function() {
       c.restore();
     },
     getRealHeight: function (c, exp) {
-      return 7 + (1 + attributesCount(exp)) * 20;
+      return 7 + (1 + attributeCount(exp)) * 20;
     },
     getRealWidth: function (c, exp) {
-      return 10 + attributesMaxWidth(c, exp, exp[0]);
+      return 10 + attributeMaxWidth(c, exp, exp[0]);
     },
     getHeight: function (c, exp) {
       if (c.fluoVertical == false) return this.getRealWidth(c, exp);
@@ -222,8 +234,8 @@ var FluoCan = function() {
     render: function (c, exp, expid) {
       var width = this.getWidth(c, exp);
       var height = this.getHeight(c, exp);
-      var attWidth = attributesMaxWidth(c, exp, exp[0]) + 7;
-      var attHeight = attributesCount(exp) * 20;
+      var attWidth = attributeMaxWidth(c, exp, exp[0]) + 7;
+      var attHeight = attributeCount(exp) * 20;
       if (c.fluoVertical == false) {
         var w = attWidth;
         attWidth = attHeight;
@@ -248,7 +260,7 @@ var FluoCan = function() {
       return (exp[2].length + 1) * 7 + childrenSum(c, exp, 'getHeight');
     },
     getWidth: function (c, exp) {
-      return attributesMaxWidth(c, exp, exp[0]) + 14 + childrenMax(c, exp, 'getWidth');
+      return attributeMaxWidth(c, exp, exp[0]) + 14 + childrenMax(c, exp, 'getWidth');
     }
   };
 
@@ -314,8 +326,8 @@ var FluoCan = function() {
       this.renderFooter(c, exp, dist, childrenHeight);
     },
     getHeaderHeight: function (c, exp) {
-      if (c.fluoVertical == false) return 23 + attributesMaxWidth(c, exp);
-      return 23 + attributesCount(exp) * 20;
+      if (c.fluoVertical == false) return 23 + attributeMaxWidth(c, exp);
+      return 23 + attributeCount(exp) * 20;
     },
     getChildrenHeight: function (c, exp) {
       return childrenMax(c, exp, 'getHeight');
@@ -356,8 +368,8 @@ var FluoCan = function() {
       FluoCanvas.drawDiamond(c, 20);
     },
     renderHeaderLabel: function (c, exp) {
-      var width = attributesMaxWidth(c, exp);
-      var height = attributesCount(exp) * 20;
+      var width = attributeMaxWidth(c, exp);
+      var height = attributeCount(exp) * 20;
       if (c.fluoVertical == false) {
         var w = width;
         width = height;
@@ -423,7 +435,7 @@ var FluoCan = function() {
     if (exp[2].length == 1 || ( ! exp[2][1])) {
       exp[2] = [ exp[2][0], [ '_', {}, [] ]];
     }
-    exp.adjusted == true;
+    exp.adjusted = true;
   };
   IfHandler.render = function (c, exp, expid) {
     this.adjustExp(exp);
@@ -495,7 +507,11 @@ var FluoCan = function() {
 
     context.save();
 
-    context.clearRect(0, 0, c.canvas.width, c.canvas.height);
+    //context.clearRect(0, 0, c.canvas.width, c.canvas.height);
+    var fs = context.fillStyle;
+    context.fillStyle = 'rgb(255, 255, 255)';
+    context.fillRect(0, 0, c.canvas.width, c.canvas.height);
+    context.fillStyle = fs;
 
     context.translate(c.canvas.width/2, 0);
 
