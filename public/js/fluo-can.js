@@ -34,7 +34,7 @@ var FluoCanvas = function() {
   }
 
   function drawArrow (c, length) {
-    var w = 4;
+    var w = 3;
     c.beginPath();
     c.moveTo(0, 0);
     c.lineTo(0, length);
@@ -45,6 +45,13 @@ var FluoCanvas = function() {
     c.lineTo(w, length-w*2);
     c.lineTo(0, length);
     c.fill();
+  }
+
+  function drawVerticalLine (c, x, height) {
+    c.beginPath();
+    c.moveTo(x, 0);
+    c.lineTo(x, height);
+    c.stroke();
   }
 
   function drawRoundedRect (c, width, height, radius) {
@@ -114,6 +121,7 @@ var FluoCanvas = function() {
   return {
     drawText: drawText,
     drawArrow: drawArrow,
+    drawVerticalLine: drawVerticalLine,
     drawRoundedRect: drawRoundedRect,
     drawQuadraticPath: drawQuadraticPath,
     drawDiamond: drawDiamond,
@@ -187,8 +195,8 @@ var FluoCan = function() {
 
   var GenericHandler = {
     render: function (c, exp, expid) {
-      var width = getWidth(c, exp);
-      var height = getHeight(c, exp);
+      var width = this.getWidth(c, exp);
+      var height = this.getHeight(c, exp);
       FluoCanvas.drawRoundedRect(c, width, height, 8);
       c.save();
       drawAttributes(c, exp, true, width, height);
@@ -274,8 +282,8 @@ var FluoCan = function() {
         renderExp(c, child, expid + "." + i);
         c.translate(0, FluoCan.getHeight(c, child));
         if (i < children.length - 1) {
-          FluoCanvas.drawArrow(c, 20);
-          c.translate(0, 20);
+          FluoCanvas.drawArrow(c, 14);
+          c.translate(0, 14);
         }
       }
       c.restore();
@@ -338,10 +346,7 @@ var FluoCan = function() {
       FluoCanvas.drawQuadraticPath(
         c, distribution[distribution.length-1], hheight, 8);
       for (var i = 1; i < distribution.length - 1; i++) {
-        c.beginPath();
-        c.moveTo(distribution[i], 0);
-        c.lineTo(distribution[i], hheight);
-        c.stroke();
+        FluoCanvas.drawVerticalLine(c, distribution[i], hheight);
       }
       c.restore();
       this.renderHeaderSymbol(c);
@@ -379,15 +384,17 @@ var FluoCan = function() {
       c.save();
       c.translate(
         0, this.getHeaderHeight(c, exp) + this.getChildrenHeight(c, exp) + 10);
-      FluoCanvas.drawQuadraticPath(
-        c, distribution[0], -10, 8);
-      FluoCanvas.drawQuadraticPath(
-        c, distribution[distribution.length-1], -10, 8);
-      for (var i = 1; i < distribution.length - 1; i++) {
-        c.beginPath();
-        c.moveTo(distribution[i], 0);
-        c.lineTo(distribution[i], -10);
-        c.stroke();
+      if (distribution.length == 1) {
+        FluoCanvas.drawVerticalLine(c, distribution[0], -10);
+      }
+      else {
+        FluoCanvas.drawQuadraticPath(
+          c, distribution[0], -10, 8);
+        FluoCanvas.drawQuadraticPath(
+          c, distribution[distribution.length-1], -10, 8);
+        for (var i = 1; i < distribution.length - 1; i++) {
+          FluoCanvas.drawVerticalLine(c, distribution[i], -10);
+        }
       }
       c.restore();
     },
@@ -398,6 +405,51 @@ var FluoCan = function() {
   var ConcurrenceHandler = copyHandler(HorizontalHandler);
   ConcurrenceHandler.renderHeaderSymbol = function (c) {
     FluoCanvas.drawParaDiamond(c, 20);
+  };
+
+  var IfHandler = copyHandler(HorizontalHandler);
+  IfHandler.adjustExp = function (exp) {
+    //
+    // all the crazy legwork to adapt to the 'if' expression
+    //
+    if (exp.adjusted == true) return;
+    if (( ! exp[1]['test']) && ( ! exp[1]['not'])) {
+      // ok, steal first exp
+      var cond = exp[2][0];
+      exp[1] = cond[1];
+      exp[1]['condition'] = cond[0];
+      exp[2] = [ exp[2][1], exp[2][2] ];
+    }
+    if (exp[2].length == 1 || ( ! exp[2][1])) {
+      exp[2] = [ exp[2][0], [ '_', {}, [] ]];
+    }
+    exp.adjusted == true;
+  };
+  IfHandler.render = function (c, exp, expid) {
+    this.adjustExp(exp);
+    HorizontalHandler.render(c, exp, expid);
+  };
+  IfHandler.getHeight = function (c, exp) {
+    this.adjustExp(exp);
+    return HorizontalHandler.getHeight(c, exp);
+  };
+  IfHandler.getWidth = function (c, exp) {
+    this.adjustExp(exp);
+    return HorizontalHandler.getWidth(c, exp);
+  };
+
+  //
+  // used for empty else clause
+  //
+  var GhostHandler = {
+    render: function (c, exp, expid) {
+    },
+    getHeight: function (c, exp) {
+      return 0;
+    },
+    getWidth: function (c, exp) {
+      return 35;
+    }
   };
 
   /*
@@ -423,8 +475,9 @@ var FluoCan = function() {
     //'participant': ParticipantHandler
     'sequence': VerticalHandler,
     'concurrence': ConcurrenceHandler,
-    'if': HorizontalHandler,
-    'set': TextHandler
+    'if': IfHandler,
+    'set': TextHandler,
+    '_': GhostHandler
   };
 
   function newCan (id, width, height) {
