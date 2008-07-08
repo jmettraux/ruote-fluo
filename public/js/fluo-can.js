@@ -25,7 +25,7 @@ var FluoCanvas = function() {
       c.translate(bwidth/2, bheight/2);
       c.rotate(Math.PI/2);
     }
-    c.mozTextStyle = "14px helvetica";
+    c.mozTextStyle = "12px Helvetica";
     var width = c.mozMeasureText(text);
     c.translate(-(width/2), 17);
     c.mozDrawText(text);

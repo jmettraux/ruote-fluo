@@ -1,0 +1,29 @@
+
+body {
+  font-family: Courier;
+  font-size: 12px;
+  margin: 0px;
+}
+
+h3 {
+  margin-left: 28px;
+}
+
+#fluo { /* the canvas */
+  margin-top: 7px;
+}
+
+.menubar {
+  height: 28px;
+  background-image: url(/images/menubar.png);
+}
+
+A:link.menubar_link,A:visited.menubar_link {
+  color: white;
+}
+
+.menubar_links {
+  padding-top: 7px;
+  padding-left: 28px;
+}
+

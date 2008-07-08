@@ -1,8 +1,8 @@
 
 require 'rubygems'
 require 'sinatra'
-require 'json'
-require 'openwfe/expool/parser'
+require 'json' # gem 'json_pure'
+require 'openwfe/expool/parser' # gem 'ruote'
 
 
 get "/" do
@@ -20,19 +20,15 @@ get "/" do
   <script src="/js/fluo-dial.js?nocache=#{Time.now.to_f}"></script>
   <script src="/js/fluo-tred.js?nocache=#{Time.now.to_f}"></script>
 
+  <link href="/css/fluo-bench.css?nocache=#{Time.now.to_f}" rel="Stylesheet" type="text/css" />
   <link href="/css/fluo-dial.css?nocache=#{Time.now.to_f}" rel="Stylesheet" type="text/css" />
   <link href="/css/fluo-tred.css?nocache=#{Time.now.to_f}" rel="Stylesheet" type="text/css" />
 
-  <style>
-    body {
-    /*color: #888;*/
-    font-family: Courier;
-    font-size: 12px;
-    }
-  </style>
 </head>
 
 <body>
+
+#{render_menubar(['defs'])}
 
 <div>
 <div style="float:left; width: 49%">
@@ -81,9 +77,12 @@ get "/defs" do
   %{
 <html>
 <head>
-  <title>fluo bench</title>
+  <title>fluo bench / definitions</title>
+  <link href="/css/fluo-bench.css?nocache=#{Time.now.to_f}" rel="Stylesheet" type="text/css" />
 </head>
 <body>
+#{render_menubar}
+  <h3>the definitions under public/</h3>
   <div id="all_definitions">
     <ul>
 #{pdefs}
@@ -91,6 +90,25 @@ get "/defs" do
   </div>
 </body>
 </html>
+  }
+end
+
+def render_menubar (menuitems=[])
+  items = menuitems.inject([]) do |r, item|
+    link = case item
+      when 'defs'
+        '/defs'
+      else
+        '/'
+    end
+    r << "<a class=\"menubar_link\" href=\"#{link}\">#{item}</a>\n"
+  end
+  %{
+<div class="menubar">
+  <div class="menubar_links">
+    #{items.join}
+  </div>
+</div>
   }
 end
 
