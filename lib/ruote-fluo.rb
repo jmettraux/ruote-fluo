@@ -49,7 +49,7 @@ get "/" do
 
 <div id="leftpane" style="float:left; width: 49%">
 
-  <canvas id="fluo" width="500" height="800"></canvas>
+  <canvas id="fluo" width="600" height="1000"></canvas>
 </div>
 </div>
 

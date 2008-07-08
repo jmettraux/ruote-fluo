@@ -257,10 +257,17 @@ var FluoCan = function() {
       c.restore();
     },
     getHeight: function (c, exp) {
-      return (exp[2].length + 1) * 7 + childrenSum(c, exp, 'getHeight');
+      var rightHeight = 
+        (exp[2].length + 1) * 7 + childrenSum(c, exp, 'getHeight');
+      var leftHeight = 
+        GenericHandler.getHeight(c, exp);
+      return (rightHeight > leftHeight) ? rightHeight : leftHeight;
     },
     getWidth: function (c, exp) {
-      return attributeMaxWidth(c, exp, exp[0]) + 14 + childrenMax(c, exp, 'getWidth');
+      return(
+        attributeMaxWidth(c, exp, exp[0]) + 
+        14 + 
+        childrenMax(c, exp, 'getWidth'));
     }
   };
 
@@ -283,6 +290,11 @@ var FluoCan = function() {
     getWidth: function (c, exp) {
       return c.mozMeasureText(this.getText(exp));
     }
+  };
+
+  var StringHandler = copyHandler(TextHandler);
+  StringHandler.getText = function (exp) {
+    return exp;
   };
 
   var VerticalHandler = {
@@ -418,6 +430,9 @@ var FluoCan = function() {
   ConcurrenceHandler.renderHeaderSymbol = function (c) {
     FluoCanvas.drawParaDiamond(c, 20);
   };
+
+  // NOTE : if I need this 'adjust' technique for another
+  // expression, I might as well prepare a createAdjustingHandler()...
 
   var IfHandler = copyHandler(HorizontalHandler);
   IfHandler.adjustExp = function (exp) {
@@ -559,6 +574,7 @@ var FluoCan = function() {
   }
 
   function getHandler (exp) {
+    if ((typeof exp) == 'string') return StringHandler;
     var h = HANDLERS[exp[0]];
     if (h != null) return h;
     if (exp[2].length > 0) return GenericWithChildrenHandler;
