@@ -118,6 +118,26 @@ var EditableSpan = function() {
 }();
 
 var Tred = function () {
+  
+  function treeToString (jsonTree) {
+    if ((typeof jsonTree) == 'string') return jsonTree;
+    var attributes = jsonTree[1];
+    var children = jsonTree[2];
+    s = "[ '"+jsonTree[0]+"', {";
+    var atts = [];
+    for (var attname in attributes) {
+      atts.push(attname+": "+attributes[attname]);
+    }
+    s += atts.join(", ");
+    s += "}, [ ";
+    for (var i = 0; i < children.length; i++) {
+      var child = children[i];
+      s += treeToString(child);
+      if (i < children.length - 1) s += ", ";
+    }
+    s += " ]]"
+    return s;
+  }
 
   function onChange (jsonTree) {
 
@@ -289,6 +309,9 @@ var Tred = function () {
     renderExpression(parentNode, flow, true);
 
     parentNode.className = "tred_root";
+
+    parentNode.stack = []; // the undo stack
+    parentNode.currentTree = flow;
   }
 
   function moveExpression (elt, delta) {
@@ -296,12 +319,12 @@ var Tred = function () {
     var p = elt.parentNode;
 
     if (delta == -1) { // move up
-        if (elt.previousSibling.className != "tred_expression") return;
-        p.insertBefore(elt, elt.previousSibling);
+      if (elt.previousSibling.className != "tred_expression") return;
+      p.insertBefore(elt, elt.previousSibling);
     }
     else { // move down
-        if (elt.nextSibling.className != "tred_expression") return;
-        p.insertBefore(elt, elt.nextSibling.nextSibling);
+      if (elt.nextSibling.className != "tred_expression") return;
+      p.insertBefore(elt, elt.nextSibling.nextSibling);
     }
 
     Tred.triggerChange(p); // onChange() points to the original version !
@@ -312,7 +335,39 @@ var Tred = function () {
     var tredRoot = findTredRoot(elt);
     var tree = toJson(tredRoot);
 
+    stack(tredRoot, tree);
+
     Tred.onChange(tree); // onChange() points to the original version !
+  }
+
+  function stack(root, tree) {
+    root.stack.push(root.currentTree);
+    root.currentTree = tree;
+    //while (root.stack.length > 35) root.stack.shift();
+    //var s = "";
+    //var st = treeToString(tree);
+    //s += ("current: " + st + " (" + st.length + ")\n\n");
+    //for (var i = 0; i < root.stack.length; i++) {
+    //  st = treeToString(root.stack[i]);
+    //  s += ("" + i + ": " + st + " (" + st.length + ")\n\n");
+    //}
+    //alert(s);
+  }
+
+  function undo (root) {
+
+    if ((typeof root) == 'string') root = document.getElementById(root);
+    if (root.stack.length < 1) return;
+
+    while (root.firstChild != null) root.removeChild(root.firstChild);
+
+    var tree = root.stack.pop();
+
+    root.currentTree = tree;
+    renderExpression(root, tree, true);
+
+    //triggerChange(root);
+    Tred.onChange(tree);
   }
 
   function findTredRoot (node) {
@@ -379,7 +434,9 @@ var Tred = function () {
     addExpression: addExpression,
     removeExpression: removeExpression,
     triggerChange: triggerChange,
-    moveExpression: moveExpression
+    moveExpression: moveExpression,
+    undo: undo,
+    treeToString: treeToString
   };
 }();
 

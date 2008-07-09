@@ -520,7 +520,9 @@ var FluoCan = function() {
     context.fillRect(0, 0, c.canvas.width, c.canvas.height);
     context.fillStyle = fs;
 
-    context.translate(c.canvas.width/2, 0);
+    //context.translate(c.canvas.width/2, 0);
+    var w = getWidth(c, exp);
+    context.translate(w/2, 0); // aligning left
 
     renderExp(context, exp, '0');
 

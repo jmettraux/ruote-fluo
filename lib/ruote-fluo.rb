@@ -28,7 +28,7 @@ get "/" do
 
 <body>
 
-#{render_menubar(['defs'])}
+#{render_menubar(['defs', 'undo'])}
 
 <div>
 <div style="float:left; width: 49%">
@@ -95,13 +95,13 @@ end
 
 def render_menubar (menuitems=[])
   items = menuitems.inject([]) do |r, item|
-    link = case item
+    case item
       when 'defs'
-        '/defs'
-      else
-        '/'
+        r << "<a class=\"menubar_link\" href=\"/defs\">defs</a>\n"
+      when 'undo'
+        r << "<a class=\"menubar_link\" href=\"#\" onclick=\"Tred.undo('tred'); return false;\">undo</a>\n"
     end
-    r << "<a class=\"menubar_link\" href=\"#{link}\">#{item}</a>\n"
+    r
   end
   %{
 <div class="menubar">

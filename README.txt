@@ -17,3 +17,31 @@ This is the development bench of the javascript library used to render graphical
 
 then head with your browser (FireFox 3 only !) to http://localhost:4567
 
+
+== source
+
+http://github.com/jmettraux/ruote-fluo
+
+    git clone git://github.com/jmettraux/ruote-fluo.git
+
+
+== feedback
+
+user mailing list :        http://groups.google.com/group/openwferu-users
+developers mailing list :  http://groups.google.com/group/openwferu-dev
+
+issue tracker :            http://rubyforge.org/tracker/?atid=10023&group_id=2609&func=browse
+
+irc :                      irc.freenode.net #ruote
+
+
+== author
+
+John Mettraux, jmettraux@gmail.com
+http://jmettraux.wordpress.com
+
+
+== license
+
+BSD
+
