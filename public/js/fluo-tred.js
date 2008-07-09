@@ -67,7 +67,7 @@ var EditableSpan = function() {
 
     if (text == '---' || text == '') {
       text = '---';
-      espan.style.opacity = 0.1;
+      espan.style.opacity = 0.4;
     }
 
     espan.className = einput.className;
@@ -105,12 +105,11 @@ var EditableSpan = function() {
 
     if (span.firstChild.nodeValue == '') {
       span.firstChild.nodeValue = '---';
-      span.style.opacity = 0.1;
+      span.style.opacity = 0.4;
     }
   }
 
   return {
-
     toInput: toInput,
     onKey: onKey,
     toSpan: toSpan,
@@ -125,15 +124,13 @@ var Tred = function () {
     alert("please override me");
   }
 
-  function createGhostButton (text, callback) {
+  function createButton (text, callback) {
 
     var s = document.createElement("span");
     s.callback = callback;
     s.appendChild(document.createTextNode(text));
-    s.className = "tred_ghost_button";
+    s.className = "tred_button";
     s.setAttribute("onclick", "this.callback()");
-    s.setAttribute("onmouseout", "this.style.opacity = '0.05';");
-    s.setAttribute("onmouseover", "this.style.opacity = '0.7';");
     return s;
   }
 
@@ -174,28 +171,40 @@ var Tred = function () {
     atts = atts.join(', ');
     renderAttributes(opening, atts);
 
-    opening.appendChild(createGhostButton(
+    var outOpacity = 0.03;
+
+    var buttons = document.createElement("span");
+    buttons.style.opacity = outOpacity;
+
+    opening.onmouseover = function () { buttons.style.opacity = 1.0; }
+    opening.onmouseout = function () { buttons.style.opacity = outOpacity; }
+
+    buttons.appendChild(createButton(
       " +",
       function () {
-        Tred.addExpression(this.parentNode.parentNode, [ "---", {}, [] ]);
+        Tred.addExpression(opening.parentNode, [ "---", {}, [] ]);
       }));
-    opening.appendChild(createGhostButton(
+    buttons.appendChild(createButton(
       " -",
       function () {
-        Tred.removeExpression(this.parentNode.parentNode);
+        Tred.removeExpression(opening.parentNode);
       }));
 
-    opening.appendChild(createGhostButton(
+    buttons.appendChild(createButton(
       " u",
       function () {
-        Tred.moveExpression(this.parentNode.parentNode, -1);
+        Tred.moveExpression(opening.parentNode, -1);
+        buttons.style.opacity = outOpacity;
       }));
 
-    opening.appendChild(createGhostButton(
+    buttons.appendChild(createButton(
       " d",
       function () {
-        Tred.moveExpression(this.parentNode.parentNode, +1);
+        Tred.moveExpression(opening.parentNode, +1);
+        buttons.style.opacity = outOpacity;
       }));
+
+    opening.appendChild(buttons);
 
     node.appendChild(opening);
   }
@@ -246,13 +255,16 @@ var Tred = function () {
 
     var node = document.createElement("div");
     node.className = "tred_expression";
-    if ( ! isRootExp) node.setAttribute("style", "margin-left: 14px;");
+    if ( ! isRootExp) {
+      //node.setAttribute("style", "margin-left: "+this.indentation+"px;");
+      node.setAttribute("style", "margin-left: 14px;");
+    }
     parentNode.appendChild(node);
 
     if ( ! (exp instanceof Array)) {
 
-        renderExpressionString(node, exp.toString());
-        return;
+      renderExpressionString(node, exp.toString());
+      return;
     }
 
     renderOpening(node, exp);

@@ -18,9 +18,9 @@
 .tred_expression_string {
   color: green;
 }
-.tred_ghost_button {
-  color: #555;
-  opacity: 0.1;
+.tred_button {
+  color: blue;
+  cursor: pointer;
 }
 input {
   color: #888;
