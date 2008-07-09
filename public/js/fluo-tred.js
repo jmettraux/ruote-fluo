@@ -19,21 +19,6 @@
 //  ]
 //]
 
-//
-// <div> <!-- expression -->
-//   <div> <!-- opening -->
-//     <span>sequence</span>  <span>(atts)</span>
-//   </div>
-//   <div> <!-- c0 -->
-//     <div>alpha</div>
-//   </div>
-//   <div> <!-- c1 -->
-//     <div>bravo</div>
-//   </div>
-//   <div>end</div> <!-- end -->
-// </div>
-//
-
 HTMLElement.prototype.firstChildOfClass = function (className) {
   
   for (var i=0; i < this.childNodes.length; i++) {
@@ -119,29 +104,29 @@ var EditableSpan = function() {
 
 var Tred = function () {
   
-  function treeToString (jsonTree) {
-    if ((typeof jsonTree) == 'string') return jsonTree;
-    var attributes = jsonTree[1];
-    var children = jsonTree[2];
-    s = "[ '"+jsonTree[0]+"', {";
+  function toJson (tree) {
+    if ((typeof tree) == 'string') return tree;
+    var attributes = tree[1];
+    var children = tree[2];
+    s = "[ '"+tree[0]+"', {";
     var atts = [];
     for (var attname in attributes) {
-      atts.push(attname+": "+attributes[attname]);
+      atts.push("'" + attname + "': '" + attributes[attname] + "'");
     }
     s += atts.join(", ");
     s += "}, [ ";
     for (var i = 0; i < children.length; i++) {
       var child = children[i];
-      s += treeToString(child);
+      s += toJson(child);
       if (i < children.length - 1) s += ", ";
     }
     s += " ]]"
     return s;
   }
 
-  function onChange (jsonTree) {
+  function onChange (tree) {
 
-    alert("Tred.onChange(jsonTree) : please override me");
+    alert("Tred.onChange(tree) : please override me");
   }
 
   function createButton (text, callback) {
@@ -333,7 +318,7 @@ var Tred = function () {
   function triggerChange (elt) {
 
     var tredRoot = findTredRoot(elt);
-    var tree = toJson(tredRoot);
+    var tree = toTree(tredRoot);
 
     stack(tredRoot, tree);
 
@@ -345,10 +330,10 @@ var Tred = function () {
     root.currentTree = tree;
     //while (root.stack.length > 35) root.stack.shift();
     //var s = "";
-    //var st = treeToString(tree);
+    //var st = toJson(tree);
     //s += ("current: " + st + " (" + st.length + ")\n\n");
     //for (var i = 0; i < root.stack.length; i++) {
-    //  st = treeToString(root.stack[i]);
+    //  st = toJson(root.stack[i]);
     //  s += ("" + i + ": " + st + " (" + st.length + ")\n\n");
     //}
     //alert(s);
@@ -376,7 +361,7 @@ var Tred = function () {
       return findTredRoot(node.parentNode);
   }
 
-  function toJson (node) {
+  function toTree (node) {
 
     node.focus();
       //
@@ -413,7 +398,7 @@ var Tred = function () {
       var e = divs[i];
       if (e.nodeType != 1) continue;
       if (e.className != "tred_expression") continue;
-      children.push(toJson(e));
+      children.push(toTree(e));
     }
     //children = children.join(", ");
 
@@ -429,14 +414,12 @@ var Tred = function () {
   //
   return {
     renderFlow: renderFlow,
-    toJson: toJson,
     onChange: onChange,
     addExpression: addExpression,
     removeExpression: removeExpression,
     triggerChange: triggerChange,
     moveExpression: moveExpression,
-    undo: undo,
-    treeToString: treeToString
+    undo: undo
   };
 }();
 

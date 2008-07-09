@@ -41,8 +41,8 @@ get "/" do
 
     var tout = document.getElementById("tred__out");
 
-    Tred.onChange = function (jsonTree) {
-      FluoCan.renderExpression('fluo', jsonTree);
+    Tred.onChange = function (tree) {
+      FluoCan.renderExpression('fluo', tree);
     }
   </script>
 </div>
