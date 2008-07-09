@@ -26,7 +26,7 @@ require 'rake/testtask'
 require 'rubygems'
 require 'jsmin' # sudo gem install jsmin
 
-JSs = [ "fluo-canvas.js", "fluo.js" ]
+JSs = [ "fluo.js" ]
 PJSs = JSs.collect { |e| "public/js/#{e}" }
 
 RUOTE_WEB = "../ruote-web"
