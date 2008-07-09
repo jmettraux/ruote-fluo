@@ -494,16 +494,18 @@ var FluoCan = function() {
     'concurrence': ConcurrenceHandler,
     'if': IfHandler,
     'set': TextHandler,
+    'unset': TextHandler,
+    'sleep': TextHandler,
     '_': GhostHandler
   };
 
-  function newCan (id, width, height) {
-    var can = document.createElement('canvas');
-    can.id = id;
-    can.setAttribute('width', width);
-    can.setAttribute('height', height);
-    return can;
-  }
+  //function newCan (id, width, height) {
+  //  var can = document.createElement('canvas');
+  //  can.id = id;
+  //  can.setAttribute('width', width);
+  //  can.setAttribute('height', height);
+  //  return can;
+  //}
 
   function renderExpression (context, exp) {
 
@@ -521,6 +523,11 @@ var FluoCan = function() {
     context.translate(c.canvas.width/2, 0);
 
     renderExp(context, exp, '0');
+
+    exp.width = getWidth(c, exp);
+    exp.height = getHeight(c, exp);
+
+    //alert(""+exp.width+" / "+exp.height);
 
     context.restore();
   }
@@ -550,17 +557,23 @@ var FluoCan = function() {
   }
 
   //
-  // returns the raw height of an expression
+  // returns the raw height of an expression (caches it too)
   //
   function getHeight (c, exp) {
-    return getHandler(exp).getHeight(c, exp);
+    if ((typeof exp) == 'string') return getHandler(exp).getHeight(c, exp);
+    if (exp.height) return exp.height;
+    exp.height = getHandler(exp).getHeight(c, exp);
+    return exp.height;
   }
 
   //
   // return the raw width of an expression
   //
   function getWidth (c, exp) {
-    return getHandler(exp).getWidth(c, exp);
+    if ((typeof exp) == 'string') return getHandler(exp).getWidth(c, exp);
+    if (exp.width) return exp.width;
+    exp.width = getHandler(exp).getWidth(c, exp);
+    return exp.width;
   }
 
   function getHandler (exp) {
@@ -572,7 +585,7 @@ var FluoCan = function() {
   }
 
   return {
-    newCan: newCan,
+    //newCan: newCan,
     renderExpression: renderExpression,
     //clear: clear,
     getHeight: getHeight,

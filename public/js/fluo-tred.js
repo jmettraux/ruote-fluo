@@ -7,7 +7,7 @@
  *  of a BSD-style license.
  *  For details, see the OpenWFEru web site: http://openwferu.rubyforge.org
  *
- *  This piece of hacked was created during the RubyKaigi2008,
+ *  This piece of hack was created during the RubyKaigi2008,
  *  between Tsukuba and Akihabara.
  */
 
@@ -121,7 +121,7 @@ var Tred = function () {
 
   function onChange (jsonTree) {
 
-    alert("please override me");
+    alert("Tred.onChange(jsonTree) : please override me");
   }
 
   function createButton (text, callback) {
