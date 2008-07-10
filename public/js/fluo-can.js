@@ -13,6 +13,12 @@
  *  Juan-Pedro Paredes
  */
 
+//function dlog (text) {
+//  if ( ! text) text = '';
+//  document.body.appendChild(document.createElement('br'));
+//  document.body.appendChild(document.createTextNode(' -  ' + text));
+//}
+
 var FluoCanvas = function() {
   
   //
@@ -25,7 +31,6 @@ var FluoCanvas = function() {
       c.translate(bwidth/2, bheight/2);
       c.rotate(Math.PI/2);
     }
-    c.mozTextStyle = "12px Helvetica";
     var width = c.mozMeasureText(text);
     c.translate(-(width/2), 17);
     c.mozDrawText(text);
@@ -507,29 +512,35 @@ var FluoCan = function() {
   //  return can;
   //}
 
-  function renderExpression (context, exp) {
+  function renderFlow (context, flow) {
 
     context = resolveContext(context);
     neutralizeContext(context);
 
+    context.canvas.flow = flow;
+
     context.save();
 
-    //context.clearRect(0, 0, c.canvas.width, c.canvas.height);
-    var fs = context.fillStyle;
-    context.fillStyle = 'rgb(255, 255, 255)';
-    context.fillRect(0, 0, c.canvas.width, c.canvas.height);
-    context.fillStyle = fs;
+    context.mozTextStyle = "12px Helvetica";
 
-    //context.translate(c.canvas.width/2, 0);
-    var w = getWidth(c, exp);
-    context.translate(w/2, 0); // aligning left
+    //var fs = context.fillStyle;
+    //context.fillStyle = 'rgb(255, 255, 255)';
+    //context.fillRect(0, 0, context.canvas.width, context.canvas.height);
+    //context.fillStyle = fs;
 
-    renderExp(context, exp, '0');
+    //context.translate(context.canvas.width/2, 0);
+    var w = getWidth(context, flow);
+    context.translate(w/2 + 1, 1); // aligning left
 
-    exp.width = getWidth(c, exp);
-    exp.height = getHeight(c, exp);
+    renderExp(context, flow, '0');
 
-    //alert(""+exp.width+" / "+exp.height);
+    //flow.width = getWidth(context, flow);
+    //flow.height = getHeight(context, flow);
+    getWidth(context, flow);
+    getHeight(context, flow);
+
+    //dlog(""+flow.width+" / "+flow.height);
+    //dlog(""+context.canvas.width+" / "+context.canvas.height+" (canvas)");
 
     context.restore();
   }
@@ -543,9 +554,27 @@ var FluoCan = function() {
   //  c.clearRect(0, 0, c.canvas.width, c.canvas.height);
   //}
 
+  function resolveCanvas (c) {
+    if (c.getContext != null) return c;
+    return document.getElementById(c);
+  }
+
   function resolveContext (c) {
     if (c.translate != null) return c;
-    return document.getElementById(c).getContext('2d');
+    return resolveCanvas(c).getContext('2d');
+  }
+
+  //
+  // replaces the canvas element with a new, cropped, one
+  //
+  function crop (canvas) {
+    canvas = resolveCanvas(canvas);
+    var nc = document.createElement("canvas");
+    nc.id = canvas.id;
+    nc.setAttribute('width', canvas.flow.width + 2);
+    nc.setAttribute('height', canvas.flow.height + 2);
+    renderFlow(nc, canvas.flow);
+    canvas.parentNode.replaceChild(nc, canvas);
   }
 
   function neutralizeContext (c) {
@@ -562,6 +591,7 @@ var FluoCan = function() {
   // returns the raw height of an expression (caches it too)
   //
   function getHeight (c, exp) {
+    //return getHandler(exp).getHeight(c, exp);
     if ((typeof exp) == 'string') return getHandler(exp).getHeight(c, exp);
     if (exp.height) return exp.height;
     exp.height = getHandler(exp).getHeight(c, exp);
@@ -572,6 +602,7 @@ var FluoCan = function() {
   // return the raw width of an expression
   //
   function getWidth (c, exp) {
+    //return getHandler(exp).getWidth(c, exp);
     if ((typeof exp) == 'string') return getHandler(exp).getWidth(c, exp);
     if (exp.width) return exp.width;
     exp.width = getHandler(exp).getWidth(c, exp);
@@ -587,10 +618,9 @@ var FluoCan = function() {
   }
 
   return {
-    //newCan: newCan,
-    renderExpression: renderExpression,
-    //clear: clear,
+    renderFlow: renderFlow,
     getHeight: getHeight,
-    getWidth: getWidth
+    getWidth: getWidth,
+    crop: crop,
   };
 }();

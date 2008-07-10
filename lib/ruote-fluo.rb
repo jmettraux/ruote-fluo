@@ -31,33 +31,33 @@ get "/" do
 #{render_menubar(['defs', 'undo'])}
 
 <div>
-<div style="float:left; width: 49%">
 
-  <div id="tred" style="margin-left: 10px; margin-top: 10px;">
+  <div style="float:left; width: 53%">
+
+    <div id="tred" style="margin-left: 10px; margin-top: 10px;"></div>
+
+    <script>
+      Tred.renderFlow(document.getElementById("tred"), #{@prep});
+      //var tout = document.getElementById("tred__out");
+      Tred.onChange = function (tree) {
+        FluoCan.renderFlow('fluo', tree);
+        FluoCan.crop('fluo');
+      };
+    </script>
   </div>
-  <script>
 
-    Tred.renderFlow(document.getElementById("tred"), #{@prep});
+  <div id="leftpane" style="float:left; width: 45%">
 
-    var tout = document.getElementById("tred__out");
+    <canvas id="fluo" width="200" height="200"></canvas>
 
-    Tred.onChange = function (tree) {
-      FluoCan.renderExpression('fluo', tree);
-    }
-  </script>
+    <script>
+      FluoCan.renderFlow('fluo', #{@prep});
+      FluoCan.crop('fluo');
+      //Fluo.tagExpressionsWithWorkitems('fluo', [ '#{@wi}' ]);
+    </script>
+  </div>
+
 </div>
-
-<div id="leftpane" style="float:left; width: 49%">
-
-  <canvas id="fluo" width="600" height="1000"></canvas>
-</div>
-</div>
-
-<script>
-  var c = document.getElementById('fluo').getContext("2d");
-  FluoCan.renderExpression(c, #{@prep});
-  //Fluo.tagExpressionsWithWorkitems('fluo', [ '#{@wi}' ]);
-</script>
 
 
 </body>
