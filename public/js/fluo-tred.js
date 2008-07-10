@@ -114,7 +114,7 @@ var Tred = function () {
   
   function toJson (tree) {
 
-    if ((typeof tree) == 'string') return tree;
+    if ((typeof tree) == 'string') return '"' + tree + '"';
     var attributes = tree[1];
     var children = tree[2];
     s = '["'+tree[0]+'",{';
