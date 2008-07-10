@@ -28,7 +28,32 @@ get "/" do
 
 <body>
 
-#{render_menubar(['defs', 'undo'])}
+  <script>
+    function undo () {
+      Tred.undo('tred'); 
+      return false;
+    }
+    function asXml () {
+      document.getElementById('definition_out_type').value = 'xml';
+      document.getElementById('definition_input').value = Tred.asJson('tred');
+      document.getElementById('definition_form').submit();
+      return false;
+    }
+    function asRuby () {
+      document.getElementById('definition_out_type').value = 'ruby';
+      document.getElementById('definition_input').value = Tred.asJson('tred');
+      document.getElementById('definition_form').submit();
+      return false;
+    }
+  </script>
+  <div class="menubar">
+    <div class="menubar_links">
+      <a class="menubar_link" href="/defs">defs</a>
+      <a class="menubar_link" href="#" onclick="return undo();">undo</a>
+      <a class="menubar_link" href="#" onclick="return asXml();">as xml</a>
+      <a class="menubar_link" href="#" onclick="return asRuby();">as ruby</a>
+    </div>
+  </div>
 
 <div>
 
@@ -59,6 +84,11 @@ get "/" do
 
 </div>
 
+<form id="definition_form" action="/def" method="POST">
+  <input id="definition_out_type" type="hidden" name="out_type" value="xml"></input>
+  <input id="definition_input" type="hidden" name="definition"></input>
+</form>
+
 
 </body>
 </html>
@@ -81,7 +111,14 @@ get "/defs" do
   <link href="/css/fluo-bench.css?nocache=#{Time.now.to_f}" rel="Stylesheet" type="text/css" />
 </head>
 <body>
-#{render_menubar}
+
+  <div class="menubar">
+    <div class="menubar_links">
+      <a class="menubar_link" href="/defs">defs</a>
+      <a class="menubar_link" href="#" onclick="Tred.undo('tred'); return false;">undo</a>
+    </div>
+  </div>
+
   <h3>the definitions under public/</h3>
   <div id="all_definitions">
     <ul>
@@ -93,24 +130,24 @@ get "/defs" do
   }
 end
 
-def render_menubar (menuitems=[])
-  items = menuitems.inject([]) do |r, item|
-    case item
-      when 'defs'
-        r << "<a class=\"menubar_link\" href=\"/defs\">defs</a>\n"
-      when 'undo'
-        r << "<a class=\"menubar_link\" href=\"#\" onclick=\"Tred.undo('tred'); return false;\">undo</a>\n"
-    end
-    r
+
+post "/def" do
+
+  json = params[:definition]
+  tree = JSON.parse json
+
+  header 'Content-Type' => "text/plain"
+
+  case params[:out_type]
+    when 'xml'
+      OpenWFE::ExpressionTree.to_xml(tree).to_s
+    when 'ruby'
+      OpenWFE::ExpressionTree.to_code_s(tree).to_s
+    else
+      json
   end
-  %{
-<div class="menubar">
-  <div class="menubar_links">
-    #{items.join}
-  </div>
-</div>
-  }
 end
+
 
 def prepare
 

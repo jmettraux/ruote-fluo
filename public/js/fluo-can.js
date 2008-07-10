@@ -266,7 +266,7 @@ var FluoCan = function() {
     drawAttributes(c, exp, true, attWidth, attHeight);
     c.restore();
     c.save();
-    c.translate(width/2 - childrenMax(c, exp, 'getWidth')/2 - 3, 5);
+    c.translate(width/2 - childrenMax(c, exp, 'getWidth')/2 - 7, 5);
     for (var i = 0; i < exp[2].length; i++) {
       var child = exp[2][i];
       renderExp(c, child, this.nextChildExpId(expid));
@@ -284,7 +284,7 @@ var FluoCan = function() {
   GenericWithChildrenHandler.getWidth = function (c, exp) {
     return(
       attributeMaxWidth(c, exp, exp[0]) + 
-      14 + 
+      28 + 
       childrenMax(c, exp, 'getWidth'));
   };
 

@@ -103,24 +103,33 @@ var EditableSpan = function() {
 }();
 
 var Tred = function () {
+
+  function asJson (node) {
+
+    if ((typeof node) == 'string') 
+      node = document.getElementById(node);
+
+    return toJson(toTree(node));
+  }
   
   function toJson (tree) {
+
     if ((typeof tree) == 'string') return tree;
     var attributes = tree[1];
     var children = tree[2];
-    s = "[ '"+tree[0]+"', {";
+    s = '["'+tree[0]+'",{';
     var atts = [];
     for (var attname in attributes) {
-      atts.push("'" + attname + "': '" + attributes[attname] + "'");
+      atts.push('"' + attname + '":"' + attributes[attname] + '"');
     }
-    s += atts.join(", ");
-    s += "}, [ ";
+    s += atts.join(",");
+    s += "},[";
     for (var i = 0; i < children.length; i++) {
       var child = children[i];
       s += toJson(child);
-      if (i < children.length - 1) s += ", ";
+      if (i < children.length - 1) s += ",";
     }
-    s += " ]]"
+    s += "]]"
     return s;
   }
 
@@ -419,7 +428,8 @@ var Tred = function () {
     removeExpression: removeExpression,
     triggerChange: triggerChange,
     moveExpression: moveExpression,
-    undo: undo
+    undo: undo,
+    asJson: asJson
   };
 }();
 
