@@ -21,6 +21,7 @@
 .tred_button {
   color: blue;
   cursor: pointer;
+  margin-left: 3px;
 }
 input {
   color: #888;

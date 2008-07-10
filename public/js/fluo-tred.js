@@ -138,14 +138,15 @@ var Tred = function () {
     alert("Tred.onChange(tree) : please override me");
   }
 
-  function createButton (text, callback) {
+  function createButton (imgsrc, tooltip, callback) {
 
-    var s = document.createElement("span");
-    s.callback = callback;
-    s.appendChild(document.createTextNode(text));
-    s.className = "tred_button";
-    s.setAttribute("onclick", "this.callback()");
-    return s;
+    var i = document.createElement("img");
+    i.callback = callback;
+    i.className = "tred_button";
+    i.setAttribute('src', imgsrc);
+    i.setAttribute('title', tooltip);
+    i.setAttribute("onclick", "this.callback()");
+    return i;
   }
 
   function renderAttributes (node, atts) {
@@ -185,7 +186,8 @@ var Tred = function () {
     atts = atts.join(', ');
     renderAttributes(opening, atts);
 
-    var outOpacity = 0.03;
+    //var outOpacity = 0.03;
+    var outOpacity = 0.0;
 
     var buttons = document.createElement("span");
     buttons.style.opacity = outOpacity;
@@ -194,28 +196,39 @@ var Tred = function () {
     opening.onmouseout = function () { buttons.style.opacity = outOpacity; }
 
     buttons.appendChild(createButton(
-      " +",
+      'images/btn-add.gif',
+      'add a child expression',
       function () {
         Tred.addExpression(opening.parentNode, [ "---", {}, [] ]);
       }));
     buttons.appendChild(createButton(
-      " -",
+      'images/btn-cut.gif',
+      'cut expression',
       function () {
         Tred.removeExpression(opening.parentNode);
       }));
 
     buttons.appendChild(createButton(
-      " u",
+      'images/btn-moveup.gif',
+      'move expression up',
       function () {
         Tred.moveExpression(opening.parentNode, -1);
         buttons.style.opacity = outOpacity;
       }));
 
     buttons.appendChild(createButton(
-      " d",
+      'images/btn-movedown.gif',
+      'move expression down',
       function () {
         Tred.moveExpression(opening.parentNode, +1);
         buttons.style.opacity = outOpacity;
+      }));
+
+    buttons.appendChild(createButton(
+      'images/btn-paste.gif',
+      'paste expression here',
+      function () {
+        alert('please implement me');
       }));
 
     opening.appendChild(buttons);
