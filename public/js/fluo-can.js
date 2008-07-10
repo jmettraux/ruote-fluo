@@ -523,10 +523,10 @@ var FluoCan = function() {
 
     context.mozTextStyle = "12px Helvetica";
 
-    //var fs = context.fillStyle;
-    //context.fillStyle = 'rgb(255, 255, 255)';
-    //context.fillRect(0, 0, context.canvas.width, context.canvas.height);
-    //context.fillStyle = fs;
+    var fs = context.fillStyle;
+    context.fillStyle = 'rgb(255, 255, 255)';
+    context.fillRect(0, 0, context.canvas.width, context.canvas.height);
+    context.fillStyle = fs;
 
     //context.translate(context.canvas.width/2, 0);
     var w = getWidth(context, flow);
