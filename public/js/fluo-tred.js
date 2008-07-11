@@ -28,81 +28,186 @@ HTMLElement.prototype.firstChildOfClass = function (className) {
 
   return null;
 }
-
-var EditableSpan = function() {
-  
-  function toInput (espan) {
-
-    var text = espan.firstChild.nodeValue;
-    var einput = document.createElement("input");
-    einput.className = espan.className;
-    einput.setAttribute('type', 'text');
-    einput.setAttribute('value', text);
-    einput.setAttribute('onkeyup', "return EditableSpan.onKey(event, this);");
-    einput.setAttribute('onblur', "EditableSpan.toSpan(this);");
-    espan.parentNode.replaceChild(einput, espan);
-    einput.focus();
-  }
-
-  function toSpan (einput) {
-
-    var espan = document.createElement("span");
-
-    var text = einput.value;
-
-    if (text == '---' || text == '') {
-      text = '---';
-      espan.style.opacity = 0.4;
-    }
-
-    espan.className = einput.className;
-    espan.appendChild(document.createTextNode(text));
-    espan.setAttribute("onclick", "EditableSpan.toInput(this);");
-    einput.parentNode.replaceChild(espan, einput);
-
-    Tred.triggerChange(espan);
-  }
-
-  function onKey (evt, einput) {
-
-    var e = evt || window.event;
-    var c = e.charCode || e.keyCode;
-
-    //if (c == 38) {
-    //  var ps = einput.parentNode.previousSibling;
-    //  einput.parentNode.parentNode.insertBefore(einput.parentNode, ps);
-    //}
-    //else if (c == 40) {
-    //  alert("down");
-    //}
-    //else 
-    if (c == 13) {
-
-      einput.blur();
-    }
-
-    return false;
-  }
-
-  function toEditableSpan (span) {
-
-    span.setAttribute('onclick', 'EditableSpan.toInput(this);');
-
-    if (span.firstChild.nodeValue == '') {
-      span.firstChild.nodeValue = '---';
-      span.style.opacity = 0.4;
-    }
-  }
-
-  return {
-    toInput: toInput,
-    onKey: onKey,
-    toSpan: toSpan,
-    toEditableSpan: toEditableSpan
-  };
-}();
+String.prototype.tstrip = function () {
+  var s = this;
+  while (s.charAt(0) == ' ') s = s.substring(1);
+  while (s.charAt(s.length - 1) == ' ') s = s.substring(0, s.length - 1);
+  return s;
+}
 
 var Tred = function () {
+
+  var ExpressionHead = function () {
+
+    function createButton (imgsrc, tooltip, callback) {
+
+      var i = document.createElement("img");
+      i.callback = callback;
+      i.className = "tred_button";
+      i.setAttribute('src', imgsrc);
+      i.setAttribute('title', tooltip);
+      i.setAttribute("onclick", "this.callback()");
+      return i;
+    }
+
+    function addHeadButtons (expdiv) {
+
+      var outOpacity = 0.0;
+
+      var buttons = document.createElement("span");
+      buttons.style.opacity = outOpacity;
+
+      expdiv.onmouseover = function () { buttons.style.opacity = 1.0; }
+      expdiv.onmouseout = function () { buttons.style.opacity = outOpacity; }
+
+      buttons.appendChild(createButton(
+        'images/btn-add.gif',
+        'add a child expression',
+        function () {
+          Tred.addExpression(expdiv.parentNode, [ "---", {}, [] ]);
+        }));
+      buttons.appendChild(createButton(
+        'images/btn-cut.gif',
+        'cut expression',
+        function () {
+          Tred.removeExpression(expdiv.parentNode);
+        }));
+
+      buttons.appendChild(createButton(
+        'images/btn-moveup.gif',
+        'move expression up',
+        function () {
+          Tred.moveExpression(expdiv.parentNode, -1);
+          buttons.style.opacity = outOpacity;
+        }));
+
+      buttons.appendChild(createButton(
+        'images/btn-movedown.gif',
+        'move expression down',
+        function () {
+          Tred.moveExpression(expdiv.parentNode, +1);
+          buttons.style.opacity = outOpacity;
+        }));
+
+      buttons.appendChild(createButton(
+        'images/btn-paste.gif',
+        'paste expression here',
+        function () {
+          alert('please implement me');
+        }));
+
+      expdiv.appendChild(buttons);
+    }
+
+    return {
+
+      render: function (exp) {
+
+        var expname = exp[0];
+
+        var text = '';
+        if ((typeof exp[2][0]) == 'string') text = exp[2].shift();
+
+        var atts = [];
+        for (key in exp[1]) { 
+          var skey = key.replace(/-/, '_');
+          var sval = exp[1][key];
+          if ((typeof sval) == 'string') sval = '"' + sval + '"';
+          atts.push("" + skey + ': ' + sval);
+        }
+        atts = atts.join(", ");
+
+        var d = document.createElement('div');
+
+        var sen = document.createElement('span');
+        sen.setAttribute('class', 'tred_exp_span tred_expression_name');
+        sen.appendChild(document.createTextNode(expname));
+        d.appendChild(sen);
+
+        var ses = document.createElement('span');
+        ses.setAttribute('class', 'tred_exp_span tred_expression_string');
+        var t = text;
+        if (t != '') t = ' ' + t;
+        ses.appendChild(document.createTextNode(t));
+        d.appendChild(ses);
+
+        var sea = document.createElement('span');
+        sea.setAttribute('class', 'tred_exp_span tred_expression_atts');
+        sea.appendChild(document.createTextNode(' ' + atts));
+        d.appendChild(sea);
+
+        addHeadButtons(d);
+
+        var onblur = function () {
+
+          var p = d.parentNode;
+          var d2 = ExpressionHead.render(ExpressionHead.parse(this.value));
+          p.replaceChild(d2, d);
+
+          triggerChange(p); // trigger onChange()...
+        };
+
+        var onkeyup = function (evt) {
+
+          var e = evt || window.event;
+          var c = e.charCode || e.keyCode;
+          if (c == 13) this.blur();
+
+          return false;
+        }
+
+        var onclick = function () {
+          d.removeChild(sen);
+          d.removeChild(ses);
+          var input = document.createElement('input');
+          input.setAttribute('type', 'text');
+          input.value = expname + ' ' + atts;
+          if (text != '') input.value = expname + ' ' + text + ' ' + atts;
+          d.replaceChild(input, sea);
+          input.onblur = onblur;
+          input.onkeyup = onkeyup;
+          input.focus();
+        };
+
+        sen.onclick = onclick;
+        ses.onclick = onclick;
+        sea.onclick = onclick;
+
+        return d;
+      },
+
+      parse: function (s) {
+
+        var m = s.match(/^(\S*)( [.]*[^:]*)?( .*)?$/);
+
+        if (m == null) return ['---', {}, []];
+
+        var expname = m[1];
+
+        var children = [];
+        if (m[2]) {
+          var t = m[2].tstrip();
+          if (t != '') children.push(t);
+        }
+
+        var atts = m[3];
+        atts = atts ? eval('({' + atts + '})') : {};
+
+        return [ expname, atts, children ];
+      },
+
+      toExp: function (node) {
+        node = node.firstChild;
+        var name = node.childNodes[0].firstChild.nodeValue;
+        var text = node.childNodes[1].firstChild.nodeValue;
+        var atts = node.childNodes[2].firstChild.nodeValue;
+        atts = eval('({' + atts + '})');
+        var children = [];
+        if (text != '') children.push(text);
+        return [ name, atts, children ];
+      }
+    };
+  }();
 
   function asJson (node) {
 
@@ -112,6 +217,9 @@ var Tred = function () {
     return toJson(toTree(node));
   }
   
+  //
+  // turns a tree into a JSON string.
+  //
   function toJson (tree) {
 
     if ((typeof tree) == 'string') return '"' + tree + '"';
@@ -138,100 +246,13 @@ var Tred = function () {
     alert("Tred.onChange(tree) : please override me");
   }
 
-  function createButton (imgsrc, tooltip, callback) {
-
-    var i = document.createElement("img");
-    i.callback = callback;
-    i.className = "tred_button";
-    i.setAttribute('src', imgsrc);
-    i.setAttribute('title', tooltip);
-    i.setAttribute("onclick", "this.callback()");
-    return i;
-  }
-
-  function renderAttributes (node, atts) {
-
-    var satts = document.createElement("span");
-    satts.appendChild(document.createTextNode(atts));
-    satts.className = "tred_expression_atts";
-
-    EditableSpan.toEditableSpan(satts);
-
-    node.appendChild(satts);
-  }
-
   function renderOpening (node, exp) {
 
-    var opening = document.createElement("div");
-
-    //
-    // expression name
-
-    var sname = document.createElement("span");
-    sname.appendChild(document.createTextNode(exp[0]));
-    sname.setAttribute("onclick", "EditableSpan.toInput(this);");
-    sname.className = "tred_expression_name";
-    opening.appendChild(sname);
-
-    //
-    // attributes
-
-    var atts = [];
-    for (key in exp[1]) { 
-      var skey = key.replace(/-/, '_');
-      atts.push("" + skey + ': "' + exp[1][key] + '"');
-    }
-
-    //atts = atts.substring(0, atts.length-2);
-    atts = atts.join(', ');
-    renderAttributes(opening, atts);
+    var opening = ExpressionHead.render(exp);
 
     //var outOpacity = 0.03;
     var outOpacity = 0.0;
 
-    var buttons = document.createElement("span");
-    buttons.style.opacity = outOpacity;
-
-    opening.onmouseover = function () { buttons.style.opacity = 1.0; }
-    opening.onmouseout = function () { buttons.style.opacity = outOpacity; }
-
-    buttons.appendChild(createButton(
-      'images/btn-add.gif',
-      'add a child expression',
-      function () {
-        Tred.addExpression(opening.parentNode, [ "---", {}, [] ]);
-      }));
-    buttons.appendChild(createButton(
-      'images/btn-cut.gif',
-      'cut expression',
-      function () {
-        Tred.removeExpression(opening.parentNode);
-      }));
-
-    buttons.appendChild(createButton(
-      'images/btn-moveup.gif',
-      'move expression up',
-      function () {
-        Tred.moveExpression(opening.parentNode, -1);
-        buttons.style.opacity = outOpacity;
-      }));
-
-    buttons.appendChild(createButton(
-      'images/btn-movedown.gif',
-      'move expression down',
-      function () {
-        Tred.moveExpression(opening.parentNode, +1);
-        buttons.style.opacity = outOpacity;
-      }));
-
-    buttons.appendChild(createButton(
-      'images/btn-paste.gif',
-      'paste expression here',
-      function () {
-        alert('please implement me');
-      }));
-
-    opening.appendChild(buttons);
 
     node.appendChild(opening);
   }
@@ -396,39 +417,34 @@ var Tred = function () {
     //
     // expression itself
 
-    //var spans = node.firstChild.getElementsByTagName("span");
+    /*
     var spans = node.getElementsByTagName("span");
-
-
     var expname = spans[0].firstChild.nodeValue;
-
     if (spans[0].className == 'tred_expression_string') return expname;
-
     var expatts = spans[1].firstChild.nodeValue;
-
     if (expatts == '---') expatts = '';
+    */
+    var exp = ExpressionHead.toExp(node);
 
     //
     // children
 
     var divs = node.childNodes;
-    var children = [];
-    //if (divs.length > 1) {
-    //  for (var i=1; i<divs.length-1; i++) children.push(toJson(divs[i]));
-    //}
+
+    var children = exp[2];
+
     for (var i=0; i<divs.length; i++) {
       var e = divs[i];
       if (e.nodeType != 1) continue;
       if (e.className != "tred_expression") continue;
       children.push(toTree(e));
     }
-    //children = children.join(", ");
 
     //
     // done
 
-    expatts = eval("({"+expatts+"})");
-    return [ expname, expatts, children ];
+    //expatts = eval("({"+expatts+"})");
+    return exp;
   }
 
   //
