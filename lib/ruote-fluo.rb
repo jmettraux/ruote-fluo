@@ -151,17 +151,16 @@ end
 
 def prepare
 
-  @pdef = request['pdef'] || 'pdef.rb'
+  pdef = request['pdef'] || 'pdef.rb'
 
-  xml = @pdef.match /\.xml$/
+  i = pdef.rindex('/')
+  pdef = pdef[i + 1..-1] if i
 
-  @pdef = File.open("public/#{@pdef}").readlines.join
+  pdef = File.open("public/#{pdef}").readlines.join
 
-  @prep = OpenWFE::DefParser.parse @pdef
+  @prep = OpenWFE::DefParser.parse(pdef)
   @prep = @prep.to_a.to_json
 
   @wi = request['wi']
-
-  @pdef = @pdef.gsub("<", "&lt;") if xml
 end
 
