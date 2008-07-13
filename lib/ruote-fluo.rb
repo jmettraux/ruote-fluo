@@ -140,7 +140,10 @@ post "/def" do
 
   case params[:out_type]
     when 'xml'
-      OpenWFE::ExpressionTree.to_xml(tree).to_s
+      s = ""
+      REXML::Formatters::Pretty.new.write(
+        OpenWFE::ExpressionTree.to_xml(tree), s)
+      s
     when 'ruby'
       OpenWFE::ExpressionTree.to_code_s(tree).to_s
     else
