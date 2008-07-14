@@ -6,3 +6,7 @@ John Mettraux (main dev)
 Jamandru Reynolds (icons)
 Juan-Pedro Paredes
 
+
+and also, thanks to
+the authors of http://www.JSON.org/json2.js
+

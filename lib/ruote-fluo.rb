@@ -19,6 +19,7 @@ get "/" do
   <script src="/js/fluo-can.js?nocache=#{Time.now.to_f}"></script>
   <script src="/js/fluo-dial.js?nocache=#{Time.now.to_f}"></script>
   <script src="/js/fluo-tred.js?nocache=#{Time.now.to_f}"></script>
+  <script src="/js/json2.js"></script>
 
   <link href="/css/fluo-bench.css?nocache=#{Time.now.to_f}" rel="Stylesheet" type="text/css" />
   <link href="/css/fluo-dial.css?nocache=#{Time.now.to_f}" rel="Stylesheet" type="text/css" />
