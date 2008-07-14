@@ -112,7 +112,8 @@ var Tred = function () {
         var atts = [];
         for (key in exp[1]) { 
           var skey = key.replace(/-/, '_');
-          var sval = JSON.stringify(exp[1][key]);
+          var sval = exp[1][key];
+          if ((typeof sval) == 'string') sval = '"' + sval + '"';
           atts.push("" + skey + ': ' + sval);
         }
         atts = atts.join(", ");
@@ -191,7 +192,7 @@ var Tred = function () {
         }
 
         var atts = m[3];
-        atts = atts ? JSON.parse('({' + atts + '})') : {};
+        atts = atts ? eval('({' + atts + '})') : {};
 
         return [ expname, atts, children ];
       },
@@ -201,7 +202,7 @@ var Tred = function () {
         var name = node.childNodes[0].firstChild.nodeValue;
         var text = node.childNodes[1].firstChild.nodeValue;
         var atts = node.childNodes[2].firstChild.nodeValue;
-        atts = JSON.parse('({' + atts + '})');
+        atts = eval('({' + atts + '})');
         var children = [];
         if (text != '') children.push(text);
         return [ name, atts, children ];
@@ -214,13 +215,12 @@ var Tred = function () {
     if ((typeof node) == 'string') 
       node = document.getElementById(node);
 
-    return JSON.stringify(toTree(node));
+    return toJson(toTree(node));
   }
   
   //
   // turns a tree into a JSON string.
   //
-  /*
   function toJson (tree) {
 
     if ((typeof tree) == 'string') return '"' + tree + '"';
@@ -241,7 +241,6 @@ var Tred = function () {
     s += "]]"
     return s;
   }
-  */
 
   function onChange (tree) {
 
@@ -447,6 +446,7 @@ var Tred = function () {
     //
     // done
 
+    //expatts = eval("({"+expatts+"})");
     return exp;
   }
 

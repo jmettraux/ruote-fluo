@@ -64,12 +64,3 @@ cp public/css/fluo.css #{RUOTE_WEB}/public/stylesheets/
 
 end
 
-#task :json_minify do
-#
-#  target = File.open "json2.js", "w"
-#
-#  File.open 'sjson2.js', "r" do |sourcefile|
-#    target.puts(JSMin.minify(sourcefile))
-#  end
-#end
-
