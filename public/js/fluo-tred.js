@@ -93,7 +93,8 @@ var Tred = function () {
         'images/btn-paste.gif',
         'paste expression here',
         function () {
-          alert('please implement me');
+          var clip = document._tred_clipboard;
+          if (clip) Tred.insertExpression(expdiv.parentNode, clip);
         }));
 
       expdiv.appendChild(buttons);
@@ -293,6 +294,8 @@ var Tred = function () {
     var p = expNode.parentNode;
     p.removeChild(expNode);
 
+    document._tred_clipboard = toTree(expNode);
+
     triggerChange(p);
   }
 
@@ -358,6 +361,15 @@ var Tred = function () {
     Tred.triggerChange(p); // onChange() points to the original version !
   }
 
+  function insertExpression (before, exp) {
+
+    var newNode = renderExpression(before.parentNode, exp);
+
+    before.parentNode.insertBefore(newNode, before);
+
+    Tred.triggerChange(before.parentNode);
+  }
+
   function triggerChange (elt) {
 
     var tredRoot = findTredRoot(elt);
@@ -371,15 +383,6 @@ var Tred = function () {
   function stack(root, tree) {
     root.stack.push(root.currentTree);
     root.currentTree = tree;
-    //while (root.stack.length > 35) root.stack.shift();
-    //var s = "";
-    //var st = toJson(tree);
-    //s += ("current: " + st + " (" + st.length + ")\n\n");
-    //for (var i = 0; i < root.stack.length; i++) {
-    //  st = toJson(root.stack[i]);
-    //  s += ("" + i + ": " + st + " (" + st.length + ")\n\n");
-    //}
-    //alert(s);
   }
 
   function undo (root) {
@@ -455,8 +458,9 @@ var Tred = function () {
     onChange: onChange,
     addExpression: addExpression,
     removeExpression: removeExpression,
-    triggerChange: triggerChange,
     moveExpression: moveExpression,
+    insertExpression: insertExpression,
+    triggerChange: triggerChange,
     undo: undo,
     asJson: asJson
   };
