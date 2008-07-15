@@ -109,14 +109,15 @@ var Tred = function () {
         var text = '';
         if ((typeof exp[2][0]) == 'string') text = exp[2].shift();
 
-        var atts = [];
-        for (key in exp[1]) { 
-          var skey = key.replace(/-/, '_');
-          var sval = exp[1][key];
-          if ((typeof sval) == 'string') sval = '"' + sval + '"';
-          atts.push("" + skey + ': ' + sval);
-        }
-        atts = atts.join(", ");
+        //var atts = [];
+        //for (key in exp[1]) { 
+        //  var skey = key.replace(/-/, '_');
+        //  var sval = fluoToJson(exp[1][key]);
+        //  atts.push("" + skey + ': ' + sval);
+        //}
+        //atts = atts.join(", ");
+        var atts = fluoToJson(exp[1]);
+        atts = atts.substring(1, atts.length - 1);
 
         var d = document.createElement('div');
 
@@ -192,7 +193,7 @@ var Tred = function () {
         }
 
         var atts = m[3];
-        atts = atts ? eval('({' + atts + '})') : {};
+        atts = atts ? fluoFromJson('({' + atts + '})') : {};
 
         return [ expname, atts, children ];
       },
@@ -202,7 +203,7 @@ var Tred = function () {
         var name = node.childNodes[0].firstChild.nodeValue;
         var text = node.childNodes[1].firstChild.nodeValue;
         var atts = node.childNodes[2].firstChild.nodeValue;
-        atts = eval('({' + atts + '})');
+        atts = fluoFromJson('({' + atts + '})');
         var children = [];
         if (text != '') children.push(text);
         return [ name, atts, children ];
@@ -215,9 +216,10 @@ var Tred = function () {
     if ((typeof node) == 'string') 
       node = document.getElementById(node);
 
-    return toJson(toTree(node));
+    return fluoToJson(toTree(node));
   }
   
+  /*
   //
   // turns a tree into a JSON string.
   //
@@ -241,6 +243,7 @@ var Tred = function () {
     s += "]]"
     return s;
   }
+  */
 
   function onChange (tree) {
 
@@ -446,7 +449,6 @@ var Tred = function () {
     //
     // done
 
-    //expatts = eval("({"+expatts+"})");
     return exp;
   }
 

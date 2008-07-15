@@ -160,7 +160,7 @@ var FluoCan = function() {
     var max = 0;
     if (title) max = c.mozMeasureText(title);
     for (var attname in exp[1]) {
-      var text = ""+attname+": "+exp[1][attname];
+      var text = ""+attname+": "+fluoToJson(exp[1][attname]);
       var l = c.mozMeasureText(text);
       if (l > max) max = l;
     }
@@ -192,7 +192,8 @@ var FluoCan = function() {
     var attname;
     var attnames = attributeNames(exp);
     while (attname = attnames.shift()) {
-      FluoCanvas.drawText(c, attname+": "+exp[1][attname], width, height);
+      FluoCanvas.drawText(
+        c, attname + ": " + fluoToJson(exp[1][attname]), width, height);
       if (c.fluoVertical == false) c.translate(-20, 0);
       else c.translate(0, 20);
     }
