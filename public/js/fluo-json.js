@@ -157,7 +157,7 @@ function fluoToJson (o, quotes) {
   var t = (typeof o);
   if (t == 'undefined') return 'null' // really ?
   if (t == 'string') return quotes ? '"' + o + '"' : o;
-  if (t == 'array') {
+  if (o.constructor.toString().indexOf(' Array()') == 8) {
     var a = [];
     for (var i = 0; i < o.length; i++) a.push(fluoToJson(o[i]));
     return '[' + a.join(', ') + ']';

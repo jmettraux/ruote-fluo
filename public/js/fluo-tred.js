@@ -423,13 +423,6 @@ var Tred = function () {
     //
     // expression itself
 
-    /*
-    var spans = node.getElementsByTagName("span");
-    var expname = spans[0].firstChild.nodeValue;
-    if (spans[0].className == 'tred_expression_string') return expname;
-    var expatts = spans[1].firstChild.nodeValue;
-    if (expatts == '---') expatts = '';
-    */
     var exp = ExpressionHead.toExp(node);
 
     //
