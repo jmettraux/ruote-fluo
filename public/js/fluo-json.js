@@ -151,20 +151,21 @@ var fluoFromJson = (function () {
 //
 // the following code is ruote-fluo code, under the BSD license.
 //
-function fluoToJson (o) {
+function fluoToJson (o, quotes) {
+  if (quotes != false) quotes = true;
   if (o == null) return 'null';
   var t = (typeof o);
   if (t == 'undefined') return 'null' // really ?
-  if (t == 'string') return '"' + o + '"';
+  if (t == 'string') return quotes ? '"' + o + '"' : o;
   if (t == 'array') {
     var a = [];
     for (var i = 0; i < o.length; i++) a.push(fluoToJson(o[i]));
-    return "[" + a.join(", ") + "]";
+    return '[' + a.join(', ') + ']';
   }
   if (t == 'object') {
     var a = [];
-    for (var key in o) a.push(fluoToJson(key) + ": " + fluoToJson(o[key]));
-    return "{" + a.join(", ") + "}";
+    for (var key in o) a.push(fluoToJson(key) + ': ' + fluoToJson(o[key]));
+    return '{' + a.join(', ') + '}';
   }
   return o.toString();
 }
