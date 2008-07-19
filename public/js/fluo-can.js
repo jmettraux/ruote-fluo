@@ -203,7 +203,10 @@ var FluoCan = function() {
   // the methods (and fields) shared by all handler are here
   //
   var Handler = {
-    childIndex: 0,
+    //childIndex: 0,
+    reset : function () {
+      this.childIndex = 0;
+    },
     nextChildExpId: function (expId) {
       this.childIndex++;
       return expId + "." + (this.childIndex - 1);
@@ -513,12 +516,16 @@ var FluoCan = function() {
   //  return can;
   //}
 
-  function renderFlow (context, flow) {
+  function renderFlow (context, flow, workitems, highlight) {
+
+    if ( ! workitems) workitems = [];
 
     context = resolveContext(context);
     neutralizeContext(context);
 
     context.canvas.flow = flow;
+    context.canvas.workitems = workitems;
+    context.canvas.highlight = highlight;
 
     context.save();
 
@@ -546,7 +553,25 @@ var FluoCan = function() {
     context.restore();
   }
 
+  function highlight (c, highlight) {
+    canvas = resolveCanvas(c);
+    renderFlow(canvas, canvas.flow, canvas.workitems, highlight);
+  }
+
   function renderExp (c, exp, expid) {
+
+    if (expid == c.canvas.highlight) { // highlight
+      var w = getWidth(c, exp); 
+      var h = getHeight(c, exp);
+      var t = 3;
+      c.save();
+      c.fillStyle = 'rgb(220, 220, 220)';
+      c.fillRect(-w/2, 0, w, h);
+      c.fillStyle = 'rgb(255, 255, 255)';
+      c.fillRect(-w/2 + t, 0 + t , w - 2 * t, h - 2 * t);
+      c.restore();
+    }
+
     getHandler(exp).render(c, exp, expid);
   }
 
@@ -574,7 +599,7 @@ var FluoCan = function() {
     nc.id = canvas.id;
     nc.setAttribute('width', canvas.flow.width + 2);
     nc.setAttribute('height', canvas.flow.height + 2);
-    renderFlow(nc, canvas.flow);
+    renderFlow(nc, canvas.flow, canvas.workitems, canvas.highlight);
     canvas.parentNode.replaceChild(nc, canvas);
   }
 
@@ -611,15 +636,22 @@ var FluoCan = function() {
   }
 
   function getHandler (exp) {
-    if ((typeof exp) == 'string') return StringHandler;
-    var h = HANDLERS[exp[0]];
-    if (h != null) return h;
-    if (exp[2].length > 0) return GenericWithChildrenHandler;
-    return GenericHandler;
+    var h = null;
+    if ((typeof exp) == 'string') {
+      h = StringHandler;
+    }
+    else {
+      h = HANDLERS[exp[0]];
+      if (h == null && exp[2].length > 0) h = GenericWithChildrenHandler;
+    }
+    if (h == null) h = GenericHandler;
+    h.reset();
+    return h;
   }
 
   return {
     renderFlow: renderFlow,
+    highlight: highlight,
     getHeight: getHeight,
     getWidth: getWidth,
     crop: crop,

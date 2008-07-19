@@ -7,7 +7,17 @@ require 'openwfe/expool/parser' # gem 'ruote'
 
 get "/" do
 
-  prepare
+  pdef = request['pdef'] || 'pdef.rb'
+
+  i = pdef.rindex('/')
+  pdef = pdef[i + 1..-1] if i
+
+  pdef = File.open("public/#{pdef}").readlines.join
+
+  prep = OpenWFE::DefParser.parse(pdef)
+  prep = prep.to_a.to_json
+
+  wi = request['wi']
 
   %{
 <html>
@@ -63,7 +73,7 @@ get "/" do
     <div id="tred" style="margin-left: 10px; margin-top: 10px;"></div>
 
     <script>
-      Tred.renderFlow(document.getElementById("tred"), #{@prep});
+      Tred.renderFlow(document.getElementById("tred"), #{prep});
       //var tout = document.getElementById("tred__out");
       Tred.onChange = function (tree) {
         FluoCan.renderFlow('fluo', tree);
@@ -77,9 +87,10 @@ get "/" do
     <canvas id="fluo" width="200" height="200"></canvas>
 
     <script>
-      FluoCan.renderFlow('fluo', #{@prep});
+      FluoCan.renderFlow('fluo', #{prep}, []);
       FluoCan.crop('fluo');
-      //Fluo.tagExpressionsWithWorkitems('fluo', [ '#{@wi}' ]);
+      //Fluo.tagExpressionsWithWorkitems('fluo', [ '#{wi}' ]);
+      //FluoCan.highlight('fluo', '0.0.1');
     </script>
   </div>
 
@@ -150,21 +161,5 @@ post "/def" do
     else
       json
   end
-end
-
-
-def prepare
-
-  pdef = request['pdef'] || 'pdef.rb'
-
-  i = pdef.rindex('/')
-  pdef = pdef[i + 1..-1] if i
-
-  pdef = File.open("public/#{pdef}").readlines.join
-
-  @prep = OpenWFE::DefParser.parse(pdef)
-  @prep = @prep.to_a.to_json
-
-  @wi = request['wi']
 end
 
