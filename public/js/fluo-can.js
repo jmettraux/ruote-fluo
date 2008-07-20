@@ -555,6 +555,7 @@ var FluoCan = function() {
 
   function highlight (c, highlight) {
     canvas = resolveCanvas(c);
+    //clear(canvas);
     renderFlow(canvas, canvas.flow, canvas.workitems, highlight);
   }
 
@@ -563,7 +564,7 @@ var FluoCan = function() {
     if (expid == c.canvas.highlight) { // highlight
       var w = getWidth(c, exp); 
       var h = getHeight(c, exp);
-      var t = 3;
+      var t = 7;
       c.save();
       c.fillStyle = 'rgb(220, 220, 220)';
       c.fillRect(-w/2, 0, w, h);
@@ -575,10 +576,12 @@ var FluoCan = function() {
     getHandler(exp).render(c, exp, expid);
   }
 
-  //function clear (c) {
-  //  c = resolveContext(c);
-  //  c.clearRect(0, 0, c.canvas.width, c.canvas.height);
-  //}
+  /*
+  function clear (c) {
+    c = resolveContext(c);
+    c.clearRect(0, 0, c.canvas.width, c.canvas.height);
+  }
+  */
 
   function resolveCanvas (c) {
     if (c.getContext != null) return c;

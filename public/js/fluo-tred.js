@@ -57,8 +57,14 @@ var Tred = function () {
       var buttons = document.createElement("span");
       buttons.style.opacity = outOpacity;
 
-      expdiv.onmouseover = function () { buttons.style.opacity = 1.0; }
-      expdiv.onmouseout = function () { buttons.style.opacity = outOpacity; }
+      expdiv.onmouseover = function () { 
+        buttons.style.opacity = 1.0; 
+        Tred.onOver(computeExpId(expdiv.parentNode));
+      };
+      expdiv.onmouseout = function () { 
+        buttons.style.opacity = outOpacity; 
+        Tred.onOver(null);
+      };
 
       buttons.appendChild(createButton(
         'images/btn-add.gif',
@@ -219,35 +225,14 @@ var Tred = function () {
     return fluoToJson(toTree(node));
   }
   
-  /*
-  //
-  // turns a tree into a JSON string.
-  //
-  function toJson (tree) {
-
-    if ((typeof tree) == 'string') return '"' + tree + '"';
-    var attributes = tree[1];
-    var children = tree[2];
-    s = '["'+tree[0]+'",{';
-    var atts = [];
-    for (var attname in attributes) {
-      atts.push('"' + attname + '":"' + attributes[attname] + '"');
-    }
-    s += atts.join(",");
-    s += "},[";
-    for (var i = 0; i < children.length; i++) {
-      var child = children[i];
-      s += toJson(child);
-      if (i < children.length - 1) s += ",";
-    }
-    s += "]]"
-    return s;
-  }
-  */
-
   function onChange (tree) {
 
     alert("Tred.onChange(tree) : please override me");
+  }
+
+  function onOver (expid) {
+
+    alert("Tred.onOver(expid) : please override me");
   }
 
   function renderOpening (node, exp) {
@@ -410,11 +395,34 @@ var Tred = function () {
       return findTredRoot(node.parentNode);
   }
 
+  function computeExpId (node, from, expid) {
+
+    if (from == null) {
+      from = findTredRoot(node);
+      expid = '';
+    }
+    if (from == node) return expid.substring(1, expid.length);
+
+    var divs = from.childNodes;
+    var childid = -1;
+
+    for (var i=0; i<divs.length; i++) {
+      var e = divs[i];
+      if (e.nodeType != 1) continue;
+      if (e.className != "tred_expression") continue;
+      childid += 1;
+      var ei = computeExpId(node, e, expid + "." + childid);
+      if (ei != null) return ei;
+    }
+
+    return null;
+  }
+
   function toTree (node) {
 
     node.focus();
       //
-      // making sure all the input boxes got blurred...
+      // making sure all the input boxes get blurred...
 
     if (node.className != 'tred_expression') {
       node = node.firstChildOfClass('tred_expression');
@@ -451,6 +459,7 @@ var Tred = function () {
   return {
     renderFlow: renderFlow,
     onChange: onChange,
+    onOver: onOver,
     addExpression: addExpression,
     removeExpression: removeExpression,
     moveExpression: moveExpression,

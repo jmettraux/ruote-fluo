@@ -79,6 +79,10 @@ get "/" do
         FluoCan.renderFlow('fluo', tree);
         FluoCan.crop('fluo');
       };
+      Tred.onOver = function (expid) {
+        //document.body.appendChild(document.createTextNode(" ei:"+expid));
+        FluoCan.highlight('fluo', expid);
+      };
     </script>
   </div>
 
