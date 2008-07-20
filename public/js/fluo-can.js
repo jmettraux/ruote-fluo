@@ -574,6 +574,21 @@ var FluoCan = function() {
     }
 
     getHandler(exp).render(c, exp, expid);
+
+    if (c.canvas.workitems.indexOf(expid) > -1) { // workitem
+      var w = getWidth(c, exp); 
+      var h = getHeight(c, exp);
+      var ww = c.mozMeasureText("workitem") + 10;
+      var hh = 16;
+      c.save();
+      c.fillStyle = '#F4D850';
+      c.fillRect(w/2 - ww, h - hh, ww, hh);
+      c.fillStyle = 'black';
+      c.strokeRect(w/2 - ww, h - hh, ww, hh);
+      c.translate(w/2 - ww + 5, h - 3);
+      c.mozDrawText("workitem");
+      c.restore();
+    }
   }
 
   /*

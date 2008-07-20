@@ -80,7 +80,6 @@ get "/" do
         FluoCan.crop('fluo');
       };
       Tred.onOver = function (expid) {
-        //document.body.appendChild(document.createTextNode(" ei:"+expid));
         FluoCan.highlight('fluo', expid);
       };
     </script>
@@ -91,9 +90,8 @@ get "/" do
     <canvas id="fluo" width="200" height="200"></canvas>
 
     <script>
-      FluoCan.renderFlow('fluo', #{prep}, []);
+      FluoCan.renderFlow('fluo', #{prep}, [ '#{wi}' ]);
       FluoCan.crop('fluo');
-      //Fluo.tagExpressionsWithWorkitems('fluo', [ '#{wi}' ]);
       //FluoCan.highlight('fluo', '0.0.1');
     </script>
   </div>
