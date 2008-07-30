@@ -18,6 +18,15 @@
 //  document.body.appendChild(document.createElement('br'));
 //  document.body.appendChild(document.createTextNode(' -  ' + text));
 //}
+//function dinspect (o) {
+//  var s = "[\n";
+//  for (var k in o) {
+//    s += ("" + k + ": " + o[k]);
+//    s += ",\n";
+//  }
+//  s += "]";
+//  return s;
+//}
 
 var FluoCanvas = function() {
   
@@ -202,16 +211,10 @@ var FluoCan = function() {
   //
   // the methods (and fields) shared by all handler are here
   //
-  var Handler = {
-    //childIndex: 0,
-    reset : function () {
-      this.childIndex = 0;
-    },
-    nextChildExpId: function (expId) {
-      this.childIndex++;
-      return expId + "." + (this.childIndex - 1);
-    }
-  }
+  var Handler = {};
+  Handler.getChildOffset = function (exp) {
+    return exp.childOffset || 0;
+  };
 
   //
   // creates a new Handler (a copy of Handler), if the parentHandler is
@@ -258,6 +261,7 @@ var FluoCan = function() {
     var height = this.getHeight(c, exp);
     var attWidth = attributeMaxWidth(c, exp, exp[0]) + 7;
     var attHeight = attributeCount(exp) * 20;
+    var o = this.getChildOffset(exp);
     if (c.fluoVertical == false) {
       var w = attWidth;
       attWidth = attHeight;
@@ -273,7 +277,7 @@ var FluoCan = function() {
     c.translate(width/2 - childrenMax(c, exp, 'getWidth')/2 - 7, 5);
     for (var i = 0; i < exp[2].length; i++) {
       var child = exp[2][i];
-      renderExp(c, child, this.nextChildExpId(expid));
+      renderExp(c, child, expid + "." + (o + i));
       c.translate(0, 7 + FluoCan.getHeight(c, child));
     }
     c.restore();
@@ -321,9 +325,10 @@ var FluoCan = function() {
   VerticalHandler.render = function (c, exp, expid) {
     c.save();
     var children = exp[2];
+    var o = this.getChildOffset(exp);
     for (var i = 0; i < children.length; i++) {
       var child = children[i];
-      renderExp(c, child, this.nextChildExpId(expid));
+      renderExp(c, child,  expid + "." + (o + i));
       c.translate(0, FluoCan.getHeight(c, child));
       if (i < children.length - 1) {
         FluoCanvas.drawArrow(c, 14);
@@ -343,6 +348,7 @@ var FluoCan = function() {
   HorizontalHandler.render = function (c, exp, expid) {
     var dist = this.computeDistribution(c, exp);
     var childrenHeight = this.getChildrenHeight(c, exp);
+    var o = this.getChildOffset(exp);
     this.renderHeader(c, exp, dist);
     c.save();
     c.translate(0, this.getHeaderHeight(c, exp));
@@ -350,7 +356,7 @@ var FluoCan = function() {
       var child = exp[2][i];
       c.save();
       c.translate(dist[i], 0);
-      this.renderChild(c, child, this.nextChildExpId(expid), childrenHeight);
+      this.renderChild(c, child, expid + '.' + (o + i), childrenHeight);
       c.restore();
     }
     c.restore();
@@ -458,15 +464,16 @@ var FluoCan = function() {
     // all the crazy legwork to adapt to the 'if' expression
     //
     if (exp.adjusted == true) return;
-    if (( ! exp[1]['test']) && ( ! exp[1]['not'])) {
+    if ( ! (exp[1]['test'] || exp[1]['not'])) {
       // ok, steal first exp
       var cond = exp[2][0];
       exp[1] = cond[1];
       exp[1]['condition'] = cond[0];
       exp[2] = [ exp[2][1], exp[2][2] ];
-      this.childIndex = 1; // making sure expids are not mismatching
+      exp.childOffset = 1;
     }
     if (exp[2].length == 1 || ( ! exp[2][1])) {
+      // adding a ghost expression...
       exp[2] = [ exp[2][0], [ '_', {}, [] ]];
     }
     exp.adjusted = true;
@@ -663,7 +670,6 @@ var FluoCan = function() {
       if (h == null && exp[2].length > 0) h = GenericWithChildrenHandler;
     }
     if (h == null) h = GenericHandler;
-    h.reset();
     return h;
   }
 
