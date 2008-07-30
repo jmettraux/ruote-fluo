@@ -205,13 +205,19 @@ var Tred = function () {
       },
 
       toExp: function (node) {
+
         node = node.firstChild;
+
         var name = node.childNodes[0].firstChild.nodeValue;
         var text = node.childNodes[1].firstChild.nodeValue;
         var atts = node.childNodes[2].firstChild.nodeValue;
+
         atts = fluoFromJson('({' + atts + '})');
+
         var children = [];
-        if (text != '') children.push(text);
+        if (text != '') children.push(text.tstrip()); 
+          // child is just a string...
+
         return [ name, atts, children ];
       }
     };

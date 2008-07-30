@@ -13,11 +13,6 @@
  *  Juan-Pedro Paredes
  */
 
-//function dlog (text) {
-//  if ( ! text) text = '';
-//  document.body.appendChild(document.createElement('br'));
-//  document.body.appendChild(document.createTextNode(' -  ' + text));
-//}
 //function dinspect (o) {
 //  var s = "[\n";
 //  for (var k in o) {

@@ -35,6 +35,15 @@ get "/" do
   <link href="/css/fluo-dial.css?nocache=#{Time.now.to_f}" rel="Stylesheet" type="text/css" />
   <link href="/css/fluo-tred.css?nocache=#{Time.now.to_f}" rel="Stylesheet" type="text/css" />
 
+  <script>
+    // a debugging function...
+    function dlog (text) {
+      if ( ! text) text = '';
+      document.body.appendChild(document.createElement('br'));
+      document.body.appendChild(document.createTextNode(' -  ' + text));
+    }
+  </script>
+
 </head>
 
 <body>
