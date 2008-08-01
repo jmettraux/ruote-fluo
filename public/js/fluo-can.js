@@ -264,12 +264,12 @@ var FluoCan = function() {
     }
     FluoCanvas.drawRoundedRect(c, width, height, 8);
     c.save();
-    c.translate(-width/2 + attWidth/2, 0);
+    c.translate(-width/2 + attWidth/2 + 7 , 7);
     if (c.fluoVertical == false) c.translate(attHeight/2, 0);
     drawAttributes(c, exp, true, attWidth, attHeight);
     c.restore();
     c.save();
-    c.translate(width/2 - childrenMax(c, exp, 'getWidth')/2 - 7, 5);
+    c.translate(width/2 - childrenMax(c, exp, 'getWidth')/2 - 7, 8);
     for (var i = 0; i < exp[2].length; i++) {
       var child = exp[2][i];
       renderExp(c, child, expid + "." + (o + i));
@@ -561,10 +561,10 @@ var FluoCan = function() {
     renderFlow(canvas, canvas.flow, canvas.workitems, highlight);
   }
 
-  function drawWorkitem (c) {
+  function drawWorkitem (c, exp) {
     var ww = c.mozMeasureText('wi');
     c.save();
-    c.translate(20, -10);
+    c.translate(20, -7);
     c.fillStyle = '#F4D850';
     c.moveTo(0, 0);
     c.beginPath();
@@ -601,19 +601,7 @@ var FluoCan = function() {
     getHandler(exp).render(c, exp, expid);
 
     if (c.canvas.workitems.indexOf(expid) > -1) { // workitem
-      //var w = getWidth(c, exp); 
-      //var h = getHeight(c, exp);
-      //var ww = c.mozMeasureText("workitem") + 10;
-      //var hh = 16;
-      //c.save();
-      //c.fillStyle = '#F4D850';
-      //c.fillRect(w/2 - ww, h - hh, ww, hh);
-      //c.fillStyle = 'black';
-      //c.strokeRect(w/2 - ww, h - hh, ww, hh);
-      //c.translate(w/2 - ww + 5, h - 3);
-      //c.mozDrawText("workitem");
-      //c.restore();
-      drawWorkitem(c);
+      drawWorkitem(c, exp);
     }
   }
 
