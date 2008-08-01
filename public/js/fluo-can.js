@@ -561,6 +561,29 @@ var FluoCan = function() {
     renderFlow(canvas, canvas.flow, canvas.workitems, highlight);
   }
 
+  function drawWorkitem (c) {
+    var ww = c.mozMeasureText('wi');
+    c.save();
+    c.translate(20, -10);
+    c.fillStyle = '#F4D850';
+    c.moveTo(0, 0);
+    c.beginPath();
+    c.arc(0, 0, 10, Math.PI, 0, false);
+    c.lineTo(0, 20);
+    c.lineTo(-10, 0);
+    c.fill();
+    c.fillStyle = 'black';
+    c.moveTo(0, 0);
+    c.beginPath();
+    c.arc(0, 0, 10, Math.PI, 0, false);
+    c.lineTo(0, 20);
+    c.lineTo(-10, 0);
+    c.stroke();
+    c.translate(-ww/2, 3);
+    c.mozDrawText('wi');
+    c.restore();
+  }
+
   function renderExp (c, exp, expid) {
 
     if (expid == c.canvas.highlight) { // highlight
@@ -578,18 +601,19 @@ var FluoCan = function() {
     getHandler(exp).render(c, exp, expid);
 
     if (c.canvas.workitems.indexOf(expid) > -1) { // workitem
-      var w = getWidth(c, exp); 
-      var h = getHeight(c, exp);
-      var ww = c.mozMeasureText("workitem") + 10;
-      var hh = 16;
-      c.save();
-      c.fillStyle = '#F4D850';
-      c.fillRect(w/2 - ww, h - hh, ww, hh);
-      c.fillStyle = 'black';
-      c.strokeRect(w/2 - ww, h - hh, ww, hh);
-      c.translate(w/2 - ww + 5, h - 3);
-      c.mozDrawText("workitem");
-      c.restore();
+      //var w = getWidth(c, exp); 
+      //var h = getHeight(c, exp);
+      //var ww = c.mozMeasureText("workitem") + 10;
+      //var hh = 16;
+      //c.save();
+      //c.fillStyle = '#F4D850';
+      //c.fillRect(w/2 - ww, h - hh, ww, hh);
+      //c.fillStyle = 'black';
+      //c.strokeRect(w/2 - ww, h - hh, ww, hh);
+      //c.translate(w/2 - ww + 5, h - 3);
+      //c.mozDrawText("workitem");
+      //c.restore();
+      drawWorkitem(c);
     }
   }
 
