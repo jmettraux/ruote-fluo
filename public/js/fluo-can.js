@@ -262,6 +262,8 @@ var FluoCan = function() {
     return 10 + attributeMaxWidth(c, exp, exp[0]);
   };
 
+  // TODO : fix rotated mode
+  //
   var GenericWithChildrenHandler = newHandler();
   GenericWithChildrenHandler.render = function (c, exp) {
     var width = this.getWidth(c, exp);
@@ -344,7 +346,7 @@ var FluoCan = function() {
     c.restore();
   };
   VerticalHandler.getHeight = function (c, exp) {
-    return (getChildren(c, exp).length - 1) * 20 + childrenSum(c, exp, 'getHeight');
+    return (getChildren(c, exp).length - 1) * 14 + childrenSum(c, exp, 'getHeight');
   };
   VerticalHandler.getWidth = function (c, exp) {
     return childrenMax(c, exp, 'getWidth');
@@ -546,11 +548,6 @@ var FluoCan = function() {
 
     context.save();
 
-    //flow.width = getWidth(context, flow);
-    //flow.height = getHeight(context, flow);
-    getWidth(context, flow);
-    getHeight(context, flow);
-
     if (context.canvas.fluoVertical == false) {
       context.translate(0, flow.width + 2);
       context.rotate(-Math.PI/2);
@@ -570,6 +567,11 @@ var FluoCan = function() {
     renderExp(context, flow, '0');
 
     context.restore();
+
+    //flow.width = getWidth(context, flow);
+    //flow.height = getHeight(context, flow);
+    getWidth(context, flow);
+    getHeight(context, flow);
   }
 
   function highlight (c, highlight) {
@@ -579,6 +581,7 @@ var FluoCan = function() {
   }
 
   function drawWorkitem (c, exp) {
+    // TODO : adapt in rotated mode
     var ww = c.mozMeasureText('wi');
     c.save();
     c.translate(20, -7);
