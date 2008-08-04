@@ -289,9 +289,8 @@ var Tred = function () {
     var p = expNode.parentNode;
     p.removeChild(expNode);
 
-    if (p.childNodes.length == 2) {
+    if (p.childNodes.length == 2)
       p.lastChild.removeChild(p.lastChild.firstChild);
-    }
 
     document._tred_clipboard = toTree(expNode);
 
@@ -305,14 +304,13 @@ var Tred = function () {
 
     var node = document.createElement('div');
     node.className = 'tred_expression';
-    if ( ! isRootExp) {
-      //node.setAttribute('style', 'margin-left: '+this.indentation+'px;');
+
+    if ( ! isRootExp)
       node.setAttribute('style', 'margin-left: 14px;');
-    }
+
     parentNode.appendChild(node);
 
     if ( ! (exp instanceof Array)) {
-
       renderExpressionString(node, exp.toString());
       return;
     }
@@ -322,12 +320,10 @@ var Tred = function () {
     //
     // draw children
 
-    for (var i=0; i < exp[2].length; i++) { 
+    for (var i=0; i < exp[2].length; i++) renderExpression(node, exp[2][i]);
 
-      var child = exp[2][i];
-
-      renderExpression(node, child);
-    }
+    //
+    // over
 
     renderEnding(node, exp);
 

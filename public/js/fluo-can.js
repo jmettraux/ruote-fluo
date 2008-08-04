@@ -471,13 +471,17 @@ var FluoCan = function() {
     if ( ! (exp[1]['test'] || exp[1]['not'])) {
       // ok, steal first exp
       var cond = exp[2].shift();
-      exp[1] = cond[1];
-      exp[1]['condition'] = cond[0];
+      if (cond) {
+        exp[1] = cond[1];
+        exp[1]['condition'] = cond[0];
+      }
     }
-    if (exp[2].length == 1 || ( ! exp[2][1])) {
-      // adding a ghost expression...
-      exp[2] = [ exp[2][0], [ '_', {}, [] ]];
-    }
+    //if (exp[2].length == 1 || ( ! exp[2][1])) {
+    //  // adding a ghost expression...
+    //  exp[2] = [ exp[2][0], [ '_', {}, [] ]];
+    //}
+    for (var i = 0; i < 2 - exp[2].length; i++) exp[2].push([ '_', {}, [] ]);
+      // adding ghost expressions
     exp.adjusted = true;
   };
   IfHandler.render = function (c, exp) {
