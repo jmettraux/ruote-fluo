@@ -65,13 +65,26 @@ get "/" do
       document.getElementById('definition_form').submit();
       return false;
     }
+    function toggleMinor () {
+      FluoCan.toggleMinor('fluo');
+      return false;
+    }
+    function rotate () {
+      alert("not yet implemented");
+      return false;
+    }
   </script>
+
   <div class="menubar">
-    <div class="menubar_links">
+    <div class="menubar_links" style="float: left;">
       <a class="menubar_link" href="/defs">defs</a>
       <a class="menubar_link" href="#" onclick="return undo();">undo</a>
       <a class="menubar_link" href="#" onclick="return asXml();">as xml</a>
       <a class="menubar_link" href="#" onclick="return asRuby();">as ruby</a>
+    </div>
+    <div class="menubar_links" style="float: right;">
+      <a class="menubar_link" href="#" onclick="return toggleMinor();">show/hide minor</a>
+      <a class="menubar_link" href="#" onclick="return rotate();">rotate</a>
     </div>
   </div>
 

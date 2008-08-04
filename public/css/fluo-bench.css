@@ -25,5 +25,6 @@ A:link.menubar_link,A:visited.menubar_link {
 .menubar_links {
   padding-top: 7px;
   padding-left: 28px;
+  padding-right: 28px;
 }
 
