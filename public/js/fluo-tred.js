@@ -20,12 +20,10 @@
 //]
 
 HTMLElement.prototype.firstChildOfClass = function (className) {
-  
   for (var i=0; i < this.childNodes.length; i++) {
     var c = this.childNodes[i];
     if (c.className == className) return c;
   }
-
   return null;
 }
 String.prototype.tstrip = function () {
@@ -54,7 +52,7 @@ var Tred = function () {
 
       var outOpacity = 0.0;
 
-      var buttons = document.createElement("span");
+      var buttons = document.createElement('span');
       buttons.style.opacity = outOpacity;
 
       expdiv.onmouseover = function () { 
@@ -70,7 +68,7 @@ var Tred = function () {
         'images/btn-add.gif',
         'add a child expression',
         function () {
-          Tred.addExpression(expdiv.parentNode, [ "---", {}, [] ]);
+          Tred.addExpression(expdiv.parentNode, [ '---', {}, [] ]);
         }));
       buttons.appendChild(createButton(
         'images/btn-cut.gif',
@@ -233,12 +231,12 @@ var Tred = function () {
   
   function onChange (tree) {
 
-    alert("Tred.onChange(tree) : please override me");
+    alert('Tred.onChange(tree) : please override me');
   }
 
   function onOver (expid) {
 
-    alert("Tred.onOver(expid) : please override me");
+    alert('Tred.onOver(expid) : please override me');
   }
 
   function renderOpening (node, exp) {
@@ -254,20 +252,20 @@ var Tred = function () {
 
   function renderEnding (node, exp) {
 
-    var ending = document.createElement("div");
-    ending.className = "tred_text";
-    if (exp[2].length > 0) ending.appendChild(document.createTextNode("end"));
+    var ending = document.createElement('div');
+    ending.className = 'tred_text';
+    if (exp[2].length > 0) ending.appendChild(document.createTextNode('end'));
     node.appendChild(ending);
   }
 
   function renderExpressionString (node, s) {
 
-    var opening = document.createElement("div");
+    var opening = document.createElement('div');
 
-    var sname = document.createElement("span");
+    var sname = document.createElement('span');
     sname.appendChild(document.createTextNode(s));
-    sname.setAttribute("onclick", "EditableSpan.toInput(this);");
-    sname.className = "tred_expression_string";
+    sname.setAttribute('onclick', 'EditableSpan.toInput(this);');
+    sname.className = 'tred_expression_string';
     opening.appendChild(sname);
 
     node.appendChild(opening);
@@ -280,6 +278,9 @@ var Tred = function () {
     parentExpNode.replaceChild(node, end);
     parentExpNode.appendChild(end);
 
+    if (end.childNodes.length == 0)
+      end.appendChild(document.createTextNode('end'));
+
     triggerChange(parentExpNode);
   }
 
@@ -287,6 +288,10 @@ var Tred = function () {
 
     var p = expNode.parentNode;
     p.removeChild(expNode);
+
+    if (p.childNodes.length == 2) {
+      p.lastChild.removeChild(p.lastChild.firstChild);
+    }
 
     document._tred_clipboard = toTree(expNode);
 
@@ -298,11 +303,11 @@ var Tred = function () {
     //
     // draw expression
 
-    var node = document.createElement("div");
-    node.className = "tred_expression";
+    var node = document.createElement('div');
+    node.className = 'tred_expression';
     if ( ! isRootExp) {
-      //node.setAttribute("style", "margin-left: "+this.indentation+"px;");
-      node.setAttribute("style", "margin-left: 14px;");
+      //node.setAttribute('style', 'margin-left: '+this.indentation+'px;');
+      node.setAttribute('style', 'margin-left: 14px;');
     }
     parentNode.appendChild(node);
 
@@ -333,7 +338,7 @@ var Tred = function () {
 
     renderExpression(parentNode, flow, true);
 
-    parentNode.className = "tred_root";
+    parentNode.className = 'tred_root';
 
     parentNode.stack = []; // the undo stack
     parentNode.currentTree = flow;
@@ -344,11 +349,11 @@ var Tred = function () {
     var p = elt.parentNode;
 
     if (delta == -1) { // move up
-      if (elt.previousSibling.className != "tred_expression") return;
+      if (elt.previousSibling.className != 'tred_expression') return;
       p.insertBefore(elt, elt.previousSibling);
     }
     else { // move down
-      if (elt.nextSibling.className != "tred_expression") return;
+      if (elt.nextSibling.className != 'tred_expression') return;
       p.insertBefore(elt, elt.nextSibling.nextSibling);
     }
 
@@ -415,9 +420,9 @@ var Tred = function () {
     for (var i=0; i<divs.length; i++) {
       var e = divs[i];
       if (e.nodeType != 1) continue;
-      if (e.className != "tred_expression") continue;
+      if (e.className != 'tred_expression') continue;
       childid += 1;
-      var ei = computeExpId(node, e, expid + "." + childid);
+      var ei = computeExpId(node, e, expid + '.' + childid);
       if (ei != null) return ei;
     }
 
@@ -449,7 +454,7 @@ var Tred = function () {
     for (var i=0; i<divs.length; i++) {
       var e = divs[i];
       if (e.nodeType != 1) continue;
-      if (e.className != "tred_expression") continue;
+      if (e.className != 'tred_expression') continue;
       children.push(toTree(e));
     }
 
