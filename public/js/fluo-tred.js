@@ -33,7 +33,7 @@ String.prototype.tstrip = function () {
   return s;
 }
 
-var Tred = function () {
+var FluoTred = function () {
 
   var ExpressionHead = function () {
 
@@ -57,31 +57,31 @@ var Tred = function () {
 
       expdiv.onmouseover = function () { 
         buttons.style.opacity = 1.0; 
-        Tred.onOver(computeExpId(expdiv.parentNode));
+        FluoTred.onOver(computeExpId(expdiv.parentNode));
       };
       expdiv.onmouseout = function () { 
         buttons.style.opacity = outOpacity; 
-        Tred.onOver(null);
+        FluoTred.onOver(null);
       };
 
       buttons.appendChild(createButton(
         'images/btn-add.gif',
         'add a child expression',
         function () {
-          Tred.addExpression(expdiv.parentNode, [ '---', {}, [] ]);
+          FluoTred.addExpression(expdiv.parentNode, [ '---', {}, [] ]);
         }));
       buttons.appendChild(createButton(
         'images/btn-cut.gif',
         'cut expression',
         function () {
-          Tred.removeExpression(expdiv.parentNode);
+          FluoTred.removeExpression(expdiv.parentNode);
         }));
 
       buttons.appendChild(createButton(
         'images/btn-moveup.gif',
         'move expression up',
         function () {
-          Tred.moveExpression(expdiv.parentNode, -1);
+          FluoTred.moveExpression(expdiv.parentNode, -1);
           buttons.style.opacity = outOpacity;
         }));
 
@@ -89,7 +89,7 @@ var Tred = function () {
         'images/btn-movedown.gif',
         'move expression down',
         function () {
-          Tred.moveExpression(expdiv.parentNode, +1);
+          FluoTred.moveExpression(expdiv.parentNode, +1);
           buttons.style.opacity = outOpacity;
         }));
 
@@ -98,7 +98,7 @@ var Tred = function () {
         'paste expression here',
         function () {
           var clip = document._tred_clipboard;
-          if (clip) Tred.insertExpression(expdiv.parentNode, clip);
+          if (clip) FluoTred.insertExpression(expdiv.parentNode, clip);
         }));
 
       expdiv.appendChild(buttons);
@@ -231,12 +231,12 @@ var Tred = function () {
   
   function onChange (tree) {
 
-    alert('Tred.onChange(tree) : please override me');
+    alert('FluoTred.onChange(tree) : please override me');
   }
 
   function onOver (expid) {
 
-    alert('Tred.onOver(expid) : please override me');
+    alert('FluoTred.onOver(expid) : please override me');
   }
 
   function renderOpening (node, exp) {
@@ -353,7 +353,7 @@ var Tred = function () {
       p.insertBefore(elt, elt.nextSibling.nextSibling);
     }
 
-    Tred.triggerChange(p); // onChange() points to the original version !
+    FluoTred.triggerChange(p); // onChange() points to the original version !
   }
 
   function insertExpression (before, exp) {
@@ -362,7 +362,7 @@ var Tred = function () {
 
     before.parentNode.insertBefore(newNode, before);
 
-    Tred.triggerChange(before.parentNode);
+    FluoTred.triggerChange(before.parentNode);
   }
 
   function triggerChange (elt) {
@@ -372,7 +372,7 @@ var Tred = function () {
 
     stack(tredRoot, tree);
 
-    Tred.onChange(tree); // onChange() points to the original version !
+    FluoTred.onChange(tree); // onChange() points to the original version !
   }
 
   function stack(root, tree) {
@@ -393,7 +393,7 @@ var Tred = function () {
     renderExpression(root, tree, true);
 
     //triggerChange(root);
-    Tred.onChange(tree);
+    FluoTred.onChange(tree);
   }
 
   function findTredRoot (node) {

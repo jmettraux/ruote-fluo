@@ -50,27 +50,29 @@ get "/" do
 
   <script>
     function undo () {
-      Tred.undo('tred'); 
+      FluoTred.undo('tred');
       return false;
     }
     function asXml () {
       document.getElementById('definition_out_type').value = 'xml';
-      document.getElementById('definition_input').value = Tred.asJson('tred');
+      document.getElementById('definition_input').value = FluoTred.asJson('tred');
       document.getElementById('definition_form').submit();
       return false;
     }
     function asRuby () {
       document.getElementById('definition_out_type').value = 'ruby';
-      document.getElementById('definition_input').value = Tred.asJson('tred');
+      document.getElementById('definition_input').value = FluoTred.asJson('tred');
       document.getElementById('definition_form').submit();
       return false;
     }
     function toggleMinor () {
       FluoCan.toggleMinor('fluo');
+      FluoCan.crop('fluo');
       return false;
     }
     function rotate () {
-      alert("not yet implemented");
+      FluoCan.toggleVertical('fluo');
+      FluoCan.crop('fluo');
       return false;
     }
   </script>
@@ -95,13 +97,13 @@ get "/" do
     <div id="tred" style="margin-left: 10px; margin-top: 10px;"></div>
 
     <script>
-      Tred.renderFlow(document.getElementById("tred"), #{prep});
+      FluoTred.renderFlow(document.getElementById("tred"), #{prep});
       //var tout = document.getElementById("tred__out");
-      Tred.onChange = function (tree) {
+      FluoTred.onChange = function (tree) {
         FluoCan.renderFlow('fluo', tree);
         FluoCan.crop('fluo');
       };
-      Tred.onOver = function (expid) {
+      FluoTred.onOver = function (expid) {
         FluoCan.highlight('fluo', expid);
       };
     </script>
@@ -151,7 +153,7 @@ get "/defs" do
   <div class="menubar">
     <div class="menubar_links">
       <a class="menubar_link" href="/defs">defs</a>
-      <a class="menubar_link" href="#" onclick="Tred.undo('tred'); return false;">undo</a>
+      <a class="menubar_link" href="#" onclick="FluoTred.undo('tred'); return false;">undo</a>
     </div>
   </div>
 
