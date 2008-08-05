@@ -536,8 +536,15 @@ var FluoCan = function() {
 
   function setOption (context, options, optname, defval) {
     var v = options[optname];
-    if (v) context.canvas[optname] = v;
-    if (defval && ! (context.canvas[optname])) context.canvas[optname] = defval;
+    if (v) {
+      context.canvas[optname] = v;
+    }
+    else if (optname in options) { // v is null
+      context.canvas[optname] = null;
+    }
+    else if (defval && ! (context.canvas[optname])) {
+      context.canvas[optname] = defval;
+    }
   }
 
   //function renderFlow (context, flow, workitems, highlight) {
