@@ -31,7 +31,7 @@ var FluoCanvas = function() {
   function drawText (c, text, bwidth, bheight) {
 
     c.save();
-    if (c.canvas.fluoVertical == false) {
+    if (c.canvas.horizontal == true) {
       c.translate(bwidth/2, bheight/2);
       c.rotate(Math.PI/2);
     }
@@ -191,7 +191,7 @@ var FluoCan = function() {
   function drawAttributes (c, exp, expname, width, height) {
     if (expname) {
       FluoCanvas.drawText(c, exp[0], width, height);
-      if (c.canvas.fluoVertical == false) c.translate(-20, 0);
+      if (c.canvas.horizontal == true) c.translate(-20, 0);
       else c.translate(0, 20);
     }
     //for (var attname in exp[1]) {
@@ -200,7 +200,7 @@ var FluoCan = function() {
     while (attname = attnames.shift()) {
       FluoCanvas.drawText(
         c, attname + ": " + fluoToJson(exp[1][attname], false), width, height);
-      if (c.canvas.fluoVertical == false) c.translate(-20, 0);
+      if (c.canvas.horizontal == true) c.translate(-20, 0);
       else c.translate(0, 20);
     }
   }
@@ -210,11 +210,11 @@ var FluoCan = function() {
   //
   var Handler = {};
   Handler.getHeight = function (c, exp) {
-    if (c.canvas.fluoVertical == false) return this.getRealWidth(c, exp);
+    if (c.canvas.horizontal == true) return this.getRealWidth(c, exp);
     return this.getRealHeight(c, exp);
   };
   Handler.getWidth = function (c, exp) {
-    if (c.canvas.fluoVertical == false) return this.getRealHeight(c, exp);
+    if (c.canvas.horizontal == true) return this.getRealHeight(c, exp);
     return this.getRealWidth(c, exp);
   };
 
@@ -272,7 +272,7 @@ var FluoCan = function() {
     var attWidth = attributeMaxWidth(c, exp, exp[0]) + 7;
     var attHeight = attributeCount(exp) * 20;
     var children = getChildren(c, exp);
-    if (c.canvas.fluoVertical == false) {
+    if (c.canvas.horizontal == true) {
       var w = attWidth;
       attWidth = attHeight;
       attHeight = w;
@@ -280,7 +280,7 @@ var FluoCan = function() {
     FluoCanvas.drawRoundedRect(c, width, height, 8);
     c.save();
     c.translate(-width/2 + attWidth/2 + 5 , 7);
-    if (c.canvas.fluoVertical == false) c.translate(attHeight/2, 0);
+    if (c.canvas.horizontal == true) c.translate(attHeight/2, 0);
     drawAttributes(c, exp, true, attWidth, attHeight);
     c.restore();
     c.save();
@@ -372,7 +372,7 @@ var FluoCan = function() {
     this.renderFooter(c, exp, dist, childrenHeight);
   };
   HorizontalHandler.getHeaderHeight = function (c, exp) {
-    if (c.canvas.fluoVertical == false) return 23 + attributeMaxWidth(c, exp);
+    if (c.canvas.horizontal == true) return 23 + attributeMaxWidth(c, exp);
     return 23 + attributeCount(exp) * 20;
   };
   HorizontalHandler.getChildrenHeight = function (c, exp) {
@@ -417,7 +417,7 @@ var FluoCan = function() {
   HorizontalHandler.renderHeaderLabel = function (c, exp) {
     var width = attributeMaxWidth(c, exp);
     var height = attributeCount(exp) * 20;
-    if (c.canvas.fluoVertical == false) {
+    if (c.canvas.horizontal == true) {
       var w = width;
       width = height;
       height = w;
@@ -534,22 +534,32 @@ var FluoCan = function() {
     }
   }
 
-  function renderFlow (context, flow, workitems, highlight) {
+  function setOption (context, options, optname, defval) {
+    var v = options[optname];
+    if (v) context.canvas[optname] = v;
+    if (defval && ! (context.canvas[optname])) context.canvas[optname] = defval;
+  }
+
+  //function renderFlow (context, flow, workitems, highlight) {
+  function renderFlow (context, flow, options) {
+
+    if ( ! options) options = {};
 
     identifyExpressions(flow);
-
-    if ( ! workitems) workitems = [];
 
     context = resolveContext(context);
     neutralizeContext(context);
 
     context.canvas.flow = flow;
-    context.canvas.workitems = workitems;
-    context.canvas.highlight = highlight;
+
+    setOption(context, options, 'workitems', []);
+    setOption(context, options, 'highlight');
+    setOption(context, options, 'hideMinor');
+    setOption(context, options, 'horizontal');
 
     context.save();
 
-    if (context.canvas.fluoVertical == false) {
+    if (context.canvas.horizontal == true) {
       context.translate(0, flow.width + 2);
       context.rotate(-Math.PI/2);
     }
@@ -565,7 +575,7 @@ var FluoCan = function() {
     var w = getWidth(context, flow);
     context.translate(w/2 + 1, 1); // aligning left
 
-    renderExp(context, flow, '0');
+    renderExp(context, flow);
 
     context.restore();
 
@@ -578,15 +588,16 @@ var FluoCan = function() {
   function highlight (c, highlight) {
     canvas = resolveCanvas(c);
     //clear(canvas);
-    renderFlow(canvas, canvas.flow, canvas.workitems, highlight);
+    //renderFlow(canvas, canvas.flow, canvas.workitems, highlight);
+    renderFlow(canvas, canvas.flow, {'highlight': highlight});
   }
 
   function drawWorkitem (c, exp) {
     var ww = c.mozMeasureText('wi');
     c.save();
-    if (c.canvas.fluoVertical == false) {
+    if (c.canvas.horizontal == true) {
       c.rotate(Math.PI/2);
-      c.translate(5, -28);
+      c.translate(5, -14);
     }
     else {
       c.translate(20, -7);
@@ -661,7 +672,7 @@ var FluoCan = function() {
     var w = canvas.flow.width + 2;
     var h = canvas.flow.height + 2;
 
-    if (canvas.fluoVertical == false) {
+    if (canvas.horizontal == true) {
       var x = w; w = h; h = x; 
     }
 
@@ -669,9 +680,11 @@ var FluoCan = function() {
     nc.setAttribute('height', h);
 
     nc.hideMinor = canvas.hideMinor;
-    nc.fluoVertical = canvas.fluoVertical;
+    nc.horizontal = canvas.horizontal;
+    nc.workitems = canvas.workitems;
 
-    renderFlow(nc, canvas.flow, canvas.workitems, canvas.highlight);
+    //renderFlow(nc, canvas.flow, canvas.workitems, canvas.highlight);
+    renderFlow(nc, canvas.flow);
     canvas.parentNode.replaceChild(nc, canvas);
   }
 
@@ -729,15 +742,16 @@ var FluoCan = function() {
     canvas = resolveCanvas(canvas);
     canvas.hideMinor = ! canvas.hideMinor;
     clearExpWidthCache(canvas.flow);
-    renderFlow(canvas, canvas.flow, canvas.workitems, canvas.highlight);
+    //renderFlow(canvas, canvas.flow, canvas.workitems, canvas.highlight);
+    renderFlow(canvas, canvas.flow);
   }
 
   function toggleVertical (canvas) {
     canvas = resolveCanvas(canvas);
-    if (canvas.fluoVertical == null) canvas.fluoVertical = true;
-    canvas.fluoVertical = ! canvas.fluoVertical;
+    canvas.horizontal = ! canvas.horizontal;
     clearExpWidthCache(canvas.flow);
-    renderFlow(canvas, canvas.flow, canvas.workitems, canvas.highlight);
+    //renderFlow(canvas, canvas.flow, canvas.workitems, canvas.highlight);
+    renderFlow(canvas, canvas.flow);
   }
 
   return {

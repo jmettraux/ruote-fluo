@@ -114,7 +114,7 @@ get "/" do
     <canvas id="fluo" width="200" height="200"></canvas>
 
     <script>
-      FluoCan.renderFlow('fluo', #{prep}, [ '#{wi}' ]);
+      FluoCan.renderFlow('fluo', #{prep}, {'workitems': [ '#{wi}' ]});
       FluoCan.crop('fluo');
       //FluoCan.highlight('fluo', '0.0.1');
     </script>
