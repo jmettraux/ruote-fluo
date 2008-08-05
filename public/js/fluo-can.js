@@ -247,6 +247,11 @@ var FluoCan = function() {
   // EXPRESSION HANDLERS
 
   var GenericHandler = newHandler();
+  GenericHandler.adjust = function (exp) {
+    if (exp[2].length == 1 && ((typeof exp[2][0]) == 'string')) {
+      exp[0] = exp[0] + ' ' + exp[2][0];
+    }
+  }
   GenericHandler.render = function (c, exp) {
     var width = this.getWidth(c, exp);
     var height = this.getHeight(c, exp);
@@ -297,7 +302,6 @@ var FluoCan = function() {
   };
 
   // TODO : fix rotated mode
-  // TODO : if there 1! child, delegate to GenericHandler
   //
   var GenericWithChildrenHandler = newHandler();
   GenericWithChildrenHandler.render = function (c, exp) {
@@ -772,19 +776,13 @@ var FluoCan = function() {
   }
 
   function getHandler (c, exp) {
-    var h = null;
-    if ((typeof exp) == 'string') {
-      h = StringHandler;
-    }
-    else {
-      h = HANDLERS[exp[0]];
-      if (h == null && exp[2].length > 0) h = GenericWithChildrenHandler;
-    }
-    if (h == null && isSubprocessName(c.canvas.flow, exp[0])) {
-      h = SubprocessHandler;
-    }
-    if (h == null) h = GenericHandler;
-    return h;
+    if ((typeof exp) == 'string') return StringHandler;
+    var h = HANDLERS[exp[0]];
+    if (h) return h;
+    if (exp[2].length == 1 && ((typeof exp[2][0]) == 'string')) return GenericHandler;
+    if (exp[2].length > 0) return GenericWithChildrenHandler;
+    if (isSubprocessName(c.canvas.flow, exp[0])) return SubprocessHandler;
+    return GenericHandler;
   }
 
   function clearDimCache (exp) {
