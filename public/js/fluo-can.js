@@ -263,6 +263,7 @@ var FluoCan = function() {
   };
 
   // TODO : fix rotated mode
+  // TODO : if there 1! child, delegate to GenericHandler
   //
   var GenericWithChildrenHandler = newHandler();
   GenericWithChildrenHandler.render = function (c, exp) {
@@ -581,10 +582,15 @@ var FluoCan = function() {
   }
 
   function drawWorkitem (c, exp) {
-    // TODO : adapt in rotated mode
     var ww = c.mozMeasureText('wi');
     c.save();
-    c.translate(20, -7);
+    if (c.canvas.fluoVertical == false) {
+      c.rotate(Math.PI/2);
+      c.translate(5, -28);
+    }
+    else {
+      c.translate(20, -7);
+    }
     c.fillStyle = '#F4D850';
     c.moveTo(0, 0);
     c.beginPath();
