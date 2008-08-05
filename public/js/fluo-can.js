@@ -262,6 +262,40 @@ var FluoCan = function() {
     return 10 + attributeMaxWidth(c, exp, exp[0]);
   };
 
+  var SubprocessHandler = newHandler(GenericHandler);
+  SubprocessHandler.adjust = function (exp) {
+    if (exp[2].length == 1) exp[1]['ref'] = exp[2][0];
+  }
+  SubprocessHandler.render = function (c, exp) {
+
+    var width = this.getWidth(c, exp);
+    var height = this.getHeight(c, exp);
+    FluoCanvas.drawRoundedRect(c, width, height, 8);
+    c.save();
+    drawAttributes(c, exp, true, width, height);
+    c.restore();
+
+    c.save(); // drawing a cross in a box
+    c.beginPath();
+    c.moveTo(-6, height);
+    c.lineTo(-6, height - 12);
+    c.lineTo(6, height - 12);
+    c.lineTo(6, height);
+    c.stroke();
+    c.beginPath();
+    c.moveTo(0, height - 10);
+    c.lineTo(0, height - 2);
+    c.stroke();
+    c.beginPath();
+    c.moveTo(-4, height - 6);
+    c.lineTo(4, height - 6);
+    c.stroke();
+    c.restore();
+  };
+  SubprocessHandler.getRealHeight = function (c, exp) {
+    return 12 + 7 + (1 + attributeCount(exp)) * 20;
+  };
+
   // TODO : fix rotated mode
   // TODO : if there 1! child, delegate to GenericHandler
   //
@@ -466,11 +500,10 @@ var FluoCan = function() {
   };
 
   var IfHandler = newHandler(HorizontalHandler);
-  IfHandler.adjustExp = function (exp) {
+  IfHandler.adjust = function (exp) {
     //
     // all the crazy legwork to adapt to the 'if' expression
     //
-    if (exp.adjusted == true) return;
     if ( ! (exp[1]['test'] || exp[1]['not'])) {
       // ok, steal first exp
       var cond = exp[2].shift();
@@ -481,19 +514,6 @@ var FluoCan = function() {
     }
     for (var i = 0; i < 2 - exp[2].length; i++) exp[2].push([ '_', {}, [] ]);
       // adding ghost expressions
-    exp.adjusted = true;
-  };
-  IfHandler.render = function (c, exp) {
-    this.adjustExp(exp);
-    HorizontalHandler.render(c, exp);
-  };
-  IfHandler.getHeight = function (c, exp) {
-    this.adjustExp(exp);
-    return HorizontalHandler.getHeight(c, exp);
-  };
-  IfHandler.getWidth = function (c, exp) {
-    this.adjustExp(exp);
-    return HorizontalHandler.getWidth(c, exp);
   };
 
   //
@@ -517,11 +537,16 @@ var FluoCan = function() {
     'set': TextHandler,
     'unset': TextHandler,
     'sleep': TextHandler,
+    'subprocess': SubprocessHandler,
     '_': GhostHandler
   };
 
   var MINORS = [
     'set', 'set-fields', 'unset', 'description'
+  ];
+
+  var DEFINERS = [ 
+    'process-definition', 'workflow-definition', 'define'
   ];
 
   function identifyExpressions (exp, expid) {
@@ -630,6 +655,13 @@ var FluoCan = function() {
 
   function renderExp (c, exp) {
 
+    var handler = getHandler(c, exp);
+
+    if (handler.adjust && ! exp.adjusted) { 
+      handler.adjust(exp);
+      exp.adjusted = true;
+    }
+
     if (c.canvas.highlight && exp.expid == c.canvas.highlight) { // highlight
       var w = getWidth(c, exp); 
       var h = getHeight(c, exp);
@@ -642,7 +674,7 @@ var FluoCan = function() {
       c.restore();
     }
 
-    getHandler(exp).render(c, exp);
+    handler.render(c, exp);
 
     if (c.canvas.workitems.indexOf(exp.expid) > -1) { // workitem
       drawWorkitem(c, exp);
@@ -658,6 +690,7 @@ var FluoCan = function() {
 
   function resolveCanvas (c) {
     if (c.getContext != null) return c;
+    if (c.canvas != null) return c.canvas;
     return document.getElementById(c);
   }
 
@@ -705,13 +738,24 @@ var FluoCan = function() {
     };
   }
 
+  function isSubprocessName (exp, name) {
+    if ((typeof exp) == 'string') return false;
+    if (DEFINERS.indexOf(exp[0]) > -1 && exp[1]['name'] == name) return true;
+    for (var i = 0; i < exp[2].length; i++) {
+      if (isSubprocessName(exp[2][i], name)) return true;
+    }
+    return false;
+  }
+
   //
   // returns the raw height of an expression (caches it too)
   //
   function getHeight (c, exp) {
-    if ((typeof exp) == 'string') return getHandler(exp).getHeight(c, exp);
+    if ((typeof exp) == 'string') return getHandler(c, exp).getHeight(c, exp);
     if (exp.height) return exp.height;
-    exp.height = getHandler(exp).getHeight(c, exp);
+    var h = getHandler(c, exp);
+    if (h.adjust && ! exp.adjusted) { h.adjust(exp); exp.adjusted = true; }
+    exp.height = h.getHeight(c, exp);
     return exp.height;
   }
 
@@ -719,13 +763,15 @@ var FluoCan = function() {
   // return the raw width of an expression
   //
   function getWidth (c, exp) {
-    if ((typeof exp) == 'string') return getHandler(exp).getWidth(c, exp);
+    if ((typeof exp) == 'string') return getHandler(c, exp).getWidth(c, exp);
     if (exp.width) return exp.width;
-    exp.width = getHandler(exp).getWidth(c, exp);
+    var h = getHandler(c, exp);
+    if (h.adjust && ! exp.adjusted) { h.adjust(exp); exp.adjusted = true; }
+    exp.width = h.getWidth(c, exp);
     return exp.width;
   }
 
-  function getHandler (exp) {
+  function getHandler (c, exp) {
     var h = null;
     if ((typeof exp) == 'string') {
       h = StringHandler;
@@ -734,30 +780,31 @@ var FluoCan = function() {
       h = HANDLERS[exp[0]];
       if (h == null && exp[2].length > 0) h = GenericWithChildrenHandler;
     }
+    if (h == null && isSubprocessName(c.canvas.flow, exp[0])) {
+      h = SubprocessHandler;
+    }
     if (h == null) h = GenericHandler;
     return h;
   }
 
-  function clearExpWidthCache (exp) {
+  function clearDimCache (exp) {
     if ((typeof exp) == 'string') return;
     exp.width = null;
     exp.height = null;
-    for (var i = 0; i < exp[2].length; i++) clearExpWidthCache(exp[2][i]);
+    for (var i = 0; i < exp[2].length; i++) clearDimCache(exp[2][i]);
   }
 
   function toggleMinor (canvas) {
     canvas = resolveCanvas(canvas);
     canvas.hideMinor = ! canvas.hideMinor;
-    clearExpWidthCache(canvas.flow);
-    //renderFlow(canvas, canvas.flow, canvas.workitems, canvas.highlight);
+    clearDimCache(canvas.flow);
     renderFlow(canvas, canvas.flow);
   }
 
   function toggleVertical (canvas) {
     canvas = resolveCanvas(canvas);
     canvas.horizontal = ! canvas.horizontal;
-    clearExpWidthCache(canvas.flow);
-    //renderFlow(canvas, canvas.flow, canvas.workitems, canvas.highlight);
+    clearDimCache(canvas.flow);
     renderFlow(canvas, canvas.flow);
   }
 
