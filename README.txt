@@ -5,6 +5,9 @@ http://openwferu.rubyforge.org
 
 This is the development bench of the javascript library used to render graphically process definitions in OpenWFEru "ruote-web" (see http://difference.openwfe.org:3000)
 
+There is a demo of ruote-fluo (probably not the latest version) at http://difference.org:4567
+
+
 == using
 
   sudo gem install -y --no-rdoc --no-ri -v 0.2.2 sinatra
