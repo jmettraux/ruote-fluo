@@ -1,11 +1,11 @@
 
-require 'rubygems'
-require 'sinatra'
 require 'json' # gem 'json_pure'
 require 'openwfe/expool/parser' # gem 'ruote'
 
+include Rufus::Sixjo
 
-get "/" do
+
+get '/' do
 
   pdef = request['pdef'] || 'pdef.rb'
 

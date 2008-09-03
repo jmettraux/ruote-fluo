@@ -10,7 +10,7 @@ There is a demo of ruote-fluo (probably not the latest version) at http://differ
 
 == using
 
-  sudo gem install -y --no-rdoc --no-ri -v 0.2.2 sinatra
+  sudo gem install -y --no-rdoc --no-ri rufus-sixjo
   sudo gem install -y --no-rdoc --no-ri json_pure ruote
 
   git clone git://github.com/jmettraux/ruote-fluo.git
