@@ -24,6 +24,7 @@ puts ".. [#{Time.now}] ruote-rest listening on port #{port}"
 Rack::Handler::Mongrel.run(b, :Port => port) do |server|
   trap(:INT) do
     puts ".. [#{Time.now}] stopped."
+    server.stop
   end
 end
 
