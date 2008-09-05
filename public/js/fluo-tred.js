@@ -35,6 +35,13 @@ String.prototype.tstrip = function () {
 
 var FluoTred = function () {
 
+  //
+  // it's easy to override this var to let FluoTred point to another root
+  //
+  //     FluoTred.imageRoot = 'http://my.image.server.exmaple.com/img'
+  //
+  var imageRoot = '/images';
+
   var ExpressionHead = function () {
 
     function createButton (imgsrc, tooltip, callback) {
@@ -65,20 +72,20 @@ var FluoTred = function () {
       };
 
       buttons.appendChild(createButton(
-        'images/btn-add.gif',
+        FluoTred.imageRoot+'/btn-add.gif',
         'add a child expression',
         function () {
           FluoTred.addExpression(expdiv.parentNode, [ '---', {}, [] ]);
         }));
       buttons.appendChild(createButton(
-        'images/btn-cut.gif',
+        FluoTred.imageRoot+'/btn-cut.gif',
         'cut expression',
         function () {
           FluoTred.removeExpression(expdiv.parentNode);
         }));
 
       buttons.appendChild(createButton(
-        'images/btn-moveup.gif',
+        FluoTred.imageRoot+'/btn-moveup.gif',
         'move expression up',
         function () {
           FluoTred.moveExpression(expdiv.parentNode, -1);
@@ -86,7 +93,7 @@ var FluoTred = function () {
         }));
 
       buttons.appendChild(createButton(
-        'images/btn-movedown.gif',
+        FluoTred.imageRoot+'/btn-movedown.gif',
         'move expression down',
         function () {
           FluoTred.moveExpression(expdiv.parentNode, +1);
@@ -94,7 +101,7 @@ var FluoTred = function () {
         }));
 
       buttons.appendChild(createButton(
-        'images/btn-paste.gif',
+        FluoTred.imageRoot+'/btn-paste.gif',
         'paste expression here',
         function () {
           var clip = document._tred_clipboard;
@@ -473,7 +480,8 @@ var FluoTred = function () {
     insertExpression: insertExpression,
     triggerChange: triggerChange,
     undo: undo,
-    asJson: asJson
+    asJson: asJson,
+    imageRoot: imageRoot
   };
 }();
 

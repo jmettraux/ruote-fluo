@@ -1,12 +1,15 @@
 
 = ruote-fluo  CHANGELOG.txt
 
-todo  #21423 : implemented show/hide minor expressions
-bug   #21309 : "if" broken highlighting. Fixed.
-todo  #20079 : differentiated 'cursor' and 'loop' from 'sequence'
-bug   #20060 : not happy with the new "define 'x' do..." syntax. Fixed.
-todo  #19457 : using 'tag' as well as 'activity' for participants 'activity'
-               labels
-todo  #19604 : moved Fluo to Sinatra
-todo  #18578 : Fluo namespace - s1560
+== ruote-fluo 0.9.19      not yet released
+
+- todo  #21826 : FluoTred.imageRoot can be changed
+- todo  #21423 : implemented show/hide minor expressions
+- bug   #21309 : "if" broken highlighting. Fixed.
+- todo  #20079 : differentiated 'cursor' and 'loop' from 'sequence'
+- bug   #20060 : not happy with the new "define 'x' do..." syntax. Fixed.
+- todo  #19457 : using 'tag' as well as 'activity' for participants 'activity'
+-                labels
+- todo  #19604 : moved Fluo to Sinatra
+- todo  #18578 : Fluo namespace - s1560
 
