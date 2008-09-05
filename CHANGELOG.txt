@@ -3,6 +3,7 @@
 
 == ruote-fluo 0.9.19      not yet released
 
+- todo  #21827 : onChange and onOver for each tred
 - todo  #21826 : FluoTred.imageRoot can be changed
 - todo  #21423 : implemented show/hide minor expressions
 - bug   #21309 : "if" broken highlighting. Fixed.

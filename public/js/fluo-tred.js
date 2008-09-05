@@ -41,7 +41,7 @@ var FluoTred = function () {
   //     FluoTred.imageRoot = 'http://my.image.server.exmaple.com/img'
   //
   var imageRoot = '/images';
-
+  
   var ExpressionHead = function () {
 
     function createButton (imgsrc, tooltip, callback) {
@@ -64,11 +64,13 @@ var FluoTred = function () {
 
       expdiv.onmouseover = function () { 
         buttons.style.opacity = 1.0; 
-        FluoTred.onOver(computeExpId(expdiv.parentNode));
+        var root = findTredRoot(expdiv);
+        if (root.onOver) root.onOver(computeExpId(expdiv.parentNode));
       };
       expdiv.onmouseout = function () { 
         buttons.style.opacity = outOpacity; 
-        FluoTred.onOver(null);
+        var root = findTredRoot(expdiv);
+        if (root.onOver) root.onOver(null);
       };
 
       buttons.appendChild(createButton(
@@ -235,16 +237,6 @@ var FluoTred = function () {
 
     return fluoToJson(toTree(node));
   }
-  
-  function onChange (tree) {
-
-    alert('FluoTred.onChange(tree) : please override me');
-  }
-
-  function onOver (expid) {
-
-    alert('FluoTred.onOver(expid) : please override me');
-  }
 
   function renderOpening (node, exp) {
 
@@ -360,7 +352,7 @@ var FluoTred = function () {
       p.insertBefore(elt, elt.nextSibling.nextSibling);
     }
 
-    FluoTred.triggerChange(p); // onChange() points to the original version !
+    FluoTred.triggerChange(p);
   }
 
   function insertExpression (before, exp) {
@@ -379,7 +371,8 @@ var FluoTred = function () {
 
     stack(tredRoot, tree);
 
-    FluoTred.onChange(tree); // onChange() points to the original version !
+    //FluoTred.onChange(tree); 
+    if (tredRoot.onChange) tredRoot.onChange(tree);
   }
 
   function stack(root, tree) {
@@ -399,8 +392,7 @@ var FluoTred = function () {
     root.currentTree = tree;
     renderExpression(root, tree, true);
 
-    //triggerChange(root);
-    FluoTred.onChange(tree);
+    if (root.onChange) root.onChange(tree);
   }
 
   function findTredRoot (node) {
@@ -472,8 +464,6 @@ var FluoTred = function () {
   //
   return {
     renderFlow: renderFlow,
-    onChange: onChange,
-    onOver: onOver,
     addExpression: addExpression,
     removeExpression: removeExpression,
     moveExpression: moveExpression,
