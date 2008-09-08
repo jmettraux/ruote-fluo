@@ -235,13 +235,6 @@ var FluoTred = function () {
     return fluoToJson(toTree(node));
   }
 
-  //function renderOpening (node, exp) {
-  //  var opening = ExpressionHead.render(exp);
-  //  //var outOpacity = 0.03;
-  //  var outOpacity = 0.0;
-  //  node.appendChild(opening);
-  //}
-
   function renderEnding (node, exp) {
 
     var ending = document.createElement('div');
