@@ -62,14 +62,16 @@ var FluoTred = function () {
       var buttons = document.createElement('span');
       buttons.style.opacity = outOpacity;
 
+      var root = findTredRoot(expdiv);
+
       expdiv.onmouseover = function () { 
         buttons.style.opacity = 1.0; 
-        var root = findTredRoot(expdiv);
+        //var root = findTredRoot(expdiv);
         if (root.onOver) root.onOver(computeExpId(expdiv.parentNode));
       };
       expdiv.onmouseout = function () { 
         buttons.style.opacity = outOpacity; 
-        var root = findTredRoot(expdiv);
+        //var root = findTredRoot(expdiv);
         if (root.onOver) root.onOver(null);
       };
 
@@ -79,60 +81,55 @@ var FluoTred = function () {
         function () {
           FluoTred.addExpression(expdiv.parentNode, [ '---', {}, [] ]);
         }));
-      buttons.appendChild(createButton(
-        FluoTred.imageRoot+'/btn-cut.gif',
-        'cut expression',
-        function () {
-          FluoTred.removeExpression(expdiv.parentNode);
-        }));
 
-      buttons.appendChild(createButton(
-        FluoTred.imageRoot+'/btn-moveup.gif',
-        'move expression up',
-        function () {
-          FluoTred.moveExpression(expdiv.parentNode, -1);
-          buttons.style.opacity = outOpacity;
-        }));
+      if (expdiv.parentNode.parentNode != root) {
 
-      buttons.appendChild(createButton(
-        FluoTred.imageRoot+'/btn-movedown.gif',
-        'move expression down',
-        function () {
-          FluoTred.moveExpression(expdiv.parentNode, +1);
-          buttons.style.opacity = outOpacity;
-        }));
-
-      buttons.appendChild(createButton(
-        FluoTred.imageRoot+'/btn-paste.gif',
-        'paste expression here',
-        function () {
-          var clip = document._tred_clipboard;
-          if (clip) FluoTred.insertExpression(expdiv.parentNode, clip);
-        }));
+        buttons.appendChild(createButton(
+          FluoTred.imageRoot+'/btn-cut.gif',
+          'cut expression',
+          function () {
+            FluoTred.removeExpression(expdiv.parentNode);
+          }));
+        buttons.appendChild(createButton(
+          FluoTred.imageRoot+'/btn-moveup.gif',
+          'move expression up',
+          function () {
+            FluoTred.moveExpression(expdiv.parentNode, -1);
+            buttons.style.opacity = outOpacity;
+          }));
+        buttons.appendChild(createButton(
+          FluoTred.imageRoot+'/btn-movedown.gif',
+          'move expression down',
+          function () {
+            FluoTred.moveExpression(expdiv.parentNode, +1);
+            buttons.style.opacity = outOpacity;
+          }));
+        buttons.appendChild(createButton(
+          FluoTred.imageRoot+'/btn-paste.gif',
+          'paste expression here',
+          function () {
+            var clip = document._tred_clipboard;
+            if (clip) FluoTred.insertExpression(expdiv.parentNode, clip);
+          }));
+      }
 
       expdiv.appendChild(buttons);
     }
 
     return {
 
-      render: function (exp) {
+      render: function (node, exp) {
 
         var expname = exp[0];
 
         var text = '';
         if ((typeof exp[2][0]) == 'string') text = exp[2].shift();
 
-        //var atts = [];
-        //for (key in exp[1]) { 
-        //  var skey = key.replace(/-/, '_');
-        //  var sval = fluoToJson(exp[1][key]);
-        //  atts.push("" + skey + ': ' + sval);
-        //}
-        //atts = atts.join(", ");
         var atts = fluoToJson(exp[1]);
         atts = atts.substring(1, atts.length - 1);
 
         var d = document.createElement('div');
+        node.appendChild(d);
 
         var sen = document.createElement('span');
         sen.setAttribute('class', 'tred_exp_span tred_expression_name');
@@ -156,7 +153,7 @@ var FluoTred = function () {
         var onblur = function () {
 
           var p = d.parentNode;
-          var d2 = ExpressionHead.render(ExpressionHead.parse(this.value));
+          var d2 = ExpressionHead.render(p, ExpressionHead.parse(this.value));
           p.replaceChild(d2, d);
 
           triggerChange(p); // trigger onChange()...
@@ -238,16 +235,12 @@ var FluoTred = function () {
     return fluoToJson(toTree(node));
   }
 
-  function renderOpening (node, exp) {
-
-    var opening = ExpressionHead.render(exp);
-
-    //var outOpacity = 0.03;
-    var outOpacity = 0.0;
-
-
-    node.appendChild(opening);
-  }
+  //function renderOpening (node, exp) {
+  //  var opening = ExpressionHead.render(exp);
+  //  //var outOpacity = 0.03;
+  //  var outOpacity = 0.0;
+  //  node.appendChild(opening);
+  //}
 
   function renderEnding (node, exp) {
 
@@ -314,7 +307,8 @@ var FluoTred = function () {
       return;
     }
 
-    renderOpening(node, exp);
+    //renderOpening(node, exp);
+    ExpressionHead.render(node, exp);
 
     //
     // draw children
@@ -331,9 +325,9 @@ var FluoTred = function () {
 
   function renderFlow (parentNode, flow) {
 
-    renderExpression(parentNode, flow, true);
-
     parentNode.className = 'tred_root';
+
+    renderExpression(parentNode, flow, true);
 
     parentNode.stack = []; // the undo stack
     parentNode.currentTree = flow;
