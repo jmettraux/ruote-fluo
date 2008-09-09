@@ -64,3 +64,25 @@ cp public/css/fluo.css #{RUOTE_WEB}/public/stylesheets/
 
 end
 
+
+desc "packages a 'distribution' of ruote-fluo"
+task :distribute do
+
+  pk = 'ruote-fluo-0.9.19'
+  dest = "pkg/#{pk}"
+
+  rm_r(dest) if File.exist?(dest)
+
+  mkdir_p dest
+  files = %w{ Rakefile public views lib }
+  %w{ LICENSE CREDITS README CHANGELOG }.each { |t| files << "#{t}.txt" }
+  files.each do |src|
+    cp_r src, dest
+    puts "copied #{src}"
+  end
+
+  chdir 'pkg' do
+    sh "jar cMvf #{pk}.zip #{pk}"
+  end
+end
+
