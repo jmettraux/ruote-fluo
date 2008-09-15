@@ -1,7 +1,12 @@
 
 = ruote-fluo  CHANGELOG.txt
 
-== ruote-fluo 0.9.19      not yet released
+== ruote-fluo 0.9.20      not yet released
+
+- bug   #21964 : undefined method 'header' for Rufus::Sixjo::Context. Fixed.
+
+
+== ruote-fluo 0.9.19      released 2008/09/09
 
 - todo  #21857 : preventing up/down/paste_before/remove on root expression
 - todo  #21827 : onChange and onOver for each tred

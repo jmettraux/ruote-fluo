@@ -40,7 +40,7 @@ post "/def" do
   json = params[:definition]
   tree = JSON.parse json
 
-  header 'Content-Type' => "text/plain"
+  response.headers['Content-Type'] = 'text/plain'
 
   case params[:out_type]
     when 'xml'

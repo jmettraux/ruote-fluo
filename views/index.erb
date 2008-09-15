@@ -32,14 +32,8 @@
       FluoTred.undo('tred');
       return false;
     }
-    function asXml () {
-      document.getElementById('definition_out_type').value = 'xml';
-      document.getElementById('definition_input').value = FluoTred.asJson('tred');
-      document.getElementById('definition_form').submit();
-      return false;
-    }
-    function asRuby () {
-      document.getElementById('definition_out_type').value = 'ruby';
+    function as (type) {
+      document.getElementById('definition_out_type').value = type;
       document.getElementById('definition_input').value = FluoTred.asJson('tred');
       document.getElementById('definition_form').submit();
       return false;
@@ -60,8 +54,9 @@
     <div class="menubar_links" style="float: left;">
       <a class="menubar_link" href="/defs">defs</a>
       <a class="menubar_link" href="#" onclick="return undo();">undo</a>
-      <a class="menubar_link" href="#" onclick="return asXml();">as xml</a>
-      <a class="menubar_link" href="#" onclick="return asRuby();">as ruby</a>
+      <a class="menubar_link" href="#" onclick="return as('xml');">as xml</a>
+      <a class="menubar_link" href="#" onclick="return as('ruby');">as ruby</a>
+      <a class="menubar_link" href="#" onclick="return as('json');">as json</a>
     </div>
     <div class="menubar_links" style="float: right;">
       <a class="menubar_link" href="#" onclick="return toggleMinor();">show/hide minor</a>
