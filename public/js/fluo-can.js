@@ -242,6 +242,12 @@ var FluoCan = function() {
     return max;
   }
 
+  function childText (exp) {
+    var exp2 = exp[2];
+    if (exp2.length == 1 && ((typeof exp2[0]) == 'string')) return exp2[0];
+    return null;
+  }
+
   //
   // returns the list of attribute names (sorted)
   //
@@ -431,9 +437,7 @@ var FluoCan = function() {
   };
   TextHandler.getText = function (exp) {
     var t = exp[0];
-    if (exp[2].length == 1 && ((typeof exp[2][0]) == 'string')) {
-      t += (' ' + exp[2][0]);
-    }
+    var ct = childText(exp); if (ct) t += (' ' + ct);
     for (var attname in exp[1]) {
       t += (' ' + attname + ': "' + exp[1][attname] + '"');
     }
@@ -864,7 +868,7 @@ var FluoCan = function() {
     if ((typeof exp) == 'string') return StringHandler;
     var h = HANDLERS[exp[0]];
     if (h) return h;
-    if (exp[2].length == 1 && ((typeof exp[2][0]) == 'string')) return GenericHandler;
+    if (childText(exp)) return GenericHandler;
     if (exp[2].length > 0) return GenericWithChildrenHandler;
     if (isSubprocessName(c.canvas.flow, exp[0])) return SubprocessHandler;
     return GenericHandler;
