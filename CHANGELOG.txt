@@ -3,6 +3,7 @@
 
 == ruote-fluo 0.9.20      not yet released
 
+- todo  #23158 : added icon for on_cancel and on_error attributes
 - bug   #21964 : undefined method 'header' for Rufus::Sixjo::Context. Fixed.
 
 
@@ -16,7 +17,7 @@
 - todo  #20079 : differentiated 'cursor' and 'loop' from 'sequence'
 - bug   #20060 : not happy with the new "define 'x' do..." syntax. Fixed.
 - todo  #19457 : using 'tag' as well as 'activity' for participants 'activity'
--                labels
+                 labels
 - todo  #19604 : moved Fluo to Sinatra
 - todo  #18578 : Fluo namespace - s1560
 

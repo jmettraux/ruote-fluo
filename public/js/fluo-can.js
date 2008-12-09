@@ -23,22 +23,41 @@
 //  return s;
 //}
 
+var FluoColors = {
+
+  RGB_WHITE: 'rgb(255, 255, 255)',
+  RGB_HIGHLIGHT: 'rgb(220, 220, 220)'
+}
+
 var FluoCanvas = function() {
   
   //
   // draws centered text
   //
-  function drawText (c, text, bwidth, bheight) {
+  function drawText (c, text, bwidth, bheight, symbolFuncName) {
+
+    var SW = 17; // symbol width
 
     c.save();
+
     if (c.canvas.horizontal == true) {
       c.translate(bwidth/2, bheight/2);
       c.rotate(Math.PI/2);
     }
-    var width = c.mozMeasureText(text);
-    c.translate(-(width/2), 17);
+    var w1 = c.mozMeasureText(text);
+    var w0 = 0;
+    if (symbolFuncName) w0 = SW;
+    var w = w0 + w1;
+    c.translate(-(w/2), 17);
+    if (symbolFuncName) {
+      c.translate(0, -4);
+      FluoCanvas[symbolFuncName](c, SW);
+      c.translate(0, 4);
+    }
+    c.translate(w0, 0);
     c.mozDrawText(text);
-    c.translate(+(width/2), -17);
+    c.translate(+(w/2-w0), -17);
+
     c.restore();
   }
 
@@ -103,7 +122,7 @@ var FluoCanvas = function() {
       c.lineTo(0, 0);
       if (i == 0) {
         c.save();
-        c.fillStyle = 'rgb(255, 255, 255)';
+        c.fillStyle = FluoColors.RGB_WHITE;
         c.fill();
         c.restore();
       }
@@ -111,6 +130,53 @@ var FluoCanvas = function() {
         c.stroke();
       }
     }
+  }
+
+  function drawDoubleCircle (c, height) {
+    c.save();
+    c.beginPath();
+    c.lineWidth = 0.5;
+    c.fillStyle = FluoColors.RGB_WHITE;
+    c.arc(0, 0, height / 2, 0, Math.PI * 2, true);
+    c.stroke();
+    c.beginPath();
+    c.arc(0, 0, height / 2 - 2.3, 0, Math.PI * 2, true);
+    c.stroke();
+    c.restore();
+    c.save();
+    c.translate(height/2, 0);
+    c.rotate(-Math.PI/2);
+    drawArrow(c, 8);
+    c.restore();
+  }
+
+  function drawError (c, height) { // the flash
+    drawDoubleCircle(c, height);
+    var h = height / 2 * 0.8;
+    var o = Math.cos(Math.PI / 4) * h;
+    var h2 = h / 2 * 0.5;
+    var d = h2 * 0.7;
+    c.beginPath();
+    c.moveTo(o, -o);
+    c.lineTo(h2 + d, h2 + d);
+    c.lineTo(-h2, -h2 + d);
+    c.lineTo(-o, o);
+    c.lineTo(-h2 - d, -h2 - d);
+    c.lineTo(h2, h2 - d);
+    c.lineTo(o, -o);
+    c.fill();
+  }
+
+  function drawCancel (c, height) { // the 'dame'
+    drawDoubleCircle(c, height);
+    var h = height / 5;
+    c.beginPath();
+    c.lineWidth = 2;
+    c.moveTo(h, h);
+    c.lineTo(-h, -h);
+    c.moveTo(-h, h);
+    c.lineTo(h, -h);
+    c.stroke();
   }
 
   function drawParaDiamond (c, height) {
@@ -134,7 +200,9 @@ var FluoCanvas = function() {
     drawRoundedRect: drawRoundedRect,
     drawQuadraticPath: drawQuadraticPath,
     drawDiamond: drawDiamond,
-    drawParaDiamond: drawParaDiamond
+    drawParaDiamond: drawParaDiamond,
+    drawError: drawError,
+    drawCancel: drawCancel
   };
 }();
 
@@ -166,8 +234,9 @@ var FluoCan = function() {
     var max = 0;
     if (title) max = c.mozMeasureText(title);
     for (var attname in exp[1]) {
-      var text = ""+attname+": "+fluoToJson(exp[1][attname], false);
+      var text = ''+attname+': '+fluoToJson(exp[1][attname], false);
       var l = c.mozMeasureText(text);
+      //if (attname.match(/^on[-\_](error|cancel)$/)) l += 30;
       if (l > max) max = l;
     }
     return max;
@@ -178,14 +247,13 @@ var FluoCan = function() {
   //
   function attributeNames (exp) {
     var an = [];
-    for (attname in exp[1]) an.push(attname);
+    for (var k in exp[1]) an.push(k);
+      //if (k.match(/^on[-\_](error|cancel)$/)) continue;
     return an.sort();
   }
 
   function attributeCount (exp) {
-    var count = 0;
-    for (var k in exp[1]) { count++; }
-    return count;
+    return attributeNames(exp).length;
   }
 
   function drawAttributes (c, exp, expname, width, height) {
@@ -194,14 +262,23 @@ var FluoCan = function() {
       if (c.canvas.horizontal == true) c.translate(-20, 0);
       else c.translate(0, 20);
     }
-    //for (var attname in exp[1]) {
     var attname;
     var attnames = attributeNames(exp);
     while (attname = attnames.shift()) {
-      FluoCanvas.drawText(
-        c, attname + ": " + fluoToJson(exp[1][attname], false), width, height);
-      if (c.canvas.horizontal == true) c.translate(-20, 0);
-      else c.translate(0, 20);
+      var v = fluoToJson(exp[1][attname], false);
+      if (attname.match(/^on[-\_]error$/)) {
+        FluoCanvas.drawText(c, v, width, height, 'drawError');
+      }
+      else if (attname.match(/^on[-\_]cancel$/)) {
+        FluoCanvas.drawText(c, v, width, height, 'drawCancel');
+      }
+      else {
+        FluoCanvas.drawText(c, attname + ": " + v, width, height);
+      }
+      var lh = 20;
+      //if (attname.match(/^on[-\_]error$/)) lh = 30;
+      if (c.canvas.horizontal == true) c.translate(-lh, 0);
+      else c.translate(0, lh);
     }
   }
 
@@ -421,6 +498,9 @@ var FluoCan = function() {
   };
   HorizontalHandler.getWidth = function (c, exp) {
     return (getChildren(c, exp).length - 1) * 3 + childrenSum(c, exp, 'getWidth');
+    //return Math.max(
+    //  attributeMaxWidth(c, exp),
+    //  (getChildren(c, exp).length - 1) * 3 + childrenSum(c, exp, 'getWidth'));
   };
   HorizontalHandler.computeDistribution = function (c, exp) {
     var children = getChildren(c, exp);
@@ -463,7 +543,7 @@ var FluoCan = function() {
     c.save();
     c.translate(0, 20);
     c.save(); 
-    c.fillStyle = 'rgb(255, 255, 255)';
+    c.fillStyle = FluoColors.RGB_WHITE;
     c.fillRect(-width/2, 0, width, height);
     c.restore();
     drawAttributes(c, exp, false, width, height);
@@ -576,7 +656,6 @@ var FluoCan = function() {
     }
   }
 
-  //function renderFlow (context, flow, workitems, highlight) {
   function renderFlow (context, flow, options) {
 
     if ( ! options) options = {};
@@ -603,7 +682,7 @@ var FluoCan = function() {
     context.mozTextStyle = "12px Helvetica";
 
     var fs = context.fillStyle;
-    context.fillStyle = 'rgb(255, 255, 255)';
+    context.fillStyle = FluoColors.RGB_WHITE;
     context.fillRect(0, 0, context.canvas.width, context.canvas.height);
     context.fillStyle = fs;
 
@@ -671,9 +750,9 @@ var FluoCan = function() {
       var h = getHeight(c, exp);
       var t = 7;
       c.save();
-      c.fillStyle = 'rgb(220, 220, 220)';
+      c.fillStyle = FluoColors.RGB_HIGHLIGHT;
       c.fillRect(-w/2, 0, w, h);
-      c.fillStyle = 'rgb(255, 255, 255)';
+      c.fillStyle = FluoColors.RGB_WHITE;
       c.fillRect(-w/2 + t, 0 + t , w - 2 * t, h - 2 * t);
       c.restore();
     }
