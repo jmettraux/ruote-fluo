@@ -23,10 +23,11 @@
 //  return s;
 //}
 
-var FluoColors = {
+var FluoCon = {
 
   RGB_WHITE: 'rgb(255, 255, 255)',
-  RGB_HIGHLIGHT: 'rgb(220, 220, 220)'
+  RGB_HIGHLIGHT: 'rgb(220, 220, 220)',
+  LINE_HEIGHT: 20
 }
 
 var FluoCanvas = function() {
@@ -122,7 +123,7 @@ var FluoCanvas = function() {
       c.lineTo(0, 0);
       if (i == 0) {
         c.save();
-        c.fillStyle = FluoColors.RGB_WHITE;
+        c.fillStyle = FluoCon.RGB_WHITE;
         c.fill();
         c.restore();
       }
@@ -132,11 +133,24 @@ var FluoCanvas = function() {
     }
   }
 
+  function drawThickCircle (c, height) {
+    c.save();
+    c.beginPath();
+    c.lineWidth = 1.4;
+    c.fillStyle = FluoCon.RGB_WHITE;
+    c.arc(0, 0, height / 2 - 1, 0, Math.PI * 2, true);
+    c.stroke();
+    c.beginPath();
+    c.arc(0, 0, height / 2 - 2.3, 0, Math.PI * 2, true);
+    c.stroke();
+    c.restore();
+  }
+
   function drawDoubleCircle (c, height) {
     c.save();
     c.beginPath();
     c.lineWidth = 0.5;
-    c.fillStyle = FluoColors.RGB_WHITE;
+    c.fillStyle = FluoCon.RGB_WHITE;
     c.arc(0, 0, height / 2, 0, Math.PI * 2, true);
     c.stroke();
     c.beginPath();
@@ -150,8 +164,9 @@ var FluoCanvas = function() {
     c.restore();
   }
 
-  function drawError (c, height) { // the flash
-    drawDoubleCircle(c, height);
+  function drawError (c, height, sym) { // the flash
+    if (sym) drawThickCircle(c, height);
+    else drawDoubleCircle(c, height);
     var h = height / 2 * 0.8;
     var o = Math.cos(Math.PI / 4) * h;
     var h2 = h / 2 * 0.5;
@@ -165,6 +180,9 @@ var FluoCanvas = function() {
     c.lineTo(h2, h2 - d);
     c.lineTo(o, -o);
     c.fill();
+  }
+  function drawErrorSymbol (c, height) {
+    drawError(c, height, true);
   }
 
   function drawCancel (c, height) { // the 'dame'
@@ -202,7 +220,8 @@ var FluoCanvas = function() {
     drawDiamond: drawDiamond,
     drawParaDiamond: drawParaDiamond,
     drawError: drawError,
-    drawCancel: drawCancel
+    drawCancel: drawCancel,
+    draw_error_symbol: drawErrorSymbol
   };
 }();
 
@@ -254,37 +273,41 @@ var FluoCan = function() {
   function attributeNames (exp) {
     var an = [];
     for (var k in exp[1]) an.push(k);
-      //if (k.match(/^on[-\_](error|cancel)$/)) continue;
     return an.sort();
   }
 
-  function attributeCount (exp) {
-    return attributeNames(exp).length;
+  function attributeCount (exp, strchild) {
+    var l = attributeNames(exp).length;
+    var ct = strchild && childText(exp);
+    return l + (ct ? 1 : 0);
   }
 
-  function drawAttributes (c, exp, expname, width, height) {
+  function carriageReturn (c) {
+    if (c.canvas.horizontal == true) c.translate(-FluoCon.LINE_HEIGHT, 0);
+    else c.translate(0, FluoCon.LINE_HEIGHT);
+  }
+
+  function drawAttributes (c, exp, expname, strchild, width, height) {
     if (expname) {
       FluoCanvas.drawText(c, exp[0], width, height);
-      if (c.canvas.horizontal == true) c.translate(-20, 0);
-      else c.translate(0, 20);
+      carriageReturn(c);
+    }
+    var ct = strchild && childText(exp);
+    if (ct) {
+      FluoCanvas.drawText(c, ct, width, height);
+      carriageReturn(c);
     }
     var attname;
-    var attnames = attributeNames(exp);
+    var attnames = attributeNames(exp, expname);
     while (attname = attnames.shift()) {
       var v = fluoToJson(exp[1][attname], false);
-      if (attname.match(/^on[-\_]error$/)) {
+      if (attname.match(/^on[-\_]error$/))
         FluoCanvas.drawText(c, v, width, height, 'drawError');
-      }
-      else if (attname.match(/^on[-\_]cancel$/)) {
+      else if (attname.match(/^on[-\_]cancel$/))
         FluoCanvas.drawText(c, v, width, height, 'drawCancel');
-      }
-      else {
+      else
         FluoCanvas.drawText(c, attname + ": " + v, width, height);
-      }
-      var lh = 20;
-      //if (attname.match(/^on[-\_]error$/)) lh = 30;
-      if (c.canvas.horizontal == true) c.translate(-lh, 0);
-      else c.translate(0, lh);
+      carriageReturn(c);
     }
   }
 
@@ -331,20 +354,19 @@ var FluoCan = function() {
 
   var GenericHandler = newHandler();
   GenericHandler.adjust = function (exp) {
-    if (exp[2].length == 1 && ((typeof exp[2][0]) == 'string')) {
-      exp[0] = exp[0] + ' ' + exp[2][0];
-    }
+    var ct = childText(exp);
+    if (ct) exp[0] = exp[0] + ' ' + ct;
   }
   GenericHandler.render = function (c, exp) {
     var width = this.getWidth(c, exp);
     var height = this.getHeight(c, exp);
     FluoCanvas.drawRoundedRect(c, width, height, 8);
     c.save();
-    drawAttributes(c, exp, true, width, height);
+    drawAttributes(c, exp, true, false, width, height);
     c.restore();
   };
   GenericHandler.getRealHeight = function (c, exp) {
-    return 7 + (1 + attributeCount(exp)) * 20;
+    return 7 + (1 + attributeCount(exp)) * FluoCon.LINE_HEIGHT;
   };
   GenericHandler.getRealWidth = function (c, exp) {
     return 10 + attributeMaxWidth(c, exp, exp[0]);
@@ -360,7 +382,7 @@ var FluoCan = function() {
     var height = this.getHeight(c, exp);
     FluoCanvas.drawRoundedRect(c, width, height, 8);
     c.save();
-    drawAttributes(c, exp, true, width, height);
+    drawAttributes(c, exp, true, false, width, height);
     c.restore();
 
     c.save(); // drawing a cross in a box
@@ -381,7 +403,7 @@ var FluoCan = function() {
     c.restore();
   };
   SubprocessHandler.getRealHeight = function (c, exp) {
-    return 12 + 7 + (1 + attributeCount(exp)) * 20;
+    return 12 + 7 + (1 + attributeCount(exp)) * FluoCon.LINE_HEIGHT;
   };
 
   // TODO : fix rotated mode
@@ -391,7 +413,7 @@ var FluoCan = function() {
     var width = this.getWidth(c, exp);
     var height = this.getHeight(c, exp);
     var attWidth = attributeMaxWidth(c, exp, exp[0]) + 7;
-    var attHeight = attributeCount(exp) * 20;
+    var attHeight = attributeCount(exp) * FluoCon.LINE_HEIGHT;
     var children = getChildren(c, exp);
     if (c.canvas.horizontal == true) {
       var w = attWidth;
@@ -402,7 +424,7 @@ var FluoCan = function() {
     c.save();
     c.translate(-width/2 + attWidth/2 + 5 , 7);
     if (c.canvas.horizontal == true) c.translate(attHeight/2, 0);
-    drawAttributes(c, exp, true, attWidth, attHeight);
+    drawAttributes(c, exp, true, false, attWidth, attHeight);
     c.restore();
     c.save();
     c.translate(width/2 - childrenMax(c, exp, 'getWidth')/2 - 7, 8);
@@ -444,10 +466,28 @@ var FluoCan = function() {
     return t;
   };
   TextHandler.getRealHeight = function (c, exp) {
-    return 20;
+    return FluoCon.LINE_HEIGHT;
   };
   TextHandler.getRealWidth = function (c, exp) {
     return c.mozMeasureText(this.getText(exp));
+  };
+
+  // TODO : fix rotated mode
+  //
+  var SymbolHandler = newHandler();
+  SymbolHandler.render = function (c, exp) {
+    c.save();
+    c.translate(0, 11);
+    FluoCanvas['draw_'+exp[0]+'_symbol'](c, 22);
+    c.translate(0, 11);
+    drawAttributes(c, exp, false, true, this.getWidth(c, exp), this.getHeight(c, exp));
+    c.restore();
+  };
+  SymbolHandler.getRealHeight = function (c, exp) {
+    return 22 + (attributeCount(exp, true)) * FluoCon.LINE_HEIGHT;
+  };
+  SymbolHandler.getRealWidth = function (c, exp) {
+    return 10 + attributeMaxWidth(c, exp, exp[0]);
   };
 
   var StringHandler = newHandler(TextHandler);
@@ -497,7 +537,7 @@ var FluoCan = function() {
   };
   HorizontalHandler.getHeaderHeight = function (c, exp) {
     if (c.canvas.horizontal == true) return 23 + attributeMaxWidth(c, exp);
-    return 23 + attributeCount(exp) * 20;
+    return 23 + attributeCount(exp) * FluoCon.LINE_HEIGHT;
   };
   HorizontalHandler.getChildrenHeight = function (c, exp) {
     return childrenMax(c, exp, 'getHeight');
@@ -539,23 +579,23 @@ var FluoCan = function() {
     this.renderHeaderLabel(c, exp);
   };
   HorizontalHandler.renderHeaderSymbol = function (c) {
-    FluoCanvas.drawDiamond(c, 20);
+    FluoCanvas.drawDiamond(c, FluoCon.LINE_HEIGHT);
   };
   HorizontalHandler.renderHeaderLabel = function (c, exp) {
     var width = attributeMaxWidth(c, exp);
-    var height = attributeCount(exp) * 20;
+    var height = attributeCount(exp) * FluoCon.LINE_HEIGHT;
     if (c.canvas.horizontal == true) {
       var w = width;
       width = height;
       height = w;
     }
     c.save();
-    c.translate(0, 20);
+    c.translate(0, FluoCon.LINE_HEIGHT);
     c.save(); 
-    c.fillStyle = FluoColors.RGB_WHITE;
+    c.fillStyle = FluoCon.RGB_WHITE;
     c.fillRect(-width/2, 0, width, height);
     c.restore();
-    drawAttributes(c, exp, false, width, height);
+    drawAttributes(c, exp, false, false, width, height);
     c.restore();
   };
   HorizontalHandler.renderChild = function (c, exp, childrenHeight) {
@@ -630,7 +670,7 @@ var FluoCan = function() {
     'set': TextHandler,
     'unset': TextHandler,
     'sleep': TextHandler,
-    'error': TextHandler,
+    'error': SymbolHandler,
     'subprocess': SubprocessHandler,
     '_': GhostHandler
   };
@@ -692,7 +732,7 @@ var FluoCan = function() {
     context.mozTextStyle = "12px Helvetica";
 
     var fs = context.fillStyle;
-    context.fillStyle = FluoColors.RGB_WHITE;
+    context.fillStyle = FluoCon.RGB_WHITE;
     context.fillRect(0, 0, context.canvas.width, context.canvas.height);
     context.fillStyle = fs;
 
@@ -760,9 +800,9 @@ var FluoCan = function() {
       var h = getHeight(c, exp);
       var t = 7;
       c.save();
-      c.fillStyle = FluoColors.RGB_HIGHLIGHT;
+      c.fillStyle = FluoCon.RGB_HIGHLIGHT;
       c.fillRect(-w/2, 0, w, h);
-      c.fillStyle = FluoColors.RGB_WHITE;
+      c.fillStyle = FluoCon.RGB_WHITE;
       c.fillRect(-w/2 + t, 0 + t , w - 2 * t, h - 2 * t);
       c.restore();
     }

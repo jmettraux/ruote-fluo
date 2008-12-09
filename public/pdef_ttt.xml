@@ -10,7 +10,7 @@
       <participant ref="Ted" />
       <participant ref="Tang" />
     </concurrence>
-    <participant ref="Takeshi" />
     <error if="surf">nada</error>
+    <participant ref="Takeshi" />
   </sequence>
 </process-definition>

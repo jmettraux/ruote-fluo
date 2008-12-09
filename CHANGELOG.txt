@@ -1,8 +1,10 @@
 
 = ruote-fluo  CHANGELOG.txt
 
+
 == ruote-fluo 0.9.20      not yet released
 
+- todo  #23160 : added handler for 'error' expression
 - bug   #23161 : TextHandler not showing unique string child. Fixed.
 - todo  #23158 : added icon for on_cancel and on_error attributes
 - bug   #21964 : undefined method 'header' for Rufus::Sixjo::Context. Fixed.
