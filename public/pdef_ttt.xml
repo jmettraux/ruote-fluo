@@ -11,6 +11,6 @@
       <participant ref="Tang" />
     </concurrence>
     <participant ref="Takeshi" />
-    <participant ref="PlanningTeam" />
+    <error if="surf">nada</error>
   </sequence>
 </process-definition>

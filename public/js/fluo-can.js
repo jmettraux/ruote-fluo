@@ -421,6 +421,8 @@ var FluoCan = function() {
       childrenMax(c, exp, 'getWidth'));
   };
 
+  // TODO : fix in rotated mode
+  //
   var TextHandler = newHandler();
   TextHandler.render = function (c, exp) {
     var h = getHeight(c, exp);
@@ -429,6 +431,9 @@ var FluoCan = function() {
   };
   TextHandler.getText = function (exp) {
     var t = exp[0];
+    if (exp[2].length == 1 && ((typeof exp[2][0]) == 'string')) {
+      t += (' ' + exp[2][0]);
+    }
     for (var attname in exp[1]) {
       t += (' ' + attname + ': "' + exp[1][attname] + '"');
     }
@@ -621,6 +626,7 @@ var FluoCan = function() {
     'set': TextHandler,
     'unset': TextHandler,
     'sleep': TextHandler,
+    'error': TextHandler,
     'subprocess': SubprocessHandler,
     '_': GhostHandler
   };
