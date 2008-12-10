@@ -218,8 +218,8 @@ var FluoCanvas = function() {
     for (var i = 0; i < 12; i++) {
       lineInCircle(c, Math.PI / 6 * i, radius, radius - 2);
     }
-    lineInCircle(c, Math.PI / 6 * 9.5, radius - 1, 0);
-    lineInCircle(c, Math.PI / 6 * 0, radius - 3, 0);
+    lineInCircle(c, Math.PI / 6 * 9.5, radius - 1, 0); // minutes
+    lineInCircle(c, Math.PI / 6 * 0, radius - 3, 0); // hours
     c.stroke();
     c.restore();
   }
@@ -503,19 +503,24 @@ var FluoCan = function() {
   // TODO : fix rotated mode
   //
   var SymbolHandler = newHandler();
+  SymbolHandler.SYMBOL_HEIGHT = 22;
   SymbolHandler.render = function (c, exp) {
     c.save();
     c.translate(0, 12);
-    FluoCanvas['draw_'+exp[0]+'_symbol'](c, 22);
-    c.translate(0, 11);
+    FluoCanvas['draw_'+exp[0]+'_symbol'](c, SymbolHandler.SYMBOL_HEIGHT);
+    c.translate(0, 12);
     drawAttributes(c, exp, false, true, this.getWidth(c, exp), this.getHeight(c, exp));
     c.restore();
   };
-  SymbolHandler.getRealHeight = function (c, exp) {
-    return 24 + (attributeCount(exp, true)) * FluoCon.LINE_HEIGHT;
+  SymbolHandler.getHeight = function (c, exp) {
+    var h = attributeCount(exp, true) * FluoCon.LINE_HEIGHT;
+    if (c.canvas.horizontal != true) h += SymbolHandler.SYMBOL_HEIGHT;
+    return h;
   };
-  SymbolHandler.getRealWidth = function (c, exp) {
-    return 10 + attributeMaxWidth(c, exp, exp[0]);
+  SymbolHandler.getWidth = function (c, exp) {
+    var w = attributeMaxWidth(c, exp, exp[0]);
+    if (c.canvas.horizontal == true) w += SymbolHandler.SYMBOL_HEIGHT;
+    return w;
   };
 
   var StringHandler = newHandler(TextHandler);

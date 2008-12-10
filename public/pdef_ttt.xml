@@ -1,10 +1,11 @@
 <process-definition
   name="TeaTesting"
   revision="0.2"
-  on-error="emergency"
-  on-cancel="decommission"
 >
-  <sequence>
+  <sequence
+    on-error="emergency"
+    on-cancel="decommission"
+  >
     <participant ref="Reception" />
     <concurrence>
       <participant ref="Ted" />
