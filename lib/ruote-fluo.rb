@@ -35,7 +35,7 @@ get '/defs' do
 end
 
 
-post "/def" do
+post '/def' do
 
   json = params[:definition]
   tree = JSON.parse json
@@ -44,7 +44,7 @@ post "/def" do
 
   case params[:out_type]
     when 'xml'
-      s = ""
+      s = ''
       REXML::Formatters::Pretty.new.write(
         OpenWFE::ExpressionTree.to_xml(tree), s)
       s

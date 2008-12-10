@@ -146,7 +146,7 @@ var FluoCanvas = function() {
     c.restore();
   }
 
-  function drawDoubleCircle (c, height) {
+  function drawDoubleCircle (c, height, arrow) {
     c.save();
     c.beginPath();
     c.lineWidth = 0.5;
@@ -157,16 +157,18 @@ var FluoCanvas = function() {
     c.arc(0, 0, height / 2 - 2.3, 0, Math.PI * 2, true);
     c.stroke();
     c.restore();
-    c.save();
-    c.translate(height/2, 0);
-    c.rotate(-Math.PI/2);
-    drawArrow(c, 8);
-    c.restore();
+    if (arrow) {
+      c.save();
+      c.translate(height/2, 0);
+      c.rotate(-Math.PI/2);
+      drawArrow(c, 8);
+      c.restore();
+    }
   }
 
   function drawError (c, height, sym) { // the flash
     if (sym) drawThickCircle(c, height);
-    else drawDoubleCircle(c, height);
+    else drawDoubleCircle(c, height, true);
     var h = height / 2 * 0.8;
     var o = Math.cos(Math.PI / 4) * h;
     var h2 = h / 2 * 0.5;
@@ -186,7 +188,7 @@ var FluoCanvas = function() {
   }
 
   function drawCancel (c, height) { // the 'dame'
-    drawDoubleCircle(c, height);
+    drawDoubleCircle(c, height, true);
     var h = height / 5;
     c.beginPath();
     c.lineWidth = 2;
@@ -195,6 +197,31 @@ var FluoCanvas = function() {
     c.moveTo(-h, h);
     c.lineTo(h, -h);
     c.stroke();
+  }
+
+  function pointOnCircle (angle, radius) {
+    return [ Math.cos(angle) * radius, Math.sin(angle) * radius ];
+  }
+  function lineInCircle (c, angle, farRadius, closeRadius) {
+    var far = pointOnCircle(angle, farRadius);
+    var close = pointOnCircle(angle, closeRadius);
+    c.moveTo(far[0], far[1]); c.lineTo(close[0], close[1]);
+  }
+
+  function drawSleepSymbol (c, height) { // the 'clock'
+    drawDoubleCircle(c, height, false);
+    c.save();
+    c.beginPath();
+    c.lineWidth = 0.5;
+    var radius = height / 2 - 4.3;
+    c.arc(0, 0, radius, 0, Math.PI * 2, true);
+    for (var i = 0; i < 12; i++) {
+      lineInCircle(c, Math.PI / 6 * i, radius, radius - 2);
+    }
+    lineInCircle(c, Math.PI / 6 * 9.5, radius - 1, 0);
+    lineInCircle(c, Math.PI / 6 * 0, radius - 3, 0);
+    c.stroke();
+    c.restore();
   }
 
   function drawParaDiamond (c, height) {
@@ -221,7 +248,8 @@ var FluoCanvas = function() {
     drawParaDiamond: drawParaDiamond,
     drawError: drawError,
     drawCancel: drawCancel,
-    draw_error_symbol: drawErrorSymbol
+    draw_error_symbol: drawErrorSymbol,
+    draw_sleep_symbol: drawSleepSymbol
   };
 }();
 
@@ -477,14 +505,14 @@ var FluoCan = function() {
   var SymbolHandler = newHandler();
   SymbolHandler.render = function (c, exp) {
     c.save();
-    c.translate(0, 11);
+    c.translate(0, 12);
     FluoCanvas['draw_'+exp[0]+'_symbol'](c, 22);
     c.translate(0, 11);
     drawAttributes(c, exp, false, true, this.getWidth(c, exp), this.getHeight(c, exp));
     c.restore();
   };
   SymbolHandler.getRealHeight = function (c, exp) {
-    return 22 + (attributeCount(exp, true)) * FluoCon.LINE_HEIGHT;
+    return 24 + (attributeCount(exp, true)) * FluoCon.LINE_HEIGHT;
   };
   SymbolHandler.getRealWidth = function (c, exp) {
     return 10 + attributeMaxWidth(c, exp, exp[0]);
@@ -669,7 +697,7 @@ var FluoCan = function() {
     'if': IfHandler,
     'set': TextHandler,
     'unset': TextHandler,
-    'sleep': TextHandler,
+    'sleep': SymbolHandler,
     'error': SymbolHandler,
     'subprocess': SubprocessHandler,
     '_': GhostHandler
