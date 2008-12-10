@@ -400,6 +400,25 @@ var FluoCan = function() {
     return 10 + attributeMaxWidth(c, exp, exp[0]);
   };
 
+  var AttributeOnlyHandler = newHandler();
+  AttributeOnlyHandler.adjust = function (exp) {
+    var ct = childText(exp);
+    if (ct) exp[0] = exp[0] + ' ' + ct;
+  }
+  AttributeOnlyHandler.render = function (c, exp) {
+    var width = this.getWidth(c, exp);
+    var height = this.getHeight(c, exp);
+    c.save();
+    drawAttributes(c, exp, false, false, width, height);
+    c.restore();
+  };
+  AttributeOnlyHandler.getRealHeight = function (c, exp) {
+    return 7 + attributeCount(exp) * FluoCon.LINE_HEIGHT;
+  };
+  AttributeOnlyHandler.getRealWidth = function (c, exp) {
+    return attributeMaxWidth(c, exp, exp[0]);
+  };
+
   var SubprocessHandler = newHandler(GenericHandler);
   SubprocessHandler.adjust = function (exp) {
     if (exp[2].length == 1) exp[1]['ref'] = exp[2][0];
@@ -505,22 +524,24 @@ var FluoCan = function() {
   var SymbolHandler = newHandler();
   SymbolHandler.SYMBOL_HEIGHT = 22;
   SymbolHandler.render = function (c, exp) {
+    var w = this.getWidth(c, exp);
+    var h = this.getHeight(c, exp);
     c.save();
+    if (c.canvas.horizontal == true) {
+      c.translate(w/2, h/2);
+      c.rotate(-Math.PI/2);
+    }
     c.translate(0, 12);
     FluoCanvas['draw_'+exp[0]+'_symbol'](c, SymbolHandler.SYMBOL_HEIGHT);
     c.translate(0, 12);
     drawAttributes(c, exp, false, true, this.getWidth(c, exp), this.getHeight(c, exp));
     c.restore();
   };
-  SymbolHandler.getHeight = function (c, exp) {
-    var h = attributeCount(exp, true) * FluoCon.LINE_HEIGHT;
-    if (c.canvas.horizontal != true) h += SymbolHandler.SYMBOL_HEIGHT;
-    return h;
+  SymbolHandler.getRealHeight = function (c, exp) {
+    return attributeCount(exp, true) * FluoCon.LINE_HEIGHT + SymbolHandler.SYMBOL_HEIGHT;
   };
-  SymbolHandler.getWidth = function (c, exp) {
-    var w = attributeMaxWidth(c, exp, exp[0]);
-    if (c.canvas.horizontal == true) w += SymbolHandler.SYMBOL_HEIGHT;
-    return w;
+  SymbolHandler.getRealWidth = function (c, exp) {
+    return attributeMaxWidth(c, exp, exp[0]);
   };
 
   var StringHandler = newHandler(TextHandler);
@@ -529,6 +550,9 @@ var FluoCan = function() {
   };
 
   var VerticalHandler = newHandler();
+  VerticalHandler.adjust = function (exp) {
+    if (attributeCount(exp, true) > 0) exp[2].unshift([ '_atts_', exp[1], [] ]);
+  }
   VerticalHandler.render = function (c, exp) {
     c.save();
     var children = getChildren(c, exp);
@@ -705,6 +729,7 @@ var FluoCan = function() {
     'sleep': SymbolHandler,
     'error': SymbolHandler,
     'subprocess': SubprocessHandler,
+    '_atts_': AttributeOnlyHandler,
     '_': GhostHandler
   };
 

@@ -4,6 +4,7 @@
 
 == ruote-fluo 0.9.20      not yet released
 
+- todo  #23159 : made sure that 'sequence' displays its attributes if any
 - todo  #23172 : added clock symbol for the 'sleep' expression
 - todo  #23160 : added handler for 'error' expression
 - bug   #23161 : TextHandler not showing unique string child. Fixed.
