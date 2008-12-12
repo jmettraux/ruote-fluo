@@ -27,7 +27,8 @@ var FluoCon = {
 
   RGB_WHITE: 'rgb(255, 255, 255)',
   RGB_HIGHLIGHT: 'rgb(220, 220, 220)',
-  LINE_HEIGHT: 20
+  LINE_HEIGHT: 20,
+  MIN_ACTIVITY_WIDTH: 110
 }
 
 var FluoCanvas = function() {
@@ -426,7 +427,8 @@ var FluoCan = function() {
     return 7 + (1 + attributeCount(exp)) * FluoCon.LINE_HEIGHT;
   };
   GenericHandler.getRealWidth = function (c, exp) {
-    return 10 + attributeMaxWidth(c, exp, exp[0]);
+    //return 10 + attributeMaxWidth(c, exp, exp[0]);
+    return Math.max(10 + attributeMaxWidth(c, exp, exp[0]), FluoCon.MIN_ACTIVITY_WIDTH);
   };
 
   var AttributeOnlyHandler = newHandler();
@@ -491,13 +493,17 @@ var FluoCan = function() {
     for (var i = 0; i < children.length; i++) {
       var child = children[i];
       renderExp(c, child);
-      c.translate(0, 7 + FluoCan.getHeight(c, child));
+      //c.translate(0, 7 + FluoCan.getHeight(c, child));
+      c.translate(0, FluoCan.getHeight(c, child));
+      if (this.drawArrow && i < children.length -1) FluoCanvas.drawArrow(c, 10);
+      c.translate(0, 10);
     }
     c.restore();
   };
+  GenericWithChildrenHandler.drawArrow = false;
   GenericWithChildrenHandler.getHeight = function (c, exp) {
     var rightHeight = 
-      (getChildren(c, exp).length + 1) * 7 + childrenSum(c, exp, 'getHeight');
+      (getChildren(c, exp).length + 1) * 9 + childrenSum(c, exp, 'getHeight');
     var leftHeight = 
       GenericHandler.getHeight(c, exp);
     return (rightHeight > leftHeight) ? rightHeight : leftHeight;
@@ -510,7 +516,10 @@ var FluoCan = function() {
   };
 
   var LoopHandler = newHandler(GenericWithChildrenHandler);
+  LoopHandler.drawArrow = true;
   LoopHandler.render = function (c, exp) {
+    var h = this.getHeight(c, exp);
+    var w = this.getWidth(c, exp);
     this.super_render(c, exp);
     FluoCanvas.drawLoopSymbol(c, this.getHeight(c, exp));
   }
