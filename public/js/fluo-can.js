@@ -771,7 +771,9 @@ var FluoCan = function() {
   };
 
   var HANDLERS = {
+
     //'participant': ParticipantHandler
+
     'sequence': VerticalHandler,
     'concurrence': ConcurrenceHandler,
     'if': IfHandler,
@@ -783,6 +785,16 @@ var FluoCan = function() {
     'loop': LoopHandler,
     'cursor': LoopHandler,
     'concurrent-iterator': ConcurrentIteratorHandler,
+
+    'rewind': TextHandler,
+    'continue': TextHandler,
+    'back': TextHandler,
+    'break': TextHandler,
+    'cancel': TextHandler,
+    'skip': TextHandler,
+    'jump': TextHandler,
+      // 'commands'
+
     '_atts_': AttributeOnlyHandler,
     '_': GhostHandler
   };
