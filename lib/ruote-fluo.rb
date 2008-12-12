@@ -34,11 +34,10 @@ get '/defs' do
   erb :defs, :locals => { :pdefs => pdefs }
 end
 
-
 post '/def' do
 
   json = params[:definition]
-  tree = JSON.parse json
+  tree = JSON.parse(json)
 
   response.headers['Content-Type'] = 'text/plain'
 
@@ -55,3 +54,16 @@ post '/def' do
   end
 end
 
+get '/intake' do # work/get around... not very restful...
+
+  pdef = request['pdef']
+
+  return redirect('/') unless pdef
+
+  pdef = Rack::Utils.unescape(pdef)
+
+  erb(
+    :index,
+    :locals => {
+      :prep => OpenWFE::DefParser.parse(pdef).to_a.to_json, :wi => nil })
+end
