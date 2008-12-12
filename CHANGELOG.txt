@@ -4,6 +4,7 @@
 
 == ruote-fluo 0.9.20      not yet released
 
+- todo  #23197 : added handler for 'concurrent-iterator'
 - todo  #23194 : added handler for 'loop' and 'cursor'
 - todo  #23159 : made sure that 'sequence' displays its attributes if any
 - todo  #23172 : added clock symbol for the 'sleep' expression

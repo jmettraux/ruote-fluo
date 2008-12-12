@@ -265,6 +265,17 @@ var FluoCanvas = function() {
     c.restore();
   }
 
+  function drawParaSymbol (c, h) {
+    c.save();
+    c.translate(0, h - 10);
+    c.lineWidth = 1.5;
+    c.beginPath();
+    c.moveTo(-2, 0); c.lineTo(-2, 8);
+    c.moveTo(2, 0); c.lineTo(2, 8);
+    c.stroke();
+    c.restore();
+  }
+
   return {
     drawText: drawText,
     drawArrow: drawArrow,
@@ -277,6 +288,7 @@ var FluoCanvas = function() {
     drawCancel: drawCancel,
     drawCrossInABox: drawCrossInABox,
     drawLoopSymbol: drawLoopSymbol,
+    drawParaSymbol: drawParaSymbol,
     draw_error_symbol: drawErrorSymbol,
     draw_sleep_symbol: drawSleepSymbol
   };
@@ -518,14 +530,22 @@ var FluoCan = function() {
   var LoopHandler = newHandler(GenericWithChildrenHandler);
   LoopHandler.drawArrow = true;
   LoopHandler.render = function (c, exp) {
-    var h = this.getHeight(c, exp);
-    var w = this.getWidth(c, exp);
     this.super_render(c, exp);
     FluoCanvas.drawLoopSymbol(c, this.getHeight(c, exp));
   }
   LoopHandler.getHeight = function (c, exp) {
     return 12 + this.super_getHeight(c, exp);
   }
+
+  var ConcurrentIteratorHandler = newHandler(GenericWithChildrenHandler);
+  ConcurrentIteratorHandler.render = function (c, exp) {
+    this.super_render(c, exp);
+    FluoCanvas.drawParaSymbol(c, this.getHeight(c, exp));
+  }
+  ConcurrentIteratorHandler.getHeight = function (c, exp) {
+    return 12 + this.super_getHeight(c, exp);
+  }
+
 
   // TODO : fix in rotated mode
   //
@@ -762,6 +782,7 @@ var FluoCan = function() {
     'subprocess': SubprocessHandler,
     'loop': LoopHandler,
     'cursor': LoopHandler,
+    'concurrent-iterator': ConcurrentIteratorHandler,
     '_atts_': AttributeOnlyHandler,
     '_': GhostHandler
   };
