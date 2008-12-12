@@ -139,8 +139,6 @@ var FluoCanvas = function() {
     c.lineWidth = 1.4;
     c.fillStyle = FluoCon.RGB_WHITE;
     c.arc(0, 0, height / 2 - 1, 0, Math.PI * 2, true);
-    c.stroke();
-    c.beginPath();
     c.arc(0, 0, height / 2 - 2.3, 0, Math.PI * 2, true);
     c.stroke();
     c.restore();
@@ -152,8 +150,6 @@ var FluoCanvas = function() {
     c.lineWidth = 0.5;
     c.fillStyle = FluoCon.RGB_WHITE;
     c.arc(0, 0, height / 2, 0, Math.PI * 2, true);
-    c.stroke();
-    c.beginPath();
     c.arc(0, 0, height / 2 - 2.3, 0, Math.PI * 2, true);
     c.stroke();
     c.restore();
@@ -231,9 +227,39 @@ var FluoCanvas = function() {
     var l = height / 4;
     c.beginPath();
     c.moveTo(0, l); c.lineTo(0, l * 3);
-    c.stroke();
-    c.beginPath();
     c.moveTo(-l, l * 2); c.lineTo(l, l * 2);
+    c.stroke();
+    c.restore();
+  }
+
+  function drawCrossInABox (c, h) {
+    c.save();
+    c.beginPath();
+    c.moveTo(-6, h);
+    c.lineTo(-6, h - 12);
+    c.lineTo(6, h - 12);
+    c.lineTo(6, h);
+    c.moveTo(0, h - 10);
+    c.lineTo(0, h - 2);
+    c.moveTo(-4, h - 6);
+    c.lineTo(4, h - 6);
+    c.stroke();
+    c.restore();
+  }
+
+  function drawLoopSymbol (c, h) {
+    var r = 5;
+    c.save();
+    c.lineWidth = 0.9;
+    c.translate(0, h - r - 4);
+    c.beginPath();
+    var a = Math.PI / 2;
+    c.arc(0, 0, r, a - 0.5, a, true);
+    var l = r * 0.8;
+    c.moveTo(0, r + 1);
+    c.lineTo(-l, r + 1);
+    c.moveTo(0, r + 1);
+    c.lineTo(0, r - l);
     c.stroke();
     c.restore();
   }
@@ -248,6 +274,8 @@ var FluoCanvas = function() {
     drawParaDiamond: drawParaDiamond,
     drawError: drawError,
     drawCancel: drawCancel,
+    drawCrossInABox: drawCrossInABox,
+    drawLoopSymbol: drawLoopSymbol,
     draw_error_symbol: drawErrorSymbol,
     draw_sleep_symbol: drawSleepSymbol
   };
@@ -361,6 +389,7 @@ var FluoCan = function() {
     if ( ! parentHandler) parentHandler = Handler;
     var result = {};
     for (var k in parentHandler) result[k] = parentHandler[k];
+    for (var k in parentHandler) result['super_'+k] = parentHandler[k];
     return result;
   }
 
@@ -424,34 +453,18 @@ var FluoCan = function() {
     if (exp[2].length == 1) exp[1]['ref'] = exp[2][0];
   }
   SubprocessHandler.render = function (c, exp) {
-
     var width = this.getWidth(c, exp);
     var height = this.getHeight(c, exp);
     FluoCanvas.drawRoundedRect(c, width, height, 8);
     c.save();
     drawAttributes(c, exp, true, false, width, height);
     c.restore();
-
-    c.save(); // drawing a cross in a box
-    c.beginPath();
-    c.moveTo(-6, height);
-    c.lineTo(-6, height - 12);
-    c.lineTo(6, height - 12);
-    c.lineTo(6, height);
-    c.stroke();
-    c.beginPath();
-    c.moveTo(0, height - 10);
-    c.lineTo(0, height - 2);
-    c.stroke();
-    c.beginPath();
-    c.moveTo(-4, height - 6);
-    c.lineTo(4, height - 6);
-    c.stroke();
-    c.restore();
+    FluoCanvas.drawCrossInABox(c, height);
   };
   SubprocessHandler.getRealHeight = function (c, exp) {
     return 12 + 7 + (1 + attributeCount(exp)) * FluoCon.LINE_HEIGHT;
   };
+
 
   // TODO : fix rotated mode
   //
@@ -495,6 +508,15 @@ var FluoCan = function() {
       28 + 
       childrenMax(c, exp, 'getWidth'));
   };
+
+  var LoopHandler = newHandler(GenericWithChildrenHandler);
+  LoopHandler.render = function (c, exp) {
+    this.super_render(c, exp);
+    FluoCanvas.drawLoopSymbol(c, this.getHeight(c, exp));
+  }
+  LoopHandler.getHeight = function (c, exp) {
+    return 12 + this.super_getHeight(c, exp);
+  }
 
   // TODO : fix in rotated mode
   //
@@ -729,6 +751,8 @@ var FluoCan = function() {
     'sleep': SymbolHandler,
     'error': SymbolHandler,
     'subprocess': SubprocessHandler,
+    'loop': LoopHandler,
+    'cursor': LoopHandler,
     '_atts_': AttributeOnlyHandler,
     '_': GhostHandler
   };
