@@ -29,12 +29,11 @@ http://github.com/jmettraux/ruote-fluo
 
 == feedback
 
-user mailing list :        http://groups.google.com/group/openwferu-users
-developers mailing list :  http://groups.google.com/group/openwferu-dev
+user mailing list :  http://groups.google.com/group/openwferu-users
 
-issue tracker :            http://rubyforge.org/tracker/?atid=10023&group_id=2609&func=browse
+issue tracker :      http://rubyforge.org/tracker/?atid=10023&group_id=2609&func=browse
 
-irc :                      irc.freenode.net #ruote
+irc :                irc.freenode.net #ruote
 
 
 == author
@@ -45,5 +44,5 @@ http://jmettraux.wordpress.com
 
 == license
 
-BSD
+BSD (see LICENSE.txt)
 
