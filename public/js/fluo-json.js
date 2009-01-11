@@ -156,6 +156,7 @@ function fluoToJson (o, quotes) {
   if (o == null) return 'null';
   var t = (typeof o);
   if (t == 'undefined') return 'null' // really ?
+  if (t == 'number') return o;
   if (t == 'string') {
     //return quotes ? '"' + o + '"' : o;
     if ( ! quotes) return o;
