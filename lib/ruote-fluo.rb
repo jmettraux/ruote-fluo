@@ -1,6 +1,6 @@
 
 require 'json' # gem 'json_pure'
-require 'openwfe/expool/parser' # gem 'ruote'
+require 'openwfe/expool/def_parser' # gem 'ruote'
 
 include Rufus::Sixjo
 

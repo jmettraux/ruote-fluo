@@ -46,7 +46,7 @@ var FluoCanvas = function() {
       c.translate(bwidth/2, bheight/2);
       c.rotate(Math.PI/2);
     }
-    var w1 = c.mozMeasureText(text);
+    var w1 = c.measure(text);
     var w0 = 0;
     if (symbolFuncName) w0 = SW;
     var w = w0 + w1;
@@ -57,7 +57,7 @@ var FluoCanvas = function() {
       c.translate(0, 4);
     }
     c.translate(w0, 0);
-    c.mozDrawText(text);
+    c.write(text);
     c.translate(+(w/2-w0), -17);
 
     c.restore();
@@ -320,10 +320,10 @@ var FluoCan = function() {
 
   function attributeMaxWidth (c, exp, title) {
     var max = 0;
-    if (title) max = c.mozMeasureText(title);
+    if (title) max = c.measure(title);
     for (var attname in exp[1]) {
       var text = ''+attname+': '+fluoToJson(exp[1][attname], false);
-      var l = c.mozMeasureText(text);
+      var l = c.measure(text);
       //if (attname.match(/^on[-\_](error|cancel)$/)) l += 30;
       if (l > max) max = l;
     }
@@ -567,7 +567,7 @@ var FluoCan = function() {
     return FluoCon.LINE_HEIGHT;
   };
   TextHandler.getRealWidth = function (c, exp) {
-    return c.mozMeasureText(this.getText(exp));
+    return c.measure(this.getText(exp));
   };
 
   // TODO : fix rotated mode
@@ -853,7 +853,8 @@ var FluoCan = function() {
       context.rotate(-Math.PI/2);
     }
 
-    context.mozTextStyle = "12px Helvetica";
+    context.mozTextStyle = "12px Helvetica Neue";
+    context.font = "12px Helvetica Neue";
 
     var fs = context.fillStyle;
     context.fillStyle = FluoCon.RGB_WHITE;
@@ -882,7 +883,7 @@ var FluoCan = function() {
   }
 
   function drawWorkitem (c, exp) {
-    var ww = c.mozMeasureText('wi');
+    var ww = c.measure('wi');
     c.save();
     if (c.canvas.horizontal == true) {
       c.rotate(Math.PI/2);
@@ -906,7 +907,7 @@ var FluoCan = function() {
     c.lineTo(-10, 0);
     c.stroke();
     c.translate(-ww/2, 3);
-    c.mozDrawText('wi');
+    c.write('wi');
     c.restore();
   }
 
@@ -986,13 +987,30 @@ var FluoCan = function() {
   }
 
   function neutralizeContext (c) {
-    if (window.navigator.userAgent.match(/Firefox/)) return;
-    c.mozDrawText = function (t) {
-      // do nothing
-    };
-    c.mozMeasureText = function (t) {
-      return t.length * 5;
-    };
+    //if (window.navigator.userAgent.match(/Firefox/)) return;
+    //c.mozDrawText = function (t) {
+    //  // do nothing
+    //};
+    //c.mozMeasureText = function (t) {
+    //  return t.length * 5;
+    //};
+    if (window.navigator.userAgent.match(/Firefox/)) {
+      c.write = function (t) {
+        this.mozDrawText(t);
+      }
+      c.measure = function (t) {
+        return this.mozMeasureText(t);
+      }
+    }
+    else { // Safari 4
+      c.write = function (t) {
+        this.fillText(t, 0, 0);
+      }
+      c.measure = function (t) {
+        return this.measureText(t).width;
+        return t.length * 5;
+      }
+    }
   }
 
   function isSubprocessName (exp, name) {
