@@ -205,7 +205,7 @@ var FluoCanvas = function() {
     c.moveTo(far[0], far[1]); c.lineTo(close[0], close[1]);
   }
 
-  function drawSleepSymbol (c, height) { // the 'clock'
+  function drawWaitSymbol (c, height) { // the 'clock'
     drawDoubleCircle(c, height, false);
     c.save();
     c.beginPath();
@@ -290,7 +290,8 @@ var FluoCanvas = function() {
     drawLoopSymbol: drawLoopSymbol,
     drawParaSymbol: drawParaSymbol,
     draw_error_symbol: drawErrorSymbol,
-    draw_sleep_symbol: drawSleepSymbol
+    draw_sleep_symbol: drawWaitSymbol,
+    draw_wait_symbol: drawWaitSymbol
   };
 }();
 
@@ -780,6 +781,7 @@ var FluoCan = function() {
     'set': TextHandler,
     'unset': TextHandler,
     'sleep': SymbolHandler,
+    'wait': SymbolHandler,
     'error': SymbolHandler,
     'subprocess': SubprocessHandler,
     'loop': LoopHandler,
