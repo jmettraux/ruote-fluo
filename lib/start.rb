@@ -19,7 +19,7 @@ end
 
 port = 4567 # TODO : optparse me
 
-puts ".. [#{Time.now}] ruote-rest listening on port #{port}"
+puts ".. [#{Time.now}] ruote-fluo listening on port #{port}"
 
 Rack::Handler::Mongrel.run(b, :Port => port) do |server|
   trap(:INT) do
