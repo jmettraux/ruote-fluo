@@ -125,6 +125,20 @@ var FluoTred = function () {
       expdiv.appendChild(buttons);
     }
 
+    var attPattern = /([^:]+)[:=]([^,]+),?/;
+    var headPattern = /^(\S*)( [.]*[^:=]*)?( .*)?$/;
+
+    function parseAttributes (s) {
+      var h = {};
+      while (s) {
+        m = s.match(attPattern);
+        if ( ! m) break;
+        h[m[1].tqstrip()] = m[2].tqstrip();
+        s = s.substring(m[0].length);
+      }
+      return h;
+    }
+
     return {
 
       render: function (node, exp) {
@@ -198,26 +212,9 @@ var FluoTred = function () {
         return d;
       },
 
-      attPattern: /([^:]+)[:=]([^,]+),?/,
-      headPattern: /^(\S*)( [.]*[^:=]*)?( .*)?$/,
-
-      parseAttributes: function (s) {
-
-        var h = {};
-
-        while (s) {
-          m = s.match(ExpressionHead.attPattern);
-          if ( ! m) break;
-          h[m[1].tqstrip()] = m[2].tqstrip();
-          s = s.substring(m[0].length);
-        }
-
-        return h;
-      },
-
       parse: function (s) {
 
-        var m = s.match(ExpressionHead.headPattern);
+        var m = s.match(headPattern);
 
         if (m == null) return ['---', {}, []];
 
@@ -230,7 +227,7 @@ var FluoTred = function () {
           if (t != '') children.push(t);
         }
 
-        atts = ExpressionHead.parseAttributes(m[3]);
+        atts = parseAttributes(m[3]);
 
         return [ expname, atts, children ];
       },
