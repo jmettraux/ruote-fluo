@@ -2,17 +2,12 @@
   name="TeaTesting"
   revision="0.2"
 >
-  <sequence
-    on-error="emergency"
-    on-cancel="decommission"
-  >
+  <sequence>
     <participant ref="Reception" />
     <concurrence>
       <participant ref="Ted" />
       <participant ref="Tang" />
     </concurrence>
-    <error if="surf">nada</error>
-    <sleep>3h</sleep>
     <participant ref="Reception" />
   </sequence>
 </process-definition>

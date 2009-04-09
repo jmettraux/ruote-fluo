@@ -19,7 +19,8 @@ load('public/js/fluo-json.js');
 
 ExpressionHead = {
 
-      attPattern: /([^:]+):([^,]+),?/,
+      attPattern: /([^:]+)[:=]([^,]+),?/,
+      headPattern: /^(\S*)( [.]*[^:=]*)?( .*)?$/,
 
       parseAttributes: function (s) {
 
@@ -36,7 +37,7 @@ ExpressionHead = {
       },
       parse: function (s) {
 
-        var m = s.match(/^(\S*)( [.]*[^:]*)?( .*)?$/);
+        var m = s.match(ExpressionHead.headPattern);
 
         if (m == null) return ['---', {}, []];
 
@@ -49,8 +50,6 @@ ExpressionHead = {
           if (t != '') children.push(t);
         }
 
-        //var atts = m[3];
-        //atts = atts ? fluoFromJson('({' + atts + '})') : {};
         atts = ExpressionHead.parseAttributes(m[3]);
 
         return [ expname, atts, children ];
@@ -97,4 +96,6 @@ assert_rep('participant {ref:alpha,} []', 'participant ref:alpha')
 assert_rep('participant {ref:alpha,} []', 'participant ref:"alpha"')
 assert_rep('participant {ref:alpha,} []', 'participant ref: "alpha"')
 assert_rep('participant {ref:alpha,} []', 'participant "ref": "alpha"')
+assert_rep('participant {ref:alpha,} []', 'participant ref="alpha"')
+assert_rep('participant {ref:alpha,} []', 'participant "ref"= "alpha"')
 
