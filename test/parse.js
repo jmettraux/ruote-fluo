@@ -5,12 +5,35 @@ String.prototype.tstrip = function () {
   while (s.charAt(s.length - 1) == ' ') s = s.substring(0, s.length - 1);
   return s;
 }
+String.prototype.qstrip = function () {
+  var s = this;
+  if (s.match(/".*"/)) s = s.substring(1, s.length - 1);
+  return s;
+}
+String.prototype.tqstrip = function () {
+  return this.tstrip().qstrip();
+}
 
 load('public/js/fluo-json.js');
 //load('public/js/fluo-tred.js');
 
 ExpressionHead = {
 
+      attPattern: /([^:]+):([^,]+),?/,
+
+      parseAttributes: function (s) {
+
+        var h = {};
+
+        while (s) {
+          m = s.match(ExpressionHead.attPattern);
+          if ( ! m) break;
+          h[m[1].tqstrip()] = m[2].tqstrip();
+          s = s.substring(m[0].length);
+        }
+
+        return h;
+      },
       parse: function (s) {
 
         var m = s.match(/^(\S*)( [.]*[^:]*)?( .*)?$/);
@@ -26,8 +49,9 @@ ExpressionHead = {
           if (t != '') children.push(t);
         }
 
-        var atts = m[3];
-        atts = atts ? fluoFromJson('({' + atts + '})') : {};
+        //var atts = m[3];
+        //atts = atts ? fluoFromJson('({' + atts + '})') : {};
+        atts = ExpressionHead.parseAttributes(m[3]);
 
         return [ expname, atts, children ];
       },
