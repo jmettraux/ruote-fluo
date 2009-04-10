@@ -2,7 +2,7 @@
   name="TeaTesting"
   revision="0.2"
 >
-  <sequence>
+  <sequence on-error="quit">
     <participant ref="Reception" />
     <concurrence>
       <participant ref="Ted" />
