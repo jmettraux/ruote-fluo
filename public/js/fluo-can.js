@@ -836,7 +836,7 @@ var FluoCan = function() {
     exp.expid = expid;
     if ((typeof exp) == 'string') return;
     for (var i = 0; i < exp[2].length; i++) {
-      identifyExpressions(exp[2][i], expid + '.' + i);
+      identifyExpressions(exp[2][i], expid + '_' + i);
     }
   }
 
