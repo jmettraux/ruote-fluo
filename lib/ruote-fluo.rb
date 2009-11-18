@@ -1,9 +1,10 @@
 
-require 'json' # gem 'json_pure'
-require 'openwfe/expool/def_parser' # gem 'ruote'
-require 'openwfe/expressions/expression_tree'
+require 'json' # gem install json_pure
+require 'ruote/parser' # gem install ruote
 
-include Rufus::Sixjo
+
+set :public, File.expand_path(File.join(File.dirname(__FILE__), '..', 'public'))
+set :views, File.expand_path(File.join(File.dirname(__FILE__), '..', 'views'))
 
 
 get '/' do
@@ -13,14 +14,11 @@ get '/' do
   i = pdef.rindex('/')
   pdef = pdef[i + 1..-1] if i
 
-  pdef = File.open("public/#{pdef}").readlines.join
-
-  prep = OpenWFE::DefParser.parse(pdef)
-  prep = prep.to_a.to_json
+  tree = Ruote::Parser.parse(File.join(options.public, pdef)).to_json
 
   wi = request['wi']
 
-  erb :index, :locals => { :prep => prep, :wi => wi }
+  erb :process, :locals => { :tree => tree, :wi => wi }
 end
 
 get '/defs' do
@@ -43,15 +41,9 @@ post '/def' do
   response.headers['Content-Type'] = 'text/plain'
 
   case params[:out_type]
-    when 'xml'
-      s = ''
-      REXML::Formatters::Pretty.new.write(
-        OpenWFE::ExpressionTree.to_xml(tree), s)
-      s
-    when 'ruby'
-      OpenWFE::ExpressionTree.to_code_s(tree).to_s
-    else
-      json
+    when 'xml' then Ruote::Parser.to_xml(tree)
+    when 'ruby' then Ruote::Parser.to_ruby(tree)
+    else json
   end
 end
 
@@ -64,7 +56,6 @@ get '/intake' do # work/get around... not very restful...
   pdef = Rack::Utils.unescape(pdef)
 
   erb(
-    :index,
-    :locals => {
-      :prep => OpenWFE::DefParser.parse(pdef).to_a.to_json, :wi => nil })
+    :process,
+    :locals => { :tree => Ruote::Parser.parse(pdef).to_json, :wi => nil })
 end

@@ -1,7 +1,7 @@
 
 /*
- *  OpenWFEru - open source ruby workflow and bpm engine
- *  (c) 2007-2008 OpenWFE.org
+ *  Ruote - open source ruby workflow engine
+ *  (c) 2005-2009 jmettraux@gmail.com
  *
  *  OpenWFEru is freely distributable under the terms 
  *  of a BSD-style license.
@@ -323,7 +323,7 @@ var FluoCan = function() {
     var max = 0;
     if (title) max = c.measure(title);
     for (var attname in exp[1]) {
-      var text = ''+attname+': '+fluoToJson(exp[1][attname], false);
+      var text = '' + attname + ': ' + fluoToJson(exp[1][attname], false);
       var l = c.measure(text);
       //if (attname.match(/^on[-\_](error|cancel)$/)) l += 30;
       if (l > max) max = l;
@@ -332,24 +332,29 @@ var FluoCan = function() {
   }
 
   function childText (exp) {
-    var exp2 = exp[2];
-    if (exp2.length == 1 && ((typeof exp2[0]) == 'string')) return exp2[0];
+    //var exp2 = exp[2];
+    //if (exp2.length == 1 && ((typeof exp2[0]) == 'string')) return exp2[0];
+    //return null;
+    for (var k in exp[1]) {
+      var v = exp[1][k];
+      if (v == null) return k;
+    }
     return null;
   }
 
-  //
   // returns the list of attribute names (sorted)
   //
   function attributeNames (exp) {
     var an = [];
-    for (var k in exp[1]) an.push(k);
+    for (var k in exp[1]) { an.push(k); }
     return an.sort();
   }
 
-  function attributeCount (exp, strchild) {
-    var l = attributeNames(exp).length;
-    var ct = strchild && childText(exp);
-    return l + (ct ? 1 : 0);
+  function attributeCount (exp) {
+    //var l = attributeNames(exp).length;
+    //var ct = strchild && childText(exp);
+    //return l + (ct ? 1 : 0);
+    return attributeNames(exp).length;
   }
 
   function carriageReturn (c) {
@@ -357,27 +362,45 @@ var FluoCan = function() {
     else c.translate(0, FluoCon.LINE_HEIGHT);
   }
 
-  function drawAttributes (c, exp, expname, strchild, width, height) {
+  function drawAttributes (c, exp, expname, namePlus, width, height) {
+
     if (expname) {
       FluoCanvas.drawText(c, exp[0], width, height);
       carriageReturn(c);
     }
-    var ct = strchild && childText(exp);
-    if (ct) {
+
+    //var ct = strchild && childText(exp);
+    var ct = childText(exp);
+    if (namePlus && ct) {
       FluoCanvas.drawText(c, ct, width, height);
       carriageReturn(c);
     }
+
     var attname;
     var attnames = attributeNames(exp, expname);
+
     while (attname = attnames.shift()) {
-      var v = fluoToJson(exp[1][attname], false);
-      if (attname.match(/^on[-\_]error$/))
+
+      var v = exp[1][attname];
+      if (v != null) v = fluoToJson(v, false);
+
+      if (attname.match(/^on[-\_]error$/)) {
         FluoCanvas.drawText(c, v, width, height, 'drawError');
-      else if (attname.match(/^on[-\_]cancel$/))
+        carriageReturn(c);
+      }
+      else if (attname.match(/^on[-\_]cancel$/)) {
         FluoCanvas.drawText(c, v, width, height, 'drawCancel');
-      else
-        FluoCanvas.drawText(c, attname + ": " + v, width, height);
-      carriageReturn(c);
+        carriageReturn(c);
+      }
+      else {
+        var t = attname;
+        //alert(fluoToJson([ t, ct, namePlus ]));
+        if (t != ct) {
+          if (v != null) t = t + ': ' + v;
+          FluoCanvas.drawText(c, t, width, height);
+          carriageReturn(c);
+        }
+      }
     }
   }
 
@@ -560,7 +583,8 @@ var FluoCan = function() {
     var t = exp[0];
     var ct = childText(exp); if (ct) t += (' ' + ct);
     for (var attname in exp[1]) {
-      t += (' ' + attname + ': "' + exp[1][attname] + '"');
+      var v = exp[1][attname];
+      t += (' ' + attname + ': "' + v + '"');
     }
     return t;
   };
@@ -590,7 +614,7 @@ var FluoCan = function() {
     c.restore();
   };
   SymbolHandler.getRealHeight = function (c, exp) {
-    return attributeCount(exp, true) * FluoCon.LINE_HEIGHT + SymbolHandler.SYMBOL_HEIGHT;
+    return attributeCount(exp) * FluoCon.LINE_HEIGHT + SymbolHandler.SYMBOL_HEIGHT;
   };
   SymbolHandler.getRealWidth = function (c, exp) {
     return attributeMaxWidth(c, exp, exp[0]);
@@ -603,7 +627,7 @@ var FluoCan = function() {
 
   var VerticalHandler = newHandler();
   VerticalHandler.adjust = function (exp) {
-    if (attributeCount(exp, true) > 0) exp[2].unshift([ '_atts_', exp[1], [] ]);
+    if (attributeCount(exp) > 0) exp[2].unshift([ '_atts_', exp[1], [] ]);
   }
   VerticalHandler.render = function (c, exp) {
     c.save();
@@ -785,6 +809,7 @@ var FluoCan = function() {
     'error': SymbolHandler,
     'subprocess': SubprocessHandler,
     'loop': LoopHandler,
+    'repeat': LoopHandler,
     'cursor': LoopHandler,
     'concurrent-iterator': ConcurrentIteratorHandler,
 
@@ -801,13 +826,9 @@ var FluoCan = function() {
     '_': GhostHandler
   };
 
-  var MINORS = [
-    'set', 'set-fields', 'unset', 'description'
-  ];
+  var MINORS = [ 'set', 'set-fields', 'unset', 'description' ];
 
-  var DEFINERS = [ 
-    'process-definition', 'workflow-definition', 'define'
-  ];
+  var DEFINERS = [ 'process-definition', 'workflow-definition', 'define' ];
 
   function identifyExpressions (exp, expid) {
     if (exp.expid) return; // identify only once
@@ -959,7 +980,6 @@ var FluoCan = function() {
     return resolveCanvas(c).getContext('2d');
   }
 
-  //
   // replaces the canvas element with a new, cropped, one
   //
   function crop (canvas) {
@@ -1024,7 +1044,6 @@ var FluoCan = function() {
     return false;
   }
 
-  //
   // returns the raw height of an expression (caches it too)
   //
   function getHeight (c, exp) {
@@ -1036,7 +1055,6 @@ var FluoCan = function() {
     return exp.height;
   }
 
-  //
   // return the raw width of an expression
   //
   function getWidth (c, exp) {
@@ -1052,7 +1070,7 @@ var FluoCan = function() {
     if ((typeof exp) == 'string') return StringHandler;
     var h = HANDLERS[exp[0]];
     if (h) return h;
-    if (childText(exp)) return GenericHandler;
+    //if (childText(exp)) return GenericHandler;
     if (exp[2].length > 0) return GenericWithChildrenHandler;
     if (isSubprocessName(c.canvas.flow, exp[0])) return SubprocessHandler;
     return GenericHandler;

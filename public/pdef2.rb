@@ -1,8 +1,8 @@
 
-class MyProcessDefinition < OpenWFE::ProcessDefinition
-    cursor do
-        participant "one"
-        participant "two"
-    end
+Ruote.process_definition 'x' do
+  repeat do
+    participant "one"
+    participant "two"
+  end
 end
 

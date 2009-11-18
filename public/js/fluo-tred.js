@@ -1,9 +1,9 @@
 
 /*
- *  OpenWFEru - open source ruby workflow and bpm engine
- *  (c) 2008 John Mettraux
+ *  Ruote - open source ruby workflow engine
+ *  (c) 2005-2009 John Mettraux
  *
- *  OpenWFEru is freely distributable under the terms 
+ *  Ruote is freely distributable under the terms 
  *  of a BSD-style license.
  *  For details, see the OpenWFEru web site: http://openwferu.rubyforge.org
  *
