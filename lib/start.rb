@@ -1,6 +1,5 @@
 
-$: << "~/w/ruota/lib"
-$: << "~/rufus/rufus-sixjo/lib"
+$: << File.join(File.dirname(__FILE__), %w[ .. vendor ruote lib ])
 
 require 'rubygems'
 require 'sinatra' # gem install sinatra

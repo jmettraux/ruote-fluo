@@ -1,0 +1,48 @@
+
+= ruote-fluo
+
+http://ruote.rubyforge.org
+
+This is the development bench of the javascript library used to render graphically process definitions in ruote-kit (http://github.com/kennethkalmer/ruote-kit)
+
+There is a demo of ruote-fluo (probably not the latest version) at http://difference.openwfe.org:4567
+
+
+== using
+
+  gem install -y --no-rdoc --no-ri sinatra json_pure
+
+  git clone git://github.com/jmettraux/ruote-fluo.git
+
+  git clone git://github.com/jmettraux/ruote.git
+  ln -s ../../ruote ruote-fluo/vendor/
+
+  cd ruote-fluo && ruby lib/start.rb
+
+then head with your browser (firefox or safari) to http://localhost:4567
+
+
+== source
+
+http://github.com/jmettraux/ruote-fluo
+
+  git clone git://github.com/jmettraux/ruote-fluo.git
+
+
+== feedback
+
+user mailing list :  http://groups.google.com/group/openwferu-users
+issue tracker :      http://github.com/jmettraux/ruote-fluo/issues
+irc :                irc.freenode.net #ruote
+
+
+== author
+
+John Mettraux, jmettraux@gmail.com
+http://jmettraux.wordpress.com
+
+
+== license
+
+MIT
+
