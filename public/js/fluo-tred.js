@@ -452,7 +452,7 @@ var FluoTred = function () {
       if (e.nodeType != 1) continue;
       if (e.className != 'tred_expression') continue;
       childid += 1;
-      var ei = computeExpId(node, e, expid + '.' + childid);
+      var ei = computeExpId(node, e, expid + '_' + childid);
       if (ei != null) return ei;
     }
 
