@@ -39,7 +39,7 @@ total = 0;
             if (i < 0) value = unquoteKey(svalue);
             else limit = i;
           }
-          if (value) {
+          if (value != null) {
 
             accumulator[key] = value;
 

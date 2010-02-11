@@ -27,7 +27,7 @@ try {
     return null;
   }
 } catch (e) {
-  // probably testing via Rhino
+  // when testing via spidermonkey
 }
 
 String.prototype.tstrip = function () {
@@ -36,14 +36,14 @@ String.prototype.tstrip = function () {
   while (s.charAt(s.length - 1) == ' ') s = s.substring(0, s.length - 1);
   return s;
 }
-String.prototype.qstrip = function () {
-  var s = this;
-  if (s.match(/".*"/)) s = s.substring(1, s.length - 1);
-  return s;
-}
-String.prototype.tqstrip = function () {
-  return this.tstrip().qstrip();
-}
+//String.prototype.qstrip = function () {
+//  var s = this;
+//  if (s.match(/".*"/)) s = s.substring(1, s.length - 1);
+//  return s;
+//}
+//String.prototype.tqstrip = function () {
+//  return this.tstrip().qstrip();
+//}
 
 var FluoTred = function () {
 
@@ -90,7 +90,7 @@ var FluoTred = function () {
             if (i < 0) value = unquoteKey(svalue);
             else limit = i;
           }
-          if (value) {
+          if (value != null) {
 
             accumulator[key] = value;
 
