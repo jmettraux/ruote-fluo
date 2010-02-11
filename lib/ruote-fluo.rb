@@ -22,8 +22,7 @@
 # Made in Japan.
 #++
 
-$: << File.join(File.dirname(__FILE__), %w[ .. ruote lib ])
-  # TODO : vendor me
+$: << File.join(File.dirname(__FILE__), %w[ .. .. ruote lib ])
 
 require 'rubygems'
 require 'sinatra' # gem install sinatra
@@ -32,6 +31,9 @@ require 'ruote/parser' # gem install ruote
 
 use Rack::CommonLogger
 use Rack::ShowExceptions
+
+set :public, File.expand_path(File.join(File.dirname(__FILE__), '..', 'public'))
+set :views, File.expand_path(File.join(File.dirname(__FILE__), '..', 'views'))
 
 
 get '/' do
