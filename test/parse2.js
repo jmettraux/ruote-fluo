@@ -2,6 +2,13 @@
 win = 0;
 total = 0;
 
+String.prototype.tstrip = function () {
+  var s = this;
+  while (s.charAt(0) == ' ') s = s.substring(1);
+  while (s.charAt(s.length - 1) == ' ') s = s.substring(0, s.length - 1);
+  return s;
+}
+
 // ----------------------------------------------------------------------------
   var Attributes = function() {
 
@@ -15,6 +22,11 @@ total = 0;
     function parse (s, accumulator) {
 
       if ( ! accumulator) accumulator = {};
+
+      if (s == undefined) s = '';
+      s = s.tstrip();
+
+      if (s == '') return accumulator;
 
       var icolon = s.indexOf(':');
       var icomma = s.indexOf(',');
@@ -30,7 +42,7 @@ total = 0;
         var limit = m[2].length;
         while (true) {
           var svalue = m[2].substring(0, limit);
-          var value = null;
+          var value = undefined;
           try {
             value = JSON.parse(svalue);
           }
@@ -39,7 +51,7 @@ total = 0;
             if (i < 0) value = unquoteKey(svalue);
             else limit = i;
           }
-          if (value != null) {
+          if (value != undefined) {
 
             accumulator[key] = value;
 
@@ -97,6 +109,8 @@ assert_rep('{"val":1,"var":[2]}', 'val:1, var:[2]');
 assert_rep('{"john":null,"val":1,"var":[2]}', 'john, val:1, var:[2]');
 
 assert_rep('{"name":"my def","revision":0}', 'name: "my def", revision: 0');
+
+assert_rep('{"alpha":null,"timeout":"2d"}', ' alpha, timeout: 2d');
 
 print('-------------------------------------------------------------------------------')
 print("\n... " + win + " / " + total + "\n");

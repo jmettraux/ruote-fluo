@@ -3,8 +3,8 @@
  *  Ruote - open source ruby workflow engine
  *  (c) 2005-2010 John Mettraux
  *
- *  Ruote is freely distributable under the terms of a MIT license.
- *  For details, see the OpenWFEru web site: http://ruote.rubyforge.org
+ *  Ruote is freely distributable under the terms of the MIT license.
+ *  For details, see the ruote web site: http://ruote.rubyforge.org
  *
  *  This piece of hack was created during the RubyKaigi2008,
  *  between Tsukuba and Akihabara.
@@ -67,6 +67,11 @@ var FluoTred = function () {
 
       if ( ! accumulator) accumulator = {};
 
+      if (s == undefined) s = '';
+      s = s.tstrip();
+
+      if (s == '') return accumulator;
+
       var icolon = s.indexOf(':');
       var icomma = s.indexOf(',');
 
@@ -90,7 +95,7 @@ var FluoTred = function () {
             if (i < 0) value = unquoteKey(svalue);
             else limit = i;
           }
-          if (value != null) {
+          if (value != undefined) {
 
             accumulator[key] = value;
 
@@ -180,9 +185,12 @@ var FluoTred = function () {
       expdiv.appendChild(buttons);
     }
 
-    var headPattern = /^(\S*)( [.]*[^:]*)?( .*)?$/;
+    var headPattern = /^(\S+)(.*)$/;
 
     function renderAttributes (h) {
+      //
+      // TODO : alpha: null --> alpha
+      //
       s = '';
       for (var k in h) {
         s += ('' + k + ': ' + JSON.stringify(h[k]) + ', ');
@@ -269,18 +277,13 @@ var FluoTred = function () {
 
         if (m == null) return [ '---', {}, [] ];
 
-        var expname = m[1];
+        //console.log("sending to attparse : >" + m[2] + "<");
 
-        var children = [];
-        if (m[2]) {
-          var t = m[2].tstrip();
-          if (t.match(/".*"/)) t = t.substring(1, t.length - 1);
-          if (t != '') children.push(t);
-        }
+        var attributes = Attributes.parse(m[2]);
 
-        atts = Attributes.parse(m[3]);
+        //console.log(JSON.stringify([ m[1], attributes, [] ]));
 
-        return [ expname, atts, children ];
+        return [ m[1], attributes, [] ];
       },
 
       toExp: function (node) {

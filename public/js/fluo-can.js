@@ -1,11 +1,10 @@
 
 /*
  *  Ruote - open source ruby workflow engine
- *  (c) 2005-2009 jmettraux@gmail.com
+ *  (c) 2005-2010 jmettraux@gmail.com
  *
- *  OpenWFEru is freely distributable under the terms 
- *  of a BSD-style license.
- *  For details, see the OpenWFEru web site: http://openwferu.rubyforge.org
+ *  Ruote is freely distributable under the terms of the MIT license.
+ *  For details, see the ruote web site: http://ruote.rubyforge.org
  *
  *  Made in Japan
  *
@@ -331,16 +330,16 @@ var FluoCan = function() {
     return max;
   }
 
-  function childText (exp) {
-    //var exp2 = exp[2];
-    //if (exp2.length == 1 && ((typeof exp2[0]) == 'string')) return exp2[0];
-    //return null;
-    for (var k in exp[1]) {
-      var v = exp[1][k];
-      if (v == null) return k;
-    }
-    return null;
-  }
+  //function childText (exp) {
+  //  //var exp2 = exp[2];
+  //  //if (exp2.length == 1 && ((typeof exp2[0]) == 'string')) return exp2[0];
+  //  //return null;
+  //  for (var k in exp[1]) {
+  //    var v = exp[1][k];
+  //    if (v == null) return k;
+  //  }
+  //  return null;
+  //}
 
   // returns the list of attribute names (sorted)
   //
@@ -370,11 +369,11 @@ var FluoCan = function() {
     }
 
     //var ct = strchild && childText(exp);
-    var ct = childText(exp);
-    if (namePlus && ct) {
-      FluoCanvas.drawText(c, ct, width, height);
-      carriageReturn(c);
-    }
+    //var ct = childText(exp);
+    //if (namePlus && ct) {
+    //  FluoCanvas.drawText(c, ct, width, height);
+    //  carriageReturn(c);
+    //}
 
     var attname;
     var attnames = attributeNames(exp, expname);
@@ -394,11 +393,11 @@ var FluoCan = function() {
       }
       else {
         var t = attname;
-        if (t != ct) {
-          if (v != null) t = t + ': ' + v;
-          FluoCanvas.drawText(c, t, width, height);
-          carriageReturn(c);
-        }
+        //if (t != ct) {
+        if (v != null) t = t + ': ' + v;
+        FluoCanvas.drawText(c, t, width, height);
+        carriageReturn(c);
+        //}
       }
     }
   }
@@ -447,8 +446,8 @@ var FluoCan = function() {
 
   var GenericHandler = newHandler();
   GenericHandler.adjust = function (exp) {
-    var ct = childText(exp);
-    if (ct) exp[0] = exp[0] + ' ' + ct;
+    //var ct = childText(exp);
+    //if (ct) exp[0] = exp[0] + ' ' + ct;
   }
   GenericHandler.render = function (c, exp) {
     var width = this.getWidth(c, exp);
@@ -468,8 +467,8 @@ var FluoCan = function() {
 
   var AttributeOnlyHandler = newHandler();
   AttributeOnlyHandler.adjust = function (exp) {
-    var ct = childText(exp);
-    if (ct) exp[0] = exp[0] + ' ' + ct;
+    //var ct = childText(exp);
+    //if (ct) exp[0] = exp[0] + ' ' + ct;
   }
   AttributeOnlyHandler.render = function (c, exp) {
     var width = this.getWidth(c, exp);
@@ -580,7 +579,7 @@ var FluoCan = function() {
   };
   TextHandler.getText = function (exp) {
     var t = exp[0];
-    var ct = childText(exp); if (ct) t += (' ' + ct);
+    //var ct = childText(exp); if (ct) t += (' ' + ct);
     for (var attname in exp[1]) {
       var v = exp[1][attname];
       t += (' ' + attname + ': "' + v + '"');
@@ -626,7 +625,7 @@ var FluoCan = function() {
 
   var VerticalHandler = newHandler();
   VerticalHandler.adjust = function (exp) {
-    if (attributeCount(exp) > 0) exp[2].unshift([ '_atts_', exp[1], [] ]);
+    //if (attributeCount(exp) > 0) exp[2].unshift([ '_atts_', exp[1], [] ]);
   }
   VerticalHandler.render = function (c, exp) {
     c.save();
@@ -821,7 +820,7 @@ var FluoCan = function() {
     'jump': TextHandler,
       // 'commands'
 
-    '_atts_': AttributeOnlyHandler,
+    //'_atts_': AttributeOnlyHandler,
     '_': GhostHandler
   };
 
