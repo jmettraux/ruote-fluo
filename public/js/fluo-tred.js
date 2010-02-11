@@ -36,14 +36,6 @@ String.prototype.tstrip = function () {
   while (s.charAt(s.length - 1) == ' ') s = s.substring(0, s.length - 1);
   return s;
 }
-//String.prototype.qstrip = function () {
-//  var s = this;
-//  if (s.match(/".*"/)) s = s.substring(1, s.length - 1);
-//  return s;
-//}
-//String.prototype.tqstrip = function () {
-//  return this.tstrip().qstrip();
-//}
 
 var FluoTred = function () {
 
@@ -188,12 +180,18 @@ var FluoTred = function () {
     var headPattern = /^(\S+)(.*)$/;
 
     function renderAttributes (h) {
-      //
-      // TODO : alpha: null --> alpha
-      //
+
+      var keys = [];
+      for (var k in h) keys.push(k);
+      keys = keys.sort();
+
       s = '';
-      for (var k in h) {
-        s += ('' + k + ': ' + JSON.stringify(h[k]) + ', ');
+      for (var i = 0; i < keys.length; i++) {
+        var k = keys[i];
+        s += k;
+        var v = JSON.stringify(h[k]);
+        if (v != 'null') s += (': ' + v);
+        s += ', ';
       }
       if (s.length > 1) s = s.substring(0, s.length - 2);
       return s;
@@ -277,11 +275,7 @@ var FluoTred = function () {
 
         if (m == null) return [ '---', {}, [] ];
 
-        //console.log("sending to attparse : >" + m[2] + "<");
-
         var attributes = Attributes.parse(m[2]);
-
-        //console.log(JSON.stringify([ m[1], attributes, [] ]));
 
         return [ m[1], attributes, [] ];
       },
@@ -528,7 +522,8 @@ var FluoTred = function () {
   //
   return {
 
-    ExpressionHead: ExpressionHead, // for testing purposes
+    ExpressionHead: ExpressionHead,
+    Attributes: Attributes, // for testing purposes
 
     renderFlow: renderFlow,
     addExpression: addExpression,

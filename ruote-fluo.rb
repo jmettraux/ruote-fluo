@@ -68,7 +68,7 @@ post '/def' do
   response.headers['Content-Type'] = 'text/plain'
 
   case params[:out_type]
-    when 'xml' then Ruote::Parser.to_xml(tree)
+    when 'xml' then Ruote::Parser.to_xml(tree, :indent => 2)
     when 'ruby' then Ruote::Parser.to_ruby(tree)
     else json
   end

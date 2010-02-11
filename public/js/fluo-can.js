@@ -368,20 +368,12 @@ var FluoCan = function() {
       carriageReturn(c);
     }
 
-    //var ct = strchild && childText(exp);
-    //var ct = childText(exp);
-    //if (namePlus && ct) {
-    //  FluoCanvas.drawText(c, ct, width, height);
-    //  carriageReturn(c);
-    //}
-
     var attname;
     var attnames = attributeNames(exp, expname);
 
     while (attname = attnames.shift()) {
 
-      var v = exp[1][attname];
-      if (v != null) v = JSON.stringify(v);
+      var v = JSON.stringify(exp[1][attname]);
 
       if (attname.match(/^on[-\_]error$/)) {
         FluoCanvas.drawText(c, v, width, height, 'drawError');
@@ -393,11 +385,9 @@ var FluoCan = function() {
       }
       else {
         var t = attname;
-        //if (t != ct) {
-        if (v != null) t = t + ': ' + v;
+        if (v != 'null') t = t + ': ' + v;
         FluoCanvas.drawText(c, t, width, height);
         carriageReturn(c);
-        //}
       }
     }
   }

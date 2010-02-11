@@ -2,71 +2,7 @@
 win = 0;
 total = 0;
 
-String.prototype.tstrip = function () {
-  var s = this;
-  while (s.charAt(0) == ' ') s = s.substring(1);
-  while (s.charAt(s.length - 1) == ' ') s = s.substring(0, s.length - 1);
-  return s;
-}
-
-// ----------------------------------------------------------------------------
-  var Attributes = function() {
-
-    function unquoteKey (k) {
-
-      var m = k.match(/^"([^"]*)"$|^'([^']*)'$/);
-      if (m) return m[1] || m[2];
-      return k;
-    }
-
-    function parse (s, accumulator) {
-
-      if ( ! accumulator) accumulator = {};
-
-      if (s == undefined) s = '';
-      s = s.tstrip();
-
-      if (s == '') return accumulator;
-
-      var icolon = s.indexOf(':');
-      var icomma = s.indexOf(',');
-
-      if (icomma > 0 && icomma < icolon) {
-        accumulator[unquoteKey(s.substring(0, icomma))] = null;
-        return parse(s.substring(icomma + 1), accumulator);
-      }
-
-      var m = s.match(/^\s*([^:]+):\s*(.+)$/);
-      if (m) {
-        var key = m[1];
-        var limit = m[2].length;
-        while (true) {
-          var svalue = m[2].substring(0, limit);
-          var value = undefined;
-          try {
-            value = JSON.parse(svalue);
-          }
-          catch (e) {
-            var i = svalue.lastIndexOf(',');
-            if (i < 0) value = unquoteKey(svalue);
-            else limit = i;
-          }
-          if (value != undefined) {
-
-            accumulator[key] = value;
-
-            if (limit == m[2].length) return accumulator;
-            else return parse(m[2].substring(limit + 1), accumulator);
-          }
-        }
-      }
-      accumulator[s] = null;
-      return accumulator;
-    }
-
-    return { parse: parse };
-  }();
-// ----------------------------------------------------------------------------
+load('public/js/fluo-tred.js');
 
 function assert_rep (goal, source) {
 
@@ -74,8 +10,7 @@ function assert_rep (goal, source) {
 
   total++;
 
-  //var result = FluoTred.ExpressionHead.parse(source);
-  var result = Attributes.parse(source);
+  var result = FluoTred.Attributes.parse(source);
   result = JSON.stringify(result);
 
   if (result == goal) {
