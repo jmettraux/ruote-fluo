@@ -12,7 +12,7 @@ require 'rack/utils'
 require 'openwfe'
 
 DEF =
-  OpenWFE.process_definition :name => 'toto' do
+  Ruote.process_definition :name => 'toto' do
     sequence do
       participant 'alpha'
       participant 'bravo'

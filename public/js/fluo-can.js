@@ -323,7 +323,7 @@ var FluoCan = function() {
     var max = 0;
     if (title) max = c.measure(title);
     for (var attname in exp[1]) {
-      var text = '' + attname + ': ' + fluoToJson(exp[1][attname], false);
+      var text = '' + attname + ': ' + JSON.stringify(exp[1][attname]);
       var l = c.measure(text);
       //if (attname.match(/^on[-\_](error|cancel)$/)) l += 30;
       if (l > max) max = l;
@@ -382,7 +382,7 @@ var FluoCan = function() {
     while (attname = attnames.shift()) {
 
       var v = exp[1][attname];
-      if (v != null) v = fluoToJson(v, false);
+      if (v != null) v = JSON.stringify(v);
 
       if (attname.match(/^on[-\_]error$/)) {
         FluoCanvas.drawText(c, v, width, height, 'drawError');
@@ -394,7 +394,6 @@ var FluoCan = function() {
       }
       else {
         var t = attname;
-        //alert(fluoToJson([ t, ct, namePlus ]));
         if (t != ct) {
           if (v != null) t = t + ': ' + v;
           FluoCanvas.drawText(c, t, width, height);

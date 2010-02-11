@@ -2,9 +2,10 @@
 = ruote-fluo  CHANGELOG.txt
 
 
-== ruote-fluo 2.0.0      not yet released
+== ruote-fluo 2.1.7      not yet released
 
-- todo  : migrated from rufus-sixjo to sinatra
+- now using JSON .parse and .stringify
+- migrated from rufus-sixjo to sinatra
 
 
 == ruote-fluo 0.9.20      not released

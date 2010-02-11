@@ -1,6 +1,4 @@
 
-
-load('public/js/fluo-json.js');
 load('public/js/fluo-tred.js');
 
 /*

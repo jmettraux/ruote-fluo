@@ -1,11 +1,10 @@
 
 /*
  *  Ruote - open source ruby workflow engine
- *  (c) 2005-2009 John Mettraux
+ *  (c) 2005-2010 John Mettraux
  *
- *  Ruote is freely distributable under the terms 
- *  of a BSD-style license.
- *  For details, see the OpenWFEru web site: http://openwferu.rubyforge.org
+ *  Ruote is freely distributable under the terms of a MIT license.
+ *  For details, see the OpenWFEru web site: http://ruote.rubyforge.org
  *
  *  This piece of hack was created during the RubyKaigi2008,
  *  between Tsukuba and Akihabara.
@@ -54,6 +53,58 @@ var FluoTred = function () {
   //     FluoTred.imageRoot = 'http://my.image.server.exmaple.com/img'
   //
   var imageRoot = '/images';
+
+  var Attributes = function() {
+
+    function unquoteKey (k) {
+
+      var m = k.match(/^"([^"]*)"$|^'([^']*)'$/);
+      if (m) return m[1] || m[2];
+      return k;
+    }
+
+    function parse (s, accumulator) {
+
+      if ( ! accumulator) accumulator = {};
+
+      var icolon = s.indexOf(':');
+      var icomma = s.indexOf(',');
+
+      if (icomma > 0 && icomma < icolon) {
+        accumulator[unquoteKey(s.substring(0, icomma))] = null;
+        return parse(s.substring(icomma + 1), accumulator);
+      }
+
+      var m = s.match(/^\s*([^:]+):\s*(.+)$/);
+      if (m) {
+        var key = m[1];
+        var limit = m[2].length;
+        while (true) {
+          var svalue = m[2].substring(0, limit);
+          var value = null;
+          try {
+            value = JSON.parse(svalue);
+          }
+          catch (e) {
+            var i = svalue.lastIndexOf(',');
+            if (i < 0) value = unquoteKey(svalue);
+            else limit = i;
+          }
+          if (value) {
+
+            accumulator[key] = value;
+
+            if (limit == m[2].length) return accumulator;
+            else return parse(m[2].substring(limit + 1), accumulator);
+          }
+        }
+      }
+      accumulator[s] = null;
+      return accumulator;
+    }
+
+    return { parse: parse };
+  }();
   
   var ExpressionHead = function () {
 
@@ -130,30 +181,11 @@ var FluoTred = function () {
     }
 
     var headPattern = /^(\S*)( [.]*[^:]*)?( .*)?$/;
-    var keyPattern = /([^ :]+|".*") *:/;
-
-    function quoteKeys (s) {
-      var ss = '';
-      while (s) {
-        var m = s.match(keyPattern);
-        if ( ! m) {
-          ss += s;
-          break;
-        }
-        ss += s.substring(0, m.index - 1);
-        var m1 = m[1].tstrip();
-        if (m1.match(/^".*"$/)) ss += m1;
-        else ss += ('"' + m1 + '"');
-        ss += ':';
-        s = s.substring(m.index + m[0].length);
-      }
-      return ss;
-    }
 
     function renderAttributes (h) {
       s = '';
       for (var k in h) {
-        s += ('' + k + ': ' + fluoToJson(h[k]) + ', ');
+        s += ('' + k + ': ' + JSON.stringify(h[k]) + ', ');
       }
       if (s.length > 1) s = s.substring(0, s.length - 2);
       return s;
@@ -168,8 +200,6 @@ var FluoTred = function () {
         var text = '';
         if ((typeof exp[2][0]) == 'string') text = exp[2].shift();
 
-        //var atts = fluoToJson(exp[1]);
-        //atts = atts.substring(1, atts.length - 1);
         var atts = renderAttributes(exp[1]);
 
         var d = document.createElement('div');
@@ -233,10 +263,6 @@ var FluoTred = function () {
         return d;
       },
 
-      parseAttributes: function (s) {
-        return fluoFromJson("{" + quoteKeys(s) + "}");
-      },
-
       parse: function (s) {
 
         var m = s.match(headPattern);
@@ -252,7 +278,7 @@ var FluoTred = function () {
           if (t != '') children.push(t);
         }
 
-        atts = ExpressionHead.parseAttributes(m[3]);
+        atts = Attributes.parse(m[3]);
 
         return [ expname, atts, children ];
       },
@@ -265,7 +291,7 @@ var FluoTred = function () {
         var text = node.childNodes[1].firstChild.nodeValue;
         var atts = node.childNodes[2].firstChild.nodeValue;
 
-        atts = ExpressionHead.parseAttributes(atts);
+        atts = Attributes.parse(atts);
 
         var children = [];
         if (text != '') children.push(text.tstrip()); 
@@ -281,7 +307,7 @@ var FluoTred = function () {
     if ((typeof node) == 'string') 
       node = document.getElementById(node);
 
-    return fluoToJson(toTree(node));
+    return JSON.stringify(toTree(node));
   }
 
   function renderEnding (node, exp) {
