@@ -121,6 +121,7 @@ var FluoTred = function () {
       var outOpacity = 0.0;
 
       var buttons = document.createElement('span');
+      buttons.className = 'tred_buttons';
       buttons.style.opacity = outOpacity;
 
       var root = findTredRoot(expdiv);
