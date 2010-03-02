@@ -28,6 +28,8 @@ function assert_rep (goal, source) {
 ////assert_rep('["part", {"ref": "alpha"}, []]', 'part "ref"= "alpha"');
 
 assert_rep('{"alpha":null}', 'alpha')
+assert_rep('{"alpha":null}', '"alpha"')
+assert_rep('{"alpha":null}', "'alpha'")
 assert_rep('{"ref":"alpha"}', 'ref:alpha')
 assert_rep('{"ref":"alpha"}', 'ref: alpha')
 assert_rep('{"ref":"alpha"}', 'ref:"alpha"')

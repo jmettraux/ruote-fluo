@@ -96,7 +96,7 @@ var FluoTred = function () {
           }
         }
       }
-      accumulator[s] = null;
+      accumulator[unquoteKey(s)] = null;
       return accumulator;
     }
 
