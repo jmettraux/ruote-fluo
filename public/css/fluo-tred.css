@@ -1,41 +1,63 @@
+/* @override http://127.0.0.1:3000/stylesheets/fluo-tred.css */
 
+#tred {
+  font: 14px/1.5em monaco, mono;
+  color: #000;
+}
 .tred_expression {
-  line-height: 1.0;
 }
 .tred_expression_atts,
 .tred_text,
 .tred_expression_name,
 .tred_expression_string,
 .tred_ghost_button {
-  color: #888;
-  font-family: Courier;
-  font-size: 14px;
-  /*margin: 20px 10px;*/
 }
 .tred_expression_name {
-  color: blue;
+  color: #8b8f91;
 }
 .tred_expression_atts {
+}
+.tred_expression_string {
+  color: #82dd48;
 }
 .tred_exp_span {
   /*margin-right: 5px;*/
 }
+.tred_buttons {
+  /*opacity: 1 !important;*/
+  display: inline-block;
+  margin-left: 6px;
+}
 .tred_button {
-  color: blue;
   cursor: pointer;
-  margin-left: 3px;
+  padding-left: 1px;
 }
 .tred_exp > input[type="text"] {
-  color: #888;
-  font-family: Courier;
-  font-size: 14px;
-  border: 0px;
-  margin: 0px;
+  color: #000;
+  font: 14px/1em monaco, mono;
+  border: 0;
+  padding: 0 10px;
+  padding-top: 1px;
+  margin: 0;
+  margin-left: -11px;
+  margin-bottom: 1px;
   width: 400px;
-  height: 15px;
+  background: #86e74c;
+  border-radius: 15px;
+  -webkit-border-radius: 15px;
+  -moz-border-radius: 15px;
 }
 img.tred_button {
-  margin: 0px;
+  margin: 0;
   vertical-align: middle;
 }
 
+
+/* safari */
+
+@media screen and (-webkit-min-device-pixel-ratio:0) {
+.tred_exp > input[type="text"] {
+  padding-top: 2px;
+  margin-bottom: 0;
+}
+}
