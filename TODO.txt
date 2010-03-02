@@ -1,4 +1,5 @@
 
+[o] tred_expression_string[s] seem to have vanished
 [ ] local storage
 [ ] display properties for sequence (cursor ?)
 

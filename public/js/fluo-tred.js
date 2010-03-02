@@ -218,12 +218,12 @@ var FluoTred = function () {
         sen.appendChild(document.createTextNode(expname));
         d.appendChild(sen);
 
-        var ses = document.createElement('span');
-        ses.setAttribute('class', 'tred_exp_span tred_expression_string');
-        var t = text;
-        if (t != '') t = ' ' + t;
-        ses.appendChild(document.createTextNode(t));
-        d.appendChild(ses);
+        //var ses = document.createElement('span');
+        //ses.setAttribute('class', 'tred_exp_span tred_expression_string');
+        //var t = text;
+        //if (t != '') t = ' ' + t;
+        //ses.appendChild(document.createTextNode(t));
+        //d.appendChild(ses);
 
         var sea = document.createElement('span');
         sea.setAttribute('class', 'tred_exp_span tred_expression_atts');
@@ -252,7 +252,7 @@ var FluoTred = function () {
 
         var onclick = function () {
           d.removeChild(sen);
-          d.removeChild(ses);
+          //d.removeChild(ses);
           var input = document.createElement('input');
           input.setAttribute('type', 'text');
           input.value = expname + ' ' + atts;
@@ -264,7 +264,7 @@ var FluoTred = function () {
         };
 
         sen.onclick = onclick;
-        ses.onclick = onclick;
+        //ses.onclick = onclick;
         sea.onclick = onclick;
 
         return d;
@@ -291,9 +291,10 @@ var FluoTred = function () {
 
         atts = Attributes.parse(atts);
 
+        if (text) text = text.trim();
+        if (text != '') atts[text] = null;
+
         var children = [];
-        if (text != '') children.push(text.tstrip()); 
-          // child is just a string...
 
         return [ name, atts, children ];
       }
@@ -316,18 +317,15 @@ var FluoTred = function () {
     node.appendChild(ending);
   }
 
-  function renderExpressionString (node, s) {
-
-    var opening = document.createElement('div');
-
-    var sname = document.createElement('span');
-    sname.appendChild(document.createTextNode(s));
-    sname.setAttribute('onclick', 'EditableSpan.toInput(this);');
-    sname.className = 'tred_expression_string';
-    opening.appendChild(sname);
-
-    node.appendChild(opening);
-  }
+  //function renderExpressionString (node, s) {
+  //  var opening = document.createElement('div');
+  //  var sname = document.createElement('span');
+  //  sname.appendChild(document.createTextNode(s));
+  //  sname.setAttribute('onclick', 'EditableSpan.toInput(this);');
+  //  sname.className = 'tred_expression_string';
+  //  opening.appendChild(sname);
+  //  node.appendChild(opening);
+  //}
 
   function addExpression (parentExpNode, exp) {
 
