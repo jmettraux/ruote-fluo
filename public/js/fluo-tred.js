@@ -128,12 +128,10 @@ var FluoTred = function () {
 
       expdiv.onmouseover = function () { 
         buttons.style.opacity = 1.0; 
-        //var root = findTredRoot(expdiv);
         if (root.onOver) root.onOver(computeExpId(expdiv.parentNode));
       };
       expdiv.onmouseout = function () { 
         buttons.style.opacity = outOpacity; 
-        //var root = findTredRoot(expdiv);
         if (root.onOver) root.onOver(null);
       };
 
@@ -218,13 +216,6 @@ var FluoTred = function () {
         sen.appendChild(document.createTextNode(expname));
         d.appendChild(sen);
 
-        //var ses = document.createElement('span');
-        //ses.setAttribute('class', 'tred_exp_span tred_expression_string');
-        //var t = text;
-        //if (t != '') t = ' ' + t;
-        //ses.appendChild(document.createTextNode(t));
-        //d.appendChild(ses);
-
         var sea = document.createElement('span');
         sea.setAttribute('class', 'tred_exp_span tred_expression_atts');
         sea.appendChild(document.createTextNode(' ' + atts));
@@ -252,7 +243,6 @@ var FluoTred = function () {
 
         var onclick = function () {
           d.removeChild(sen);
-          //d.removeChild(ses);
           var input = document.createElement('input');
           input.setAttribute('type', 'text');
           input.value = expname + ' ' + atts;
@@ -264,7 +254,6 @@ var FluoTred = function () {
         };
 
         sen.onclick = onclick;
-        //ses.onclick = onclick;
         sea.onclick = onclick;
 
         return d;
@@ -286,13 +275,9 @@ var FluoTred = function () {
         node = node.firstChild;
 
         var name = node.childNodes[0].firstChild.nodeValue;
-        var text = node.childNodes[1].firstChild.nodeValue;
-        var atts = node.childNodes[2].firstChild.nodeValue;
+        var atts = node.childNodes[1].firstChild.nodeValue;
 
         atts = Attributes.parse(atts);
-
-        if (text) text = text.trim();
-        if (text != '') atts[text] = null;
 
         var children = [];
 
@@ -316,16 +301,6 @@ var FluoTred = function () {
     if (exp[2].length > 0) ending.appendChild(document.createTextNode('end'));
     node.appendChild(ending);
   }
-
-  //function renderExpressionString (node, s) {
-  //  var opening = document.createElement('div');
-  //  var sname = document.createElement('span');
-  //  sname.appendChild(document.createTextNode(s));
-  //  sname.setAttribute('onclick', 'EditableSpan.toInput(this);');
-  //  sname.className = 'tred_expression_string';
-  //  opening.appendChild(sname);
-  //  node.appendChild(opening);
-  //}
 
   function addExpression (parentExpNode, exp) {
 
@@ -428,7 +403,6 @@ var FluoTred = function () {
 
     stack(tredRoot, tree);
 
-    //FluoTred.onChange(tree); 
     if (tredRoot.onChange) tredRoot.onChange(tree);
   }
 
