@@ -3,6 +3,6 @@ CREDITS
 =======
 
 John Mettraux (main dev)
-Jamandru Reynolds (icons)
+Jamandru Reynolds (icons + CSS)
 Juan-Pedro Paredes
 

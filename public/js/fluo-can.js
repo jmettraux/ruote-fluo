@@ -22,12 +22,13 @@
 //  return s;
 //}
 
-var FluoCon = {
+var FluoConstants = {
 
-  RGB_WHITE: 'rgb(255, 255, 255)',
-  RGB_HIGHLIGHT: 'rgb(220, 220, 220)',
+  WHITE: 'rgb(255, 255, 255)',
+  HIGHLIGHT: 'rgb(220, 220, 220)',
   LINE_HEIGHT: 20,
-  MIN_ACTIVITY_WIDTH: 110
+  MIN_ACTIVITY_WIDTH: 110,
+  FONT: '12px Helvetica Neue'
 }
 
 var FluoCanvas = function() {
@@ -123,7 +124,7 @@ var FluoCanvas = function() {
       c.lineTo(0, 0);
       if (i == 0) {
         c.save();
-        c.fillStyle = FluoCon.RGB_WHITE;
+        c.fillStyle = FluoConstants.WHITE;
         c.fill();
         c.restore();
       }
@@ -137,7 +138,7 @@ var FluoCanvas = function() {
     c.save();
     c.beginPath();
     c.lineWidth = 1.4;
-    c.fillStyle = FluoCon.RGB_WHITE;
+    c.fillStyle = FluoConstants.WHITE;
     c.arc(0, 0, height / 2 - 1, 0, Math.PI * 2, true);
     c.arc(0, 0, height / 2 - 2.3, 0, Math.PI * 2, true);
     c.stroke();
@@ -148,7 +149,7 @@ var FluoCanvas = function() {
     c.save();
     c.beginPath();
     c.lineWidth = 0.5;
-    c.fillStyle = FluoCon.RGB_WHITE;
+    c.fillStyle = FluoConstants.WHITE;
     c.arc(0, 0, height / 2, 0, Math.PI * 2, true);
     c.arc(0, 0, height / 2 - 2.3, 0, Math.PI * 2, true);
     c.stroke();
@@ -357,8 +358,10 @@ var FluoCan = function() {
   }
 
   function carriageReturn (c) {
-    if (c.canvas.horizontal == true) c.translate(-FluoCon.LINE_HEIGHT, 0);
-    else c.translate(0, FluoCon.LINE_HEIGHT);
+    if (c.canvas.horizontal == true) {
+      c.translate(-FluoConstants.LINE_HEIGHT, 0);
+    }
+    else c.translate(0, FluoConstants.LINE_HEIGHT);
   }
 
   function drawAttributes (c, exp, expname, namePlus, width, height) {
@@ -448,11 +451,10 @@ var FluoCan = function() {
     c.restore();
   };
   GenericHandler.getRealHeight = function (c, exp) {
-    return 7 + (1 + attributeCount(exp)) * FluoCon.LINE_HEIGHT;
+    return 7 + (1 + attributeCount(exp)) * FluoConstants.LINE_HEIGHT;
   };
   GenericHandler.getRealWidth = function (c, exp) {
-    //return 10 + attributeMaxWidth(c, exp, exp[0]);
-    return Math.max(10 + attributeMaxWidth(c, exp, exp[0]), FluoCon.MIN_ACTIVITY_WIDTH);
+    return Math.max(10 + attributeMaxWidth(c, exp, exp[0]), FluoConstants.MIN_ACTIVITY_WIDTH);
   };
 
   var AttributeOnlyHandler = newHandler();
@@ -468,7 +470,7 @@ var FluoCan = function() {
     c.restore();
   };
   AttributeOnlyHandler.getRealHeight = function (c, exp) {
-    return 7 + attributeCount(exp) * FluoCon.LINE_HEIGHT;
+    return 7 + attributeCount(exp) * FluoConstants.LINE_HEIGHT;
   };
   AttributeOnlyHandler.getRealWidth = function (c, exp) {
     return attributeMaxWidth(c, exp, exp[0]);
@@ -488,7 +490,7 @@ var FluoCan = function() {
     FluoCanvas.drawCrossInABox(c, height);
   };
   SubprocessHandler.getRealHeight = function (c, exp) {
-    return 12 + 7 + (1 + attributeCount(exp)) * FluoCon.LINE_HEIGHT;
+    return 12 + 7 + (1 + attributeCount(exp)) * FluoConstants.LINE_HEIGHT;
   };
 
 
@@ -499,7 +501,7 @@ var FluoCan = function() {
     var width = this.getWidth(c, exp);
     var height = this.getHeight(c, exp);
     var attWidth = attributeMaxWidth(c, exp, exp[0]) + 7;
-    var attHeight = attributeCount(exp) * FluoCon.LINE_HEIGHT;
+    var attHeight = attributeCount(exp) * FluoConstants.LINE_HEIGHT;
     var children = getChildren(c, exp);
     if (c.canvas.horizontal == true) {
       var w = attWidth;
@@ -577,7 +579,7 @@ var FluoCan = function() {
     return t;
   };
   TextHandler.getRealHeight = function (c, exp) {
-    return FluoCon.LINE_HEIGHT;
+    return FluoConstants.LINE_HEIGHT;
   };
   TextHandler.getRealWidth = function (c, exp) {
     return c.measure(this.getText(exp));
@@ -602,7 +604,7 @@ var FluoCan = function() {
     c.restore();
   };
   SymbolHandler.getRealHeight = function (c, exp) {
-    return attributeCount(exp) * FluoCon.LINE_HEIGHT + SymbolHandler.SYMBOL_HEIGHT;
+    return attributeCount(exp) * FluoConstants.LINE_HEIGHT + SymbolHandler.SYMBOL_HEIGHT;
   };
   SymbolHandler.getRealWidth = function (c, exp) {
     return attributeMaxWidth(c, exp, exp[0]);
@@ -658,7 +660,7 @@ var FluoCan = function() {
   };
   HorizontalHandler.getHeaderHeight = function (c, exp) {
     if (c.canvas.horizontal == true) return 23 + attributeMaxWidth(c, exp);
-    return 23 + attributeCount(exp) * FluoCon.LINE_HEIGHT;
+    return 23 + attributeCount(exp) * FluoConstants.LINE_HEIGHT;
   };
   HorizontalHandler.getChildrenHeight = function (c, exp) {
     return childrenMax(c, exp, 'getHeight');
@@ -700,20 +702,20 @@ var FluoCan = function() {
     this.renderHeaderLabel(c, exp);
   };
   HorizontalHandler.renderHeaderSymbol = function (c) {
-    FluoCanvas.drawDiamond(c, FluoCon.LINE_HEIGHT);
+    FluoCanvas.drawDiamond(c, FluoConstants.LINE_HEIGHT);
   };
   HorizontalHandler.renderHeaderLabel = function (c, exp) {
     var width = attributeMaxWidth(c, exp);
-    var height = attributeCount(exp) * FluoCon.LINE_HEIGHT;
+    var height = attributeCount(exp) * FluoConstants.LINE_HEIGHT;
     if (c.canvas.horizontal == true) {
       var w = width;
       width = height;
       height = w;
     }
     c.save();
-    c.translate(0, FluoCon.LINE_HEIGHT);
+    c.translate(0, FluoConstants.LINE_HEIGHT);
     c.save(); 
-    c.fillStyle = FluoCon.RGB_WHITE;
+    c.fillStyle = FluoConstants.WHITE;
     c.fillRect(-width/2, 0, width, height);
     c.restore();
     drawAttributes(c, exp, false, false, width, height);
@@ -864,15 +866,14 @@ var FluoCan = function() {
       context.rotate(-Math.PI/2);
     }
 
-    context.mozTextStyle = "12px Helvetica Neue";
-    context.font = "12px Helvetica Neue";
+    context.mozTextStyle = FluoConstants.FONT;
+    context.font = FluoConstants.FONT;
 
     var fs = context.fillStyle;
-    context.fillStyle = FluoCon.RGB_WHITE;
+    context.fillStyle = FluoConstants.WHITE;
     context.fillRect(0, 0, context.canvas.width, context.canvas.height);
     context.fillStyle = fs;
 
-    //context.translate(context.canvas.width/2, 0);
     var w = getWidth(context, flow);
     context.translate(w/2 + 1, 1); // aligning left
 
@@ -880,17 +881,13 @@ var FluoCan = function() {
 
     context.restore();
 
-    //flow.width = getWidth(context, flow);
-    //flow.height = getHeight(context, flow);
     getWidth(context, flow);
     getHeight(context, flow);
   }
 
   function highlight (c, highlight) {
     canvas = resolveCanvas(c);
-    //clear(canvas);
-    //renderFlow(canvas, canvas.flow, canvas.workitems, highlight);
-    renderFlow(canvas, canvas.flow, {'highlight': highlight});
+    renderFlow(canvas, canvas.flow, { 'highlight': highlight });
   }
 
   function drawWorkitem (c, exp) {
@@ -936,9 +933,9 @@ var FluoCan = function() {
       var h = getHeight(c, exp);
       var t = 7;
       c.save();
-      c.fillStyle = FluoCon.RGB_HIGHLIGHT;
+      c.fillStyle = FluoConstants.HIGHLIGHT;
       c.fillRect(-w/2, 0, w, h);
-      c.fillStyle = FluoCon.RGB_WHITE;
+      c.fillStyle = FluoConstants.WHITE;
       c.fillRect(-w/2 + t, 0 + t , w - 2 * t, h - 2 * t);
       c.restore();
     }
