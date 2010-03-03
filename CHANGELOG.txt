@@ -4,6 +4,7 @@
 
 == ruote-fluo 2.1.7      not yet released
 
+- canvas.noOuterBorder = true
 - FluoConstants for constants
 - now using JSON .parse and .stringify
 - migrated from rufus-sixjo to sinatra

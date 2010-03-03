@@ -295,7 +295,7 @@ var FluoCanvas = function() {
   };
 }();
 
-var FluoCan = function() {
+var FluoCan = function () {
 
   //
   // MISC METHODS
@@ -330,17 +330,6 @@ var FluoCan = function() {
     }
     return max;
   }
-
-  //function childText (exp) {
-  //  //var exp2 = exp[2];
-  //  //if (exp2.length == 1 && ((typeof exp2[0]) == 'string')) return exp2[0];
-  //  //return null;
-  //  for (var k in exp[1]) {
-  //    var v = exp[1][k];
-  //    if (v == null) return k;
-  //  }
-  //  return null;
-  //}
 
   // returns the list of attribute names (sorted)
   //
@@ -508,7 +497,9 @@ var FluoCan = function() {
       attWidth = attHeight;
       attHeight = w;
     }
-    FluoCanvas.drawRoundedRect(c, width, height, 8);
+    if ((c.canvas.noOuterBorder != true) || (exp.expid != "0")) {
+      FluoCanvas.drawRoundedRect(c, width, height, 8);
+    }
     c.save();
     c.translate(-width/2 + attWidth/2 + 5 , 7);
     if (c.canvas.horizontal == true) c.translate(attHeight/2, 0);
@@ -519,7 +510,6 @@ var FluoCan = function() {
     for (var i = 0; i < children.length; i++) {
       var child = children[i];
       renderExp(c, child);
-      //c.translate(0, 7 + FluoCan.getHeight(c, child));
       c.translate(0, FluoCan.getHeight(c, child));
       if (this.drawArrow && i < children.length -1) FluoCanvas.drawArrow(c, 10);
       c.translate(0, 10);
@@ -987,20 +977,13 @@ var FluoCan = function() {
     nc.hideMinor = canvas.hideMinor;
     nc.horizontal = canvas.horizontal;
     nc.workitems = canvas.workitems;
+    nc.noOuterBorder = canvas.noOuterBorder;
 
-    //renderFlow(nc, canvas.flow, canvas.workitems, canvas.highlight);
     renderFlow(nc, canvas.flow);
     canvas.parentNode.replaceChild(nc, canvas);
   }
 
   function neutralizeContext (c) {
-    //if (window.navigator.userAgent.match(/Firefox/)) return;
-    //c.mozDrawText = function (t) {
-    //  // do nothing
-    //};
-    //c.mozMeasureText = function (t) {
-    //  return t.length * 5;
-    //};
     if (window.navigator.userAgent.match(/Firefox/)) {
       c.write = function (t) {
         this.mozDrawText(t);

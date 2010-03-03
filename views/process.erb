@@ -91,6 +91,7 @@
     <canvas id="fluo" width="200" height="200"></canvas>
 
     <script>
+      document.getElementById('fluo').noOuterBorder = true;
       FluoCan.renderFlow('fluo', <%= tree %>, { 'workitems': [ '<%= wi %>' ] });
       FluoCan.crop('fluo');
     </script>
