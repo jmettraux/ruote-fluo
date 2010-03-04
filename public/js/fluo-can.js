@@ -888,7 +888,7 @@ var FluoCan = function () {
       c.translate(5, -14);
     }
     else {
-      c.translate(20, -7);
+      c.translate(49, 2);
     }
     c.fillStyle = '#F4D850';
     c.moveTo(0, 0);
