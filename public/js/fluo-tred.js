@@ -105,14 +105,14 @@ var FluoTred = function () {
   
   var ExpressionHead = function () {
 
-    function createButton (imgsrc, tooltip, callback) {
+    function createButton (tredClass, tooltip, callback) {
 
-      var i = document.createElement("img");
+      var i = document.createElement('a');
       i.callback = callback;
-      i.className = "tred_button";
-      i.setAttribute('src', imgsrc);
+      i.className = 'tred_button ' + tredClass;
+      i.setAttribute('href', '');
       i.setAttribute('title', tooltip);
-      i.setAttribute("onclick", "this.callback()");
+      i.setAttribute('onclick', 'this.callback(); return false;');
       return i;
     }
 
@@ -136,7 +136,7 @@ var FluoTred = function () {
       };
 
       buttons.appendChild(createButton(
-        FluoTred.imageRoot+'/btn-add.gif',
+        'tred_add',
         'add a child expression',
         function () {
           FluoTred.addExpression(expdiv.parentNode, [ '---', {}, [] ]);
@@ -145,27 +145,27 @@ var FluoTred = function () {
       if (expdiv.parentNode.parentNode != root) {
 
         buttons.appendChild(createButton(
-          FluoTred.imageRoot+'/btn-cut.gif',
+          'tred_cut',
           'cut expression',
           function () {
             FluoTred.removeExpression(expdiv.parentNode);
           }));
         buttons.appendChild(createButton(
-          FluoTred.imageRoot+'/btn-moveup.gif',
+          'tred_moveup',
           'move expression up',
           function () {
             FluoTred.moveExpression(expdiv.parentNode, -1);
             buttons.style.opacity = outOpacity;
           }));
         buttons.appendChild(createButton(
-          FluoTred.imageRoot+'/btn-movedown.gif',
+          'tred_movedown',
           'move expression down',
           function () {
             FluoTred.moveExpression(expdiv.parentNode, +1);
             buttons.style.opacity = outOpacity;
           }));
         buttons.appendChild(createButton(
-          FluoTred.imageRoot+'/btn-paste.gif',
+          'tred_paste',
           'paste expression here',
           function () {
             var clip = document._tred_clipboard;
