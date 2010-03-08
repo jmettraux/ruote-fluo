@@ -239,6 +239,8 @@ var FluoTred = function () {
           triggerChange(p); // trigger onChange()...
         };
 
+        // blurring on "enter"
+        //
         var onkeyup = function (evt) {
 
           var e = evt || window.event;
@@ -246,6 +248,16 @@ var FluoTred = function () {
           if (c == 13) this.blur();
 
           return false;
+        }
+
+        // preventing propagation of "enter"
+        //
+        var onkeypress = function (evt) {
+
+          var e = evt || window.event;
+          var c = e.charCode || e.keyCode;
+
+          return (c != 13);
         }
 
         var onclick = function () {
@@ -257,6 +269,7 @@ var FluoTred = function () {
           d.replaceChild(input, sea);
           input.onblur = onblur;
           input.onkeyup = onkeyup;
+          input.onkeypress = onkeypress;
           input.focus();
         };
 
