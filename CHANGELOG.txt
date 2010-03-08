@@ -2,8 +2,9 @@
 = ruote-fluo  CHANGELOG.txt
 
 
-== ruote-fluo 2.1.7      not yet released
+== ruote-fluo 2.1.8      not yet released
 
+- FluoTred.TEXTS contains tooltip (title) texts
 - canvas.noOuterBorder = true
 - FluoConstants for constants
 - now using JSON .parse and .stringify

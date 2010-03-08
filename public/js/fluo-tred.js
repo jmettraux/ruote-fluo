@@ -39,7 +39,14 @@ String.prototype.tstrip = function () {
 
 var FluoTred = function () {
 
-  //
+  var TEXTS = {
+    add_child_expression: 'add a child expression',
+    cut_expression: 'cut expression',
+    moveup_expression: 'move expression up',
+    movedown_expression: 'move expression down',
+    paste_expression: 'paste expression here'
+  };
+
   // it's easy to override this var to let FluoTred point to another root
   //
   //     FluoTred.imageRoot = 'http://my.image.server.exmaple.com/img'
@@ -137,7 +144,7 @@ var FluoTred = function () {
 
       buttons.appendChild(createButton(
         'tred_add',
-        'add a child expression',
+        FluoTred.TEXTS.add_child_expression,
         function () {
           FluoTred.addExpression(expdiv.parentNode, [ '---', {}, [] ]);
         }));
@@ -146,27 +153,27 @@ var FluoTred = function () {
 
         buttons.appendChild(createButton(
           'tred_cut',
-          'cut expression',
+          FluoTred.TEXTS.cut_expression,
           function () {
             FluoTred.removeExpression(expdiv.parentNode);
           }));
         buttons.appendChild(createButton(
           'tred_moveup',
-          'move expression up',
+          FluoTred.TEXTS.moveup_expression,
           function () {
             FluoTred.moveExpression(expdiv.parentNode, -1);
             buttons.style.opacity = outOpacity;
           }));
         buttons.appendChild(createButton(
           'tred_movedown',
-          'move expression down',
+          FluoTred.TEXTS.movedown_expression,
           function () {
             FluoTred.moveExpression(expdiv.parentNode, +1);
             buttons.style.opacity = outOpacity;
           }));
         buttons.appendChild(createButton(
           'tred_paste',
-          'paste expression here',
+          FluoTred.TEXTS.paste_expression,
           function () {
             var clip = document._tred_clipboard;
             if (clip) FluoTred.insertExpression(expdiv.parentNode, clip);
@@ -494,6 +501,8 @@ var FluoTred = function () {
   // public methods
   //
   return {
+
+    TEXTS: TEXTS,
 
     ExpressionHead: ExpressionHead,
     Attributes: Attributes, // for testing purposes
