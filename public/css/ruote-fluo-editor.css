@@ -1,7 +1,9 @@
+/* @override http://127.0.0.1:3000/stylesheets/ruote-fluo-editor.css */
 #fluo {
 }
-#tred {
+#editor {
   font: 14px/1.5em monaco, mono;
+  text-align: left;
   color: #000;
   border: 1px solid #c1c1c1;
   border-top-color: #848484;
@@ -12,37 +14,37 @@
   background: -webkit-gradient(linear, 0% 0%, 0% 6, from(#dbe0e2), to(#fff));
   background: -moz-linear-gradient(top, #dbe0e2, #fff 6px);
 }
-.tred_expression {
+.rfe_expression {
 }
-.tred_expression_atts,
-.tred_text,
-.tred_expression_name,
-.tred_expression_string,
-.tred_ghost_button {
+.rfe_expression_atts,
+.rfe_text,
+.rfe_expression_name,
+.rfe_expression_string,
+.rfe_ghost_button {
 }
-.tred_expression_name {
+.rfe_expression_name {
   color: #8b8f91;
 }
-.tred_expression_atts {
+.rfe_expression_atts {
 }
-.tred_expression_string {
+.rfe_expression_string {
   color: #82dd48;
 }
-.tred_exp_span {
+.rfe_exp_span {
 }
-.tred_buttons {
+.rfe_buttons {
   display: inline-block;
   white-space: nowrap;
   margin-left: 6px;
 }
-.tred_buttons:hover {
+.rfe_buttons:hover {
   cursor: default;
 }
-.tred_button {
+.rfe_button {
   cursor: pointer;
   padding-left: 1px;
 }
-a.tred_button {
+a.rfe_button {
   display: inline-block;
   padding: 0;
   margin: 0 -1px;
@@ -50,37 +52,37 @@ a.tred_button {
   height: 12px;
   background: transparent url(/images/ruote_buttons.png) no-repeat;
 }
-a.tred_add {
+a.rfe_add {
   background-position: 0 0;
 }
-a.tred_cut {
+a.rfe_cut {
   background-position: 0 -20px;
 }
-a.tred_moveup {
+a.rfe_moveup {
   background-position: 0 -40px;
 }
-a.tred_movedown {
+a.rfe_movedown {
   background-position: 0 -60px;
 }
-a.tred_paste {
+a.rfe_paste {
   background-position: 0 -80px;
 }
-a.tred_add:hover {
+a.rfe_add:hover {
   background-position: -20px 0;
 }
-a.tred_cut:hover {
+a.rfe_cut:hover {
   background-position: -20px -20px;
 }
-a.tred_moveup:hover {
+a.rfe_moveup:hover {
   background-position: -20px -40px;
 }
-a.tred_movedown:hover {
+a.rfe_movedown:hover {
   background-position: -20px -60px;
 }
-a.tred_paste:hover {
+a.rfe_paste:hover {
   background-position: -20px -80px;
 }
-.tred_exp > input[type="text"] {
+.rfe_exp > input[type="text"] {
   color: #000;
   font: 14px/1em monaco, mono;
   border: 0;
@@ -95,13 +97,14 @@ a.tred_paste:hover {
   -webkit-border-radius: 15px;
   -moz-border-radius: 15px;
 }
-img.tred_button {
+img.rfe_button {
   margin: 0;
   vertical-align: middle;
 }
 /* safari */
 @media screen and (-webkit-min-device-pixel-ratio:0) {
-.tred_exp > input[type="text"] {
+.rfe_exp > input[type="text"] {
   padding-top: 2px;
   margin-bottom: 0;
 }
+

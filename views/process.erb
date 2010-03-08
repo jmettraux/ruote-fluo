@@ -28,12 +28,12 @@
 
   <script>
     function undo () {
-      FluoEditor.undo('tred');
+      FluoEditor.undo('editor');
       return false;
     }
     function as (type) {
       document.getElementById('definition_out_type').value = type;
-      document.getElementById('definition_input').value = FluoEditor.asJson('tred');
+      document.getElementById('definition_input').value = FluoEditor.asJson('editor');
       document.getElementById('definition_form').submit();
       return false;
     }
@@ -67,19 +67,19 @@
 
   <div style="float:left; width: 53%">
 
-    <div id="tred" style="margin-left: 10px; margin-top: 10px;"></div>
+    <div id="editor" style="margin-left: 10px; margin-top: 10px;"></div>
 
     <script>
 
-      var tred = document.getElementById('tred');
+      var editor = document.getElementById('editor');
 
-      FluoEditor.renderFlow(tred, <%= tree %>);
+      FluoEditor.renderFlow(editor, <%= tree %>);
 
-      tred.onChange = function (tree) {
+      editor.onChange = function (tree) {
         Fluo.renderFlow('fluo', tree);
         Fluo.crop('fluo');
       };
-      tred.onOver = function (expid) {
+      editor.onOver = function (expid) {
         Fluo.highlight('fluo', expid);
       };
     </script>

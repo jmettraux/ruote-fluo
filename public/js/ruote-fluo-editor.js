@@ -112,11 +112,11 @@ var FluoEditor = function () {
   
   var ExpressionHead = function () {
 
-    function createButton (tredClass, tooltip, callback) {
+    function createButton (rfeClass, tooltip, callback) {
 
       var i = document.createElement('a');
       i.callback = callback;
-      i.className = 'tred_button ' + tredClass;
+      i.className = 'rfe_button ' + rfeClass;
       i.setAttribute('href', '');
       i.setAttribute('title', tooltip);
       i.setAttribute('onclick', 'this.callback(); return false;');
@@ -128,10 +128,10 @@ var FluoEditor = function () {
       var outOpacity = 0.0;
 
       var buttons = document.createElement('span');
-      buttons.className = 'tred_buttons';
+      buttons.className = 'rfe_buttons';
       buttons.style.opacity = outOpacity;
 
-      var root = findTredRoot(expdiv);
+      var root = findRfeRoot(expdiv);
 
       expdiv.onmouseover = function () { 
         buttons.style.opacity = 1.0; 
@@ -143,7 +143,7 @@ var FluoEditor = function () {
       };
 
       buttons.appendChild(createButton(
-        'tred_add',
+        'rfe_add',
         FluoEditor.TEXTS.add_child_expression,
         function () {
           FluoEditor.addExpression(expdiv.parentNode, [ '---', {}, [] ]);
@@ -152,30 +152,30 @@ var FluoEditor = function () {
       if (expdiv.parentNode.parentNode != root) {
 
         buttons.appendChild(createButton(
-          'tred_cut',
+          'rfe_cut',
           FluoEditor.TEXTS.cut_expression,
           function () {
             FluoEditor.removeExpression(expdiv.parentNode);
           }));
         buttons.appendChild(createButton(
-          'tred_moveup',
+          'rfe_moveup',
           FluoEditor.TEXTS.moveup_expression,
           function () {
             FluoEditor.moveExpression(expdiv.parentNode, -1);
             buttons.style.opacity = outOpacity;
           }));
         buttons.appendChild(createButton(
-          'tred_movedown',
+          'rfe_movedown',
           FluoEditor.TEXTS.movedown_expression,
           function () {
             FluoEditor.moveExpression(expdiv.parentNode, +1);
             buttons.style.opacity = outOpacity;
           }));
         buttons.appendChild(createButton(
-          'tred_paste',
+          'rfe_paste',
           FluoEditor.TEXTS.paste_expression,
           function () {
-            var clip = document._tred_clipboard;
+            var clip = document._rfe_clipboard;
             if (clip) FluoEditor.insertExpression(expdiv.parentNode, clip);
           }));
       }
@@ -215,16 +215,16 @@ var FluoEditor = function () {
         var atts = renderAttributes(exp[1]);
 
         var d = document.createElement('div');
-        d.setAttribute('class', 'tred_exp');
+        d.setAttribute('class', 'rfe_exp');
         node.appendChild(d);
 
         var sen = document.createElement('span');
-        sen.setAttribute('class', 'tred_exp_span tred_expression_name');
+        sen.setAttribute('class', 'rfe_exp_span rfe_expression_name');
         sen.appendChild(document.createTextNode(expname));
         d.appendChild(sen);
 
         var sea = document.createElement('span');
-        sea.setAttribute('class', 'tred_exp_span tred_expression_atts');
+        sea.setAttribute('class', 'rfe_exp_span rfe_expression_atts');
         sea.appendChild(document.createTextNode(' ' + atts));
         d.appendChild(sea);
 
@@ -317,7 +317,7 @@ var FluoEditor = function () {
   function renderEnding (node, exp) {
 
     var ending = document.createElement('div');
-    ending.className = 'tred_text';
+    ending.className = 'rfe_text';
     if (exp[2].length > 0) ending.appendChild(document.createTextNode('end'));
     node.appendChild(ending);
   }
@@ -343,7 +343,7 @@ var FluoEditor = function () {
     if (p.childNodes.length == 2)
       p.lastChild.removeChild(p.lastChild.firstChild);
 
-    document._tred_clipboard = toTree(expNode);
+    document._rfe_clipboard = toTree(expNode);
 
     triggerChange(p);
   }
@@ -354,7 +354,7 @@ var FluoEditor = function () {
     // draw expression
 
     var node = document.createElement('div');
-    node.className = 'tred_expression';
+    node.className = 'rfe_expression';
 
     if ( ! isRootExp)
       node.setAttribute('style', 'margin-left: 14px;');
@@ -383,7 +383,7 @@ var FluoEditor = function () {
 
   function renderFlow (parentNode, flow) {
 
-    parentNode.className = 'tred_root';
+    parentNode.className = 'rfe_root';
 
     renderExpression(parentNode, flow, true);
 
@@ -396,11 +396,11 @@ var FluoEditor = function () {
     var p = elt.parentNode;
 
     if (delta == -1) { // move up
-      if (elt.previousSibling.className != 'tred_expression') return;
+      if (elt.previousSibling.className != 'rfe_expression') return;
       p.insertBefore(elt, elt.previousSibling);
     }
     else { // move down
-      if (elt.nextSibling.className != 'tred_expression') return;
+      if (elt.nextSibling.className != 'rfe_expression') return;
       p.insertBefore(elt, elt.nextSibling.nextSibling);
     }
 
@@ -418,12 +418,12 @@ var FluoEditor = function () {
 
   function triggerChange (elt) {
 
-    var tredRoot = findTredRoot(elt);
-    var tree = toTree(tredRoot);
+    var rfeRoot = findRfeRoot(elt);
+    var tree = toTree(rfeRoot);
 
-    stack(tredRoot, tree);
+    stack(rfeRoot, tree);
 
-    if (tredRoot.onChange) tredRoot.onChange(tree);
+    if (rfeRoot.onChange) rfeRoot.onChange(tree);
   }
 
   function stack(root, tree) {
@@ -446,16 +446,16 @@ var FluoEditor = function () {
     if (root.onChange) root.onChange(tree);
   }
 
-  function findTredRoot (node) {
+  function findRfeRoot (node) {
 
-      if (node.className == 'tred_root') return node;
-      return findTredRoot(node.parentNode);
+      if (node.className == 'rfe_root') return node;
+      return findRfeRoot(node.parentNode);
   }
 
   function computeExpId (node, from, expid) {
 
     if (from == null) {
-      from = findTredRoot(node);
+      from = findRfeRoot(node);
       expid = '';
     }
     if (from == node) return expid.substring(1, expid.length);
@@ -466,7 +466,7 @@ var FluoEditor = function () {
     for (var i=0; i<divs.length; i++) {
       var e = divs[i];
       if (e.nodeType != 1) continue;
-      if (e.className != 'tred_expression') continue;
+      if (e.className != 'rfe_expression') continue;
       childid += 1;
       var ei = computeExpId(node, e, expid + '_' + childid);
       if (ei != null) return ei;
@@ -481,8 +481,8 @@ var FluoEditor = function () {
       //
       // making sure all the input boxes get blurred...
 
-    if (node.className != 'tred_expression') {
-      node = node.firstChildOfClass('tred_expression');
+    if (node.className != 'rfe_expression') {
+      node = node.firstChildOfClass('rfe_expression');
     }
 
     //
@@ -500,7 +500,7 @@ var FluoEditor = function () {
     for (var i=0; i<divs.length; i++) {
       var e = divs[i];
       if (e.nodeType != 1) continue;
-      if (e.className != 'tred_expression') continue;
+      if (e.className != 'rfe_expression') continue;
       children.push(toTree(e));
     }
 

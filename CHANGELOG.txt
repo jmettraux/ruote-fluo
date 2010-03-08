@@ -4,6 +4,7 @@
 
 == ruote-fluo 2.1.8      not yet released
 
+- CSS classes names moved from tred_ to rfe_
 - FluoCan becomes Fluo
 - FluoTred becomes FluoEditor
 - fluo-can.js becomes ruote-fluo.js / fluo-tred.js becomes ruote-fluo-editor.js
