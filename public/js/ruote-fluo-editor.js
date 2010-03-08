@@ -37,7 +37,7 @@ String.prototype.tstrip = function () {
   return s;
 }
 
-var FluoTred = function () {
+var FluoEditor = function () {
 
   var TEXTS = {
     add_child_expression: 'add a child expression',
@@ -47,9 +47,9 @@ var FluoTred = function () {
     paste_expression: 'paste expression here'
   };
 
-  // it's easy to override this var to let FluoTred point to another root
+  // it's easy to override this var to let FluoEditor point to another root
   //
-  //     FluoTred.imageRoot = 'http://my.image.server.exmaple.com/img'
+  //     FluoEditor.imageRoot = 'http://my.image.server.exmaple.com/img'
   //
   var imageRoot = '/images';
 
@@ -144,39 +144,39 @@ var FluoTred = function () {
 
       buttons.appendChild(createButton(
         'tred_add',
-        FluoTred.TEXTS.add_child_expression,
+        FluoEditor.TEXTS.add_child_expression,
         function () {
-          FluoTred.addExpression(expdiv.parentNode, [ '---', {}, [] ]);
+          FluoEditor.addExpression(expdiv.parentNode, [ '---', {}, [] ]);
         }));
 
       if (expdiv.parentNode.parentNode != root) {
 
         buttons.appendChild(createButton(
           'tred_cut',
-          FluoTred.TEXTS.cut_expression,
+          FluoEditor.TEXTS.cut_expression,
           function () {
-            FluoTred.removeExpression(expdiv.parentNode);
+            FluoEditor.removeExpression(expdiv.parentNode);
           }));
         buttons.appendChild(createButton(
           'tred_moveup',
-          FluoTred.TEXTS.moveup_expression,
+          FluoEditor.TEXTS.moveup_expression,
           function () {
-            FluoTred.moveExpression(expdiv.parentNode, -1);
+            FluoEditor.moveExpression(expdiv.parentNode, -1);
             buttons.style.opacity = outOpacity;
           }));
         buttons.appendChild(createButton(
           'tred_movedown',
-          FluoTred.TEXTS.movedown_expression,
+          FluoEditor.TEXTS.movedown_expression,
           function () {
-            FluoTred.moveExpression(expdiv.parentNode, +1);
+            FluoEditor.moveExpression(expdiv.parentNode, +1);
             buttons.style.opacity = outOpacity;
           }));
         buttons.appendChild(createButton(
           'tred_paste',
-          FluoTred.TEXTS.paste_expression,
+          FluoEditor.TEXTS.paste_expression,
           function () {
             var clip = document._tred_clipboard;
-            if (clip) FluoTred.insertExpression(expdiv.parentNode, clip);
+            if (clip) FluoEditor.insertExpression(expdiv.parentNode, clip);
           }));
       }
 
@@ -404,7 +404,7 @@ var FluoTred = function () {
       p.insertBefore(elt, elt.nextSibling.nextSibling);
     }
 
-    FluoTred.triggerChange(p);
+    FluoEditor.triggerChange(p);
   }
 
   function insertExpression (before, exp) {
@@ -413,7 +413,7 @@ var FluoTred = function () {
 
     before.parentNode.insertBefore(newNode, before);
 
-    FluoTred.triggerChange(before.parentNode);
+    FluoEditor.triggerChange(before.parentNode);
   }
 
   function triggerChange (elt) {

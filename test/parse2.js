@@ -2,7 +2,7 @@
 win = 0;
 total = 0;
 
-load('public/js/fluo-tred.js');
+load('public/js/ruote-fluo-editor.js');
 
 function assert_rep (goal, source) {
 
@@ -10,7 +10,7 @@ function assert_rep (goal, source) {
 
   total++;
 
-  var result = FluoTred.Attributes.parse(source);
+  var result = FluoEditor.Attributes.parse(source);
   result = JSON.stringify(result);
 
   if (result == goal) {

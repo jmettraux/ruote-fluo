@@ -28,12 +28,12 @@
 
   <script>
     function undo () {
-      FluoTred.undo('tred');
+      FluoEditor.undo('tred');
       return false;
     }
     function as (type) {
       document.getElementById('definition_out_type').value = type;
-      document.getElementById('definition_input').value = FluoTred.asJson('tred');
+      document.getElementById('definition_input').value = FluoEditor.asJson('tred');
       document.getElementById('definition_form').submit();
       return false;
     }
@@ -73,7 +73,7 @@
 
       var tred = document.getElementById('tred');
 
-      FluoTred.renderFlow(tred, <%= tree %>);
+      FluoEditor.renderFlow(tred, <%= tree %>);
 
       tred.onChange = function (tree) {
         FluoCan.renderFlow('fluo', tree);
