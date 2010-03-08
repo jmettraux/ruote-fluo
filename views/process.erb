@@ -38,13 +38,13 @@
       return false;
     }
     function toggleMinor () {
-      FluoCan.toggleMinor('fluo');
-      FluoCan.crop('fluo');
+      Fluo.toggleMinor('fluo');
+      Fluo.crop('fluo');
       return false;
     }
     function rotate () {
-      FluoCan.toggleVertical('fluo');
-      FluoCan.crop('fluo');
+      Fluo.toggleVertical('fluo');
+      Fluo.crop('fluo');
       return false;
     }
   </script>
@@ -76,11 +76,11 @@
       FluoEditor.renderFlow(tred, <%= tree %>);
 
       tred.onChange = function (tree) {
-        FluoCan.renderFlow('fluo', tree);
-        FluoCan.crop('fluo');
+        Fluo.renderFlow('fluo', tree);
+        Fluo.crop('fluo');
       };
       tred.onOver = function (expid) {
-        FluoCan.highlight('fluo', expid);
+        Fluo.highlight('fluo', expid);
       };
     </script>
   </div>
@@ -91,8 +91,8 @@
 
     <script>
       document.getElementById('fluo').noOuterBorder = true;
-      FluoCan.renderFlow('fluo', <%= tree %>, { 'workitems': [ '<%= wi %>' ] });
-      FluoCan.crop('fluo');
+      Fluo.renderFlow('fluo', <%= tree %>, { 'workitems': [ '<%= wi %>' ] });
+      Fluo.crop('fluo');
     </script>
   </div>
 

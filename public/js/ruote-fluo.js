@@ -295,7 +295,7 @@ var FluoCanvas = function() {
   };
 }();
 
-var FluoCan = function () {
+var Fluo = function () {
 
   //
   // MISC METHODS
@@ -304,7 +304,7 @@ var FluoCan = function () {
     var children = getChildren(c, exp);
     var max = 0;
     for (var i = 0; i < children.length; i++) {
-      var val = FluoCan[funcname](c, children[i]);
+      var val = Fluo[funcname](c, children[i]);
       if (val > max) max = val;
     }
     return max;
@@ -314,7 +314,7 @@ var FluoCan = function () {
     var children = getChildren(c, exp);
     var sum = 0;
     for (var i = 0; i < children.length; i++) {
-      sum += FluoCan[funcname](c, children[i]);
+      sum += Fluo[funcname](c, children[i]);
     }
     return sum;
   }
@@ -510,7 +510,7 @@ var FluoCan = function () {
     for (var i = 0; i < children.length; i++) {
       var child = children[i];
       renderExp(c, child);
-      c.translate(0, FluoCan.getHeight(c, child));
+      c.translate(0, Fluo.getHeight(c, child));
       if (this.drawArrow && i < children.length -1) FluoCanvas.drawArrow(c, 10);
       c.translate(0, 10);
     }
@@ -615,7 +615,7 @@ var FluoCan = function () {
     for (var i = 0; i < children.length; i++) {
       var child = children[i];
       renderExp(c, child);
-      c.translate(0, FluoCan.getHeight(c, child));
+      c.translate(0, Fluo.getHeight(c, child));
       if (i < children.length - 1) {
         FluoCanvas.drawArrow(c, 14);
         c.translate(0, 14);
@@ -670,7 +670,7 @@ var FluoCan = function () {
     var offset = -totalWidth/2;
     var dist = new Array(children.length);
     for (var i = 0; i < children.length; i++) {
-      var cWidth = FluoCan.getWidth(c, children[i]);
+      var cWidth = Fluo.getWidth(c, children[i]);
       dist[i] = offset + cWidth / 2;
       offset += (cWidth + 3);
     }
@@ -712,7 +712,7 @@ var FluoCan = function () {
     c.restore();
   };
   HorizontalHandler.renderChild = function (c, exp, childrenHeight) {
-    var cheight = FluoCan.getHeight(c, exp);
+    var cheight = Fluo.getHeight(c, exp);
     renderExp(c, exp);
     c.beginPath();
     c.moveTo(0, cheight); c.lineTo(0, childrenHeight);
