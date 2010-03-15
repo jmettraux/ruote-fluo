@@ -745,12 +745,21 @@ var Fluo = function () {
     FluoCanvas.drawParaDiamond(c, 20);
   };
 
+  function hasNoCondition (attributes) {
+    if (attributes['test']) return false;
+    if (attributes['not']) return false;
+    for (k in attributes) {
+      if (attributes[k] == null) return false;
+    }
+    return true;
+  }
+
   var IfHandler = newHandler(HorizontalHandler);
   IfHandler.adjust = function (exp) {
     //
     // all the crazy legwork to adapt to the 'if' expression
     //
-    if ( ! (exp[1]['test'] || exp[1]['not'])) {
+    if (hasNoCondition(exp[1])) {
       // ok, steal first exp
       var cond = exp[2].shift();
       if (cond) {
