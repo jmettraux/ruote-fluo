@@ -806,6 +806,7 @@ var Fluo = function () {
     'continue': TextHandler,
     'back': TextHandler,
     'break': TextHandler,
+    'stop': TextHandler,
     'cancel': TextHandler,
     'skip': TextHandler,
     'jump': TextHandler,
