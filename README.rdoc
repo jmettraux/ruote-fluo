@@ -8,7 +8,7 @@ This is the development bench of the javascript library used to render graphical
 
 == using
 
-  gem install ruote rack sinatra thin
+  gem install ruote rack sinatra thin builder
   git clone git://github.com/jmettraux/ruote-fluo.git
   cd ruote-fluo
   ruby lib/ruote-fluo.rb
