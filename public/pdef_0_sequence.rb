@@ -4,6 +4,9 @@ Ruote.process_definition do
     logistics
     delivery
     accounting
+    _if '${f:success}' do
+      archive
+    end
   end
 end
 

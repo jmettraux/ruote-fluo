@@ -55,56 +55,46 @@ var FluoEditor = function () {
 
   var Attributes = function() {
 
-    function unquoteKey (k) {
-
-      var m = k.match(/^"([^"]*)"$|^'([^']*)'$/);
-      if (m) return m[1] || m[2];
-      return k;
+    function tryParse (s) {
+      try { return JSON.parse(s); } catch (e) {}
+      return undefined;
     }
 
-    function parse (s, accumulator) {
+    function parse (s) {
 
-      if ( ! accumulator) accumulator = {};
-
-      if (s == undefined) s = '';
       s = s.tstrip();
 
-      if (s == '') return accumulator;
+      var r = tryParse("{" + s + "}");
+      if (r != undefined) return r;
 
-      var icolon = s.indexOf(':');
-      var icomma = s.indexOf(',');
+      var head = undefined;
+      var tail = undefined;
 
-      if (icomma > 0 && icomma < icolon) {
-        accumulator[unquoteKey(s.substring(0, icomma))] = null;
-        return parse(s.substring(icomma + 1), accumulator);
-      }
-
-      var m = s.match(/^\s*([^:]+):\s*(.+)$/);
+      var m = s.match(/^([^",]+)(.*)$/)
       if (m) {
-        var key = m[1];
-        var limit = m[2].length;
-        while (true) {
-          var svalue = m[2].substring(0, limit);
-          var value = null;
-          try {
-            value = JSON.parse(svalue);
-          }
-          catch (e) {
-            var i = svalue.lastIndexOf(',');
-            if (i < 0) value = unquoteKey(svalue);
-            else limit = i;
-          }
-          if (value != undefined) {
-
-            accumulator[key] = value;
-
-            if (limit == m[2].length) return accumulator;
-            else return parse(m[2].substring(limit + 1), accumulator);
+        r = tryParse(m[1]);
+        if (r != undefined) head = r;
+        else head = tryParse('"' + m[1] + '"');
+        tail = m[2];
+      }
+      else {
+        for (var i = 1; i <= s.length; i++) {
+          r = tryParse(s.slice(0, i));
+          if (r != undefined) {
+            head = r;
+            break;
           }
         }
+        tail = s.slice(i);
       }
-      accumulator[unquoteKey(s)] = null;
-      return accumulator;
+
+      var h = {};
+      h[head] = null;
+      m = tail.match(/^[ ,]*(.*)$/);
+      var hh = tryParse("{" + m[1] + "}");
+      for (var k in hh) { h[k] = hh[k]; }
+
+      return h;
     }
 
     return { parse: parse };
@@ -187,20 +177,36 @@ var FluoEditor = function () {
 
     function renderAttributes (h) {
 
-      var keys = [];
-      for (var k in h) keys.push(k);
-      keys = keys.sort();
+      //var keys = [];
+      //for (var k in h) keys.push(k);
+      //keys = keys.sort();
+      //s = '';
+      //for (var i = 0; i < keys.length; i++) {
+      //  var k = keys[i];
+      //  s += k;
+      //  var v = JSON.stringify(h[k]);
+      //  if (v != 'null') s += (': ' + v);
+      //  s += ', ';
+      //}
+      //if (s.length > 1) s = s.substring(0, s.length - 2);
+      //return s;
 
-      s = '';
-      for (var i = 0; i < keys.length; i++) {
-        var k = keys[i];
-        s += k;
-        var v = JSON.stringify(h[k]);
-        if (v != 'null') s += (': ' + v);
-        s += ', ';
+      var a = [];
+
+      for (var k in h) {
+        var v = h[k];
+        if (v == null) {
+          a.push(JSON.stringify(k));
+          break;
+        }
       }
-      if (s.length > 1) s = s.substring(0, s.length - 2);
-      return s;
+      for (var k in h) {
+        var v = h[k];
+        if (v == null) continue;
+        a.push(JSON.stringify(k) + ': ' + JSON.stringify(v));
+      }
+
+      return a.join(', ');
     }
 
     return {

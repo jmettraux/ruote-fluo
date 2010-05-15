@@ -4,6 +4,7 @@
 
 == ruote-fluo 2.1.10      not yet released
 
+- tightened editor's parser. Thanks Patrice Cappelaere
 - CSS classes names moved from tred_ to rfe_
 - FluoCan becomes Fluo
 - FluoTred becomes FluoEditor
