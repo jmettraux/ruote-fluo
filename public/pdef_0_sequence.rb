@@ -1,17 +1,9 @@
 
-Ruote.process_definition :name => 'my def', :revision => 0 do
+Ruote.process_definition do
   sequence do
-    alpha
-    bravo :timeout => '2d'
-    _if '${f:success}' do
-      participant 'charly', :task => 'same old'
-      participant :ref => 'doug', :task => 'do it'
-    end
-    _if do
-      equals :field => 'x', :other_field => 'y'
-      participant 'charly', :task => 'same old'
-      participant :ref => 'doug', :task => 'do it'
-    end
+    logistics
+    delivery
+    accounting
   end
 end
 

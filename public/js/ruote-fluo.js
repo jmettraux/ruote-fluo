@@ -31,7 +31,7 @@ var FluoConstants = {
   FONT: '12px Helvetica Neue'
 }
 
-var FluoCanvas = function() {
+var FluoCanvas = function () {
   
   //
   // draws centered text
