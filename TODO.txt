@@ -1,5 +1,4 @@
 
-[o] tred_expression_string[s] seem to have vanished
 [ ] local storage
 [ ] display properties for sequence (cursor ?)
 
@@ -7,4 +6,7 @@
 [ ] take copy button from quaderno
 
 [ ] translations ? (task names, activity descriptions)
+
+[ ] fix _set
+[ ] editor : better reaction on unparseable input
 

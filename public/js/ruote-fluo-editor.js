@@ -389,6 +389,10 @@ var FluoEditor = function () {
 
   function renderFlow (parentNode, flow) {
 
+    if ((typeof parentNode) == 'string') {
+      parentNode = document.getElementById(parentNode);
+    }
+
     parentNode.className = 'rfe_root';
 
     renderExpression(parentNode, flow, true);

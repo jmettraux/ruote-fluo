@@ -32,7 +32,7 @@ var FluoConstants = {
 }
 
 var FluoCanvas = function () {
-  
+
   //
   // draws centered text
   //
@@ -518,16 +518,16 @@ var Fluo = function () {
   };
   GenericWithChildrenHandler.drawArrow = false;
   GenericWithChildrenHandler.getHeight = function (c, exp) {
-    var rightHeight = 
+    var rightHeight =
       (getChildren(c, exp).length + 1) * 9 + childrenSum(c, exp, 'getHeight');
-    var leftHeight = 
+    var leftHeight =
       GenericHandler.getHeight(c, exp);
     return (rightHeight > leftHeight) ? rightHeight : leftHeight;
   };
   GenericWithChildrenHandler.getWidth = function (c, exp) {
     return(
-      attributeMaxWidth(c, exp, exp[0]) + 
-      28 + 
+      attributeMaxWidth(c, exp, exp[0]) +
+      28 +
       childrenMax(c, exp, 'getWidth'));
   };
 
@@ -704,7 +704,7 @@ var Fluo = function () {
     }
     c.save();
     c.translate(0, FluoConstants.LINE_HEIGHT);
-    c.save(); 
+    c.save();
     c.fillStyle = FluoConstants.WHITE;
     c.fillRect(-width/2, 0, width, height);
     c.restore();
@@ -923,13 +923,13 @@ var Fluo = function () {
 
     var handler = getHandler(c, exp);
 
-    if (handler.adjust && ! exp.adjusted) { 
+    if (handler.adjust && ! exp.adjusted) {
       handler.adjust(exp);
       exp.adjusted = true;
     }
 
     if (c.canvas.highlight && exp.expid == c.canvas.highlight) { // highlight
-      var w = getWidth(c, exp); 
+      var w = getWidth(c, exp);
       var h = getHeight(c, exp);
       var t = 7;
       c.save();
@@ -978,7 +978,7 @@ var Fluo = function () {
     var h = canvas.flow.height + 2;
 
     if (canvas.horizontal == true) {
-      var x = w; w = h; h = x; 
+      var x = w; w = h; h = x;
     }
 
     nc.setAttribute('width', w);

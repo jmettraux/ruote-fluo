@@ -22,7 +22,7 @@
 # Made in Japan.
 #++
 
-$: << File.join(File.dirname(__FILE__), %w[ .. .. ruote lib ])
+$:.unshift(File.expand_path(File.join(File.dirname(__FILE__), %w[ .. .. ruote lib ])))
 
 require 'rubygems'
 require 'sinatra' # gem install sinatra

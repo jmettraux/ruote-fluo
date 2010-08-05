@@ -2,7 +2,7 @@
 = ruote-fluo  CHANGELOG.txt
 
 
-== ruote-fluo 2.1.10      not yet released
+== ruote-fluo 2.1.11      not yet released
 
 - tightened editor's parser. Thanks Patrice Cappelaere
 - CSS classes names moved from tred_ to rfe_
