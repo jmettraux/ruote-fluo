@@ -395,6 +395,10 @@ var FluoEditor = function () {
 
     parentNode.className = 'rfe_root';
 
+    while(parentNode.firstChild) {
+      parentNode.removeChild(parentNode.firstChild);
+    }
+
     renderExpression(parentNode, flow, true);
 
     parentNode.stack = []; // the undo stack
