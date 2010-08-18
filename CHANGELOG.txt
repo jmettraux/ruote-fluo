@@ -4,6 +4,7 @@
 
 == ruote-fluo 2.1.11      not yet released
 
+- Fluo.resize and Fluo.resizeForMaxWidth
 - tightened editor's parser. Thanks Patrice Cappelaere
 - CSS classes names moved from tred_ to rfe_
 - FluoCan becomes Fluo
