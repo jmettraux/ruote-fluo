@@ -1,7 +1,7 @@
 
 /*
  *  Ruote - open source ruby workflow engine
- *  (c) 2005-2010 John Mettraux
+ *  (c) 2005-2011 John Mettraux
  *
  *  Ruote is freely distributable under the terms of the MIT license.
  *  For details, see the ruote web site: http://ruote.rubyforge.org
