@@ -30,6 +30,15 @@ issue tracker :      http://github.com/jmettraux/ruote-fluo/issues
 irc :                irc.freenode.net #ruote
 
 
+== credits
+
+for IE, ruote-fluo uses excanvas.js (ASL 2.0)
+
+http://code.google.com/p/explorercanvas/
+
+many thanks to its authors and community.
+
+
 == author
 
 John Mettraux, jmettraux@gmail.com

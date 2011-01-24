@@ -22,6 +22,16 @@
 //  return s;
 //}
 
+if (Array.prototype.indexOf === undefined) {
+
+  Array.prototype.indexOf = function (o) {
+    for (var i = 0, l = this.length; i < l; i++) {
+      if (this[i] === o) return i;
+    }
+    return -1;
+  }
+}
+
 var FluoConstants = {
 
   WHITE: 'rgb(255, 255, 255)',
@@ -296,6 +306,9 @@ var FluoCanvas = function () {
 }();
 
 var Fluo = function () {
+
+  var m = navigator.userAgent.match(/MSIE ([\d.]+)?/);
+  var IE_VERSION = m ? m[1] : null;
 
   //
   // MISC METHODS
@@ -821,7 +834,7 @@ var Fluo = function () {
   var DEFINERS = [ 'process-definition', 'workflow-definition', 'define' ];
 
   function identifyExpressions (exp, expid) {
-    if (exp.expid) return; // identify only once
+    if (exp && exp.expid) return; // identify only once
     if ( ! expid) expid = '0';
     exp.expid = expid;
     if ((typeof exp) == 'string') return;
@@ -955,13 +968,17 @@ var Fluo = function () {
   */
 
   function resolveCanvas (c) {
-    if (c.getContext != null) return c;
-    if (c.canvas != null) return c.canvas;
-    return document.getElementById(c);
+
+    if (c.getContext) return c;
+    if (c.canvas) return c.canvas;
+
+    var can = document.getElementById(c);
+    if (IE_VERSION && ( ! can.getContext)) G_vmlCanvasManager.initElement(can);
+    return can;
   }
 
   function resolveContext (c) {
-    if (c.translate != null) return c;
+    if (c.translate) return c;
     return resolveCanvas(c).getContext('2d');
   }
 

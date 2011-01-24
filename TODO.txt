@@ -10,6 +10,8 @@
 [ ] fix _set
 [ ] editor : better reaction on unparseable input
 
+[ ] erb -> haml
+
 [ ] asRuby (asXml ?)
 
 [ ] concurrent_iterator && citerator
