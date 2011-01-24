@@ -22,12 +22,14 @@
 # Made in Japan.
 #++
 
-$:.unshift(File.expand_path(File.join(File.dirname(__FILE__), %w[ .. .. ruote lib ])))
+$:.unshift(
+  File.expand_path(File.join(File.dirname(__FILE__), %w[ .. .. ruote lib ])))
 
 require 'rubygems'
 require 'sinatra' # gem install sinatra
 require 'json' # gem install json_pure
-require 'ruote/parser' # gem install ruote
+
+require 'ruote/reader' # gem install ruote
 
 use Rack::CommonLogger
 use Rack::ShowExceptions
@@ -43,7 +45,7 @@ get '/' do
   i = pdef.rindex('/')
   pdef = pdef[i + 1..-1] if i
 
-  tree = Ruote::Parser.parse(File.join(options.public, pdef)).to_json
+  tree = Ruote::Reader.read(File.join(options.public, pdef)).to_json
 
   wi = request['wi']
 
@@ -70,8 +72,8 @@ post '/def' do
   response.headers['Content-Type'] = 'text/plain'
 
   case params[:out_type]
-    when 'xml' then Ruote::Parser.to_xml(tree, :indent => 2)
-    when 'ruby' then Ruote::Parser.to_ruby(tree)
+    when 'xml' then Ruote::Reader.to_xml(tree, :indent => 2)
+    when 'ruby' then Ruote::Reader.to_ruby(tree)
     else json
   end
 end
@@ -86,6 +88,6 @@ get '/intake' do # work/get around... not very restful...
 
   erb(
     :process,
-    :locals => { :tree => Ruote::Parser.parse(pdef).to_json, :wi => nil })
+    :locals => { :tree => Ruote::Reader.parse(pdef).to_json, :wi => nil })
 end
 
