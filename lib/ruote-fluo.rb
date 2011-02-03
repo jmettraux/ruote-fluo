@@ -26,10 +26,12 @@ $:.unshift(
   File.expand_path(File.join(File.dirname(__FILE__), %w[ .. .. ruote lib ])))
 
 require 'rubygems'
-require 'sinatra' # gem install sinatra
-require 'json' # gem install json_pure
+require 'bundler/setup'
 
-require 'ruote/reader' # gem install ruote
+require 'sinatra'
+require 'json'
+
+require 'ruote/reader'
 
 use Rack::CommonLogger
 use Rack::ShowExceptions
