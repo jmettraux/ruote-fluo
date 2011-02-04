@@ -2,8 +2,9 @@
 CREDITS
 =======
 
-John Mettraux (main dev)
-Jamandru Reynolds (icons + CSS)
-Patrice Cappelaere
+John Mettraux - http://lambda.io/processi
+Jamandru Reynolds - http://geometron.net/
+Rob Taylor - https://github.com/robtaylor
+Patrice Cappelaere - https://github.com/cappelaere
 Juan-Pedro Paredes
 
