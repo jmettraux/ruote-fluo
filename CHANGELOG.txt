@@ -2,7 +2,7 @@
 = ruote-fluo  CHANGELOG.txt
 
 
-== ruote-fluo 2.1.11      not yet released
+== ruote-fluo 2.2.0      not yet released
 
 - Fluo.resize and Fluo.resizeForMaxWidth
 - tightened editor's parser. Thanks Patrice Cappelaere
