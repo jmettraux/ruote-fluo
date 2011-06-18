@@ -21,4 +21,6 @@ gem 'thin'
 gem 'ruote', :git => 'git://github.com/jmettraux/ruote.git'
 #gem 'ruote', :path => '~/w/ruote/'
 
+gem 'builder'
 gem 'json'
+
