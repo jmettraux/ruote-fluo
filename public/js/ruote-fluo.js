@@ -12,16 +12,6 @@
  *  Juan-Pedro Paredes
  */
 
-//function dinspect (o) {
-//  var s = "[\n";
-//  for (var k in o) {
-//    s += ("" + k + ": " + o[k]);
-//    s += ",\n";
-//  }
-//  s += "]";
-//  return s;
-//}
-
 if (Array.prototype.indexOf === undefined) {
 
   Array.prototype.indexOf = function (o) {
@@ -353,9 +343,6 @@ var Fluo = function () {
   }
 
   function attributeCount (exp) {
-    //var l = attributeNames(exp).length;
-    //var ct = strchild && childText(exp);
-    //return l + (ct ? 1 : 0);
     return attributeNames(exp).length;
   }
 
@@ -395,6 +382,11 @@ var Fluo = function () {
         carriageReturn(c);
       }
     }
+  }
+
+  function isArray(o) {
+    if (o == null) return false;
+    return (o.constructor.toString().match(/Array/) != null);
   }
 
   //
@@ -673,9 +665,6 @@ var Fluo = function () {
   };
   HorizontalHandler.getWidth = function (c, exp) {
     return (getChildren(c, exp).length - 1) * 3 + childrenSum(c, exp, 'getWidth');
-    //return Math.max(
-    //  attributeMaxWidth(c, exp),
-    //  (getChildren(c, exp).length - 1) * 3 + childrenSum(c, exp, 'getWidth'));
   };
   HorizontalHandler.computeDistribution = function (c, exp) {
     var children = getChildren(c, exp);
@@ -833,6 +822,12 @@ var Fluo = function () {
 
   var DEFINERS = [ 'process-definition', 'workflow-definition', 'define' ];
 
+  var COLOURS = {
+    'wi': [ '#F4D850', 'black' ],
+    'er': [ 'red', 'black' ],
+    '-': [ '#C8F690', 'black' ] // some green
+  };
+
   function identifyExpressions (exp, expid) {
     if (exp && exp.expid) return; // identify only once
     if ( ! expid) expid = '0';
@@ -856,6 +851,26 @@ var Fluo = function () {
     }
   }
 
+  function setPins (context, options) {
+
+    if (context.canvas.pins) return;
+
+    workitems = options.workitems || [];
+    pins = options.pins || [];
+    pins = pins.concat(workitems);
+
+    context.canvas.pins = {};
+
+    for (var i = 0, l = pins.length; i < l; i++) {
+      var pin = pins[i];
+      if ( ! isArray(pin)) pin = [ pin ];
+      var expid = pin[0];
+      if ( ! pin[1]) pin.push('wi');
+      if ( ! context.canvas.pins[expid]) context.canvas.pins[expid] = [];
+      context.canvas.pins[expid].push(pin);
+    }
+  }
+
   function renderFlow (context, flow, options) {
 
     if ( ! options) options = {};
@@ -867,7 +882,7 @@ var Fluo = function () {
 
     context.canvas.flow = flow;
 
-    setOption(context, options, 'workitems', []);
+    setPins(context, options);
     setOption(context, options, 'highlight');
     setOption(context, options, 'hideMinor');
     setOption(context, options, 'horizontal');
@@ -903,8 +918,16 @@ var Fluo = function () {
     renderFlow(canvas, canvas.flow, { 'highlight': highlight });
   }
 
-  function drawWorkitem (c, exp) {
-    var ww = c.measure('wi');
+  function drawPin (c, exp, pin) {
+
+    var text = pin[1];
+    var colour = pin[2];
+
+    var colours = colour ?
+      colour :
+      COLOURS[text] || [ 'orange', 'black' ];
+
+    var ww = c.measure(text);
     c.save();
     if (c.canvas.horizontal == true) {
       c.rotate(Math.PI/2);
@@ -913,14 +936,14 @@ var Fluo = function () {
     else {
       c.translate(49, 2);
     }
-    c.fillStyle = '#F4D850';
+    c.fillStyle = colours[0];
     c.moveTo(0, 0);
     c.beginPath();
     c.arc(0, 0, 10, Math.PI, 0, false);
     c.lineTo(0, 20);
     c.lineTo(-10, 0);
     c.fill();
-    c.fillStyle = 'black';
+    c.fillStyle = colours[1];
     c.moveTo(0, 0);
     c.beginPath();
     c.arc(0, 0, 10, Math.PI, 0, false);
@@ -928,7 +951,7 @@ var Fluo = function () {
     c.lineTo(-10, 0);
     c.stroke();
     c.translate(-ww/2, 3);
-    c.write('wi');
+    c.write(text);
     c.restore();
   }
 
@@ -955,17 +978,9 @@ var Fluo = function () {
 
     handler.render(c, exp);
 
-    if (c.canvas.workitems.indexOf(exp.expid) > -1) { // workitem
-      drawWorkitem(c, exp);
-    }
+    pins = c.canvas.pins[exp.expid] || [];
+    for (var i = 0, l = pins.length; i < l; i++) { drawPin(c, exp, pins[i]); }
   }
-
-  /*
-  function clear (c) {
-    c = resolveContext(c);
-    c.clearRect(0, 0, c.canvas.width, c.canvas.height);
-  }
-  */
 
   function resolveCanvas (c) {
 
@@ -1003,7 +1018,7 @@ var Fluo = function () {
 
     nc.hideMinor = canvas.hideMinor;
     nc.horizontal = canvas.horizontal;
-    nc.workitems = canvas.workitems;
+    nc.pins = canvas.pins;
     nc.noOuterBorder = canvas.noOuterBorder;
 
     renderFlow(nc, canvas.flow);
@@ -1122,6 +1137,7 @@ var Fluo = function () {
   return {
     HANDLERS: HANDLERS,
     MINORS: MINORS,
+    COLOURS: COLOURS,
     renderFlow: renderFlow,
     highlight: highlight,
     getHeight: getHeight,
