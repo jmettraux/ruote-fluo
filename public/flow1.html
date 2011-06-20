@@ -1,0 +1,48 @@
+<!--
+  playing with renderFlow and workitem pins
+-->
+
+<html>
+
+<head>
+
+  <title>fluo : playing with pins</title>
+
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+
+  <script src="/js/ruote-fluo.js"></script>
+</head>
+
+<body>
+
+ <canvas id="fluo" width="200" height="200"></canvas>
+
+ <script>
+
+   document.getElementById('fluo').noOuterBorder = true;
+
+   Fluo.renderFlow(
+     'fluo', 
+     [ 'define', {}, [
+       [ 'sequence', {}, [
+         [ 'concurrence', { 'count': 1 }, [
+           [ 'error', { 'nada': null }, [] ],
+           [ 'bravo', {}, [] ],
+           [ 'wait', { '2M': null }, [] ]
+         ] ],
+         [ 'david', {}, [] ]
+       ] ]
+     ] ],
+     {
+       'pins': [
+         [ '0_0_0_0', 'er' ],
+         [ '0_0_0_1', 'wi' ]
+       ]
+     })
+
+   Fluo.crop('fluo');
+ </script>
+
+</body>
+</html>
+

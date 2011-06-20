@@ -918,7 +918,7 @@ var Fluo = function () {
     renderFlow(canvas, canvas.flow, { 'highlight': highlight });
   }
 
-  function drawPin (c, exp, pin) {
+  function drawPin (c, exp, width, pin) {
 
     var text = pin[1];
     var colour = pin[2];
@@ -934,7 +934,7 @@ var Fluo = function () {
       c.translate(5, -14);
     }
     else {
-      c.translate(49, 2);
+      c.translate((width / 2) * 0.7, 2);
     }
     c.fillStyle = colours[0];
     c.moveTo(0, 0);
@@ -979,7 +979,9 @@ var Fluo = function () {
     handler.render(c, exp);
 
     pins = c.canvas.pins[exp.expid] || [];
-    for (var i = 0, l = pins.length; i < l; i++) { drawPin(c, exp, pins[i]); }
+    for (var i = 0, l = pins.length; i < l; i++) {
+      drawPin(c, exp, handler.getWidth(c, exp), pins[i]);
+    }
   }
 
   function resolveCanvas (c) {
