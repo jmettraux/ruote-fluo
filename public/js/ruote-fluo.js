@@ -211,11 +211,7 @@ var FluoCanvas = function () {
     c.beginPath();
     c.lineWidth = 0.5;
     var radius = height / 2 - 4.3;
-    c.arc(0, 0, radius, 0, Math.PI * 2, true);
-    for (var i = 0; i < 12; i++) {
-      lineInCircle(c, Math.PI / 6 * i, radius, radius - 2);
-    }
-    lineInCircle(c, Math.PI / 6 * 9.5, radius - 1, 0); // minutes
+    lineInCircle(c, Math.PI / 6 * 9.5, radius - 0.5, 0); // minutes
     lineInCircle(c, Math.PI / 6 * 0, radius - 3, 0); // hours
     c.stroke();
     c.restore();
