@@ -2,8 +2,9 @@
 = ruote-fluo  CHANGELOG.txt
 
 
-== ruote-fluo 2.2.0      not yet released
+== ruote-fluo 2.2.1      not yet released
 
+- adapted to Firefox 7.x (mozDrawText -> fillText)
 - Fluo.resize and Fluo.resizeForMaxWidth
 - tightened editor's parser. Thanks Patrice Cappelaere
 - CSS classes names moved from tred_ to rfe_
