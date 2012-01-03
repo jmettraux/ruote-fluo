@@ -99,7 +99,7 @@ var FluoEditor = function () {
 
     return { parse: parse };
   }();
-  
+
   var ExpressionHead = function () {
 
     function createButton (rfeClass, tooltip, callback) {
@@ -123,12 +123,12 @@ var FluoEditor = function () {
 
       var root = findRfeRoot(expdiv);
 
-      expdiv.onmouseover = function () { 
-        buttons.style.opacity = 1.0; 
+      expdiv.onmouseover = function () {
+        buttons.style.opacity = 1.0;
         if (root.onOver) root.onOver(computeExpId(expdiv.parentNode));
       };
-      expdiv.onmouseout = function () { 
-        buttons.style.opacity = outOpacity; 
+      expdiv.onmouseout = function () {
+        buttons.style.opacity = outOpacity;
         if (root.onOver) root.onOver(null);
       };
 
@@ -314,7 +314,7 @@ var FluoEditor = function () {
 
   function asJson (node) {
 
-    if ((typeof node) == 'string') 
+    if ((typeof node) == 'string')
       node = document.getElementById(node);
 
     return JSON.stringify(toTree(node));
