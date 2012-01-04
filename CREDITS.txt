@@ -8,3 +8,5 @@ Rob Taylor - https://github.com/robtaylor
 Patrice Cappelaere - https://github.com/cappelaere
 Juan-Pedro Paredes
 
+Many thanks to the authors, the contributors and the communities of underscore.js and jquery.js
+

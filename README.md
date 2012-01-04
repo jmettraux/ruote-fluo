@@ -1,12 +1,12 @@
 
-= ruote-fluo
+# ruote-fluo
 
 http://ruote.rubyforge.org
 
 This is the development bench of the javascript library used to render graphically process definitions in ruote-kit (http://github.com/kennethkalmer/ruote-kit)
 
 
-== using
+## using
 
   gem install ruote rack sinatra thin builder
   git clone git://github.com/jmettraux/ruote-fluo.git
@@ -16,36 +16,31 @@ This is the development bench of the javascript library used to render graphical
 then head with your browser (Firefox or Safari) to http://localhost:4567
 
 
-== source
+## source
 
 http://github.com/jmettraux/ruote-fluo
 
   git clone git://github.com/jmettraux/ruote-fluo.git
 
 
-== feedback
+## feedback
 
 user mailing list :  http://groups.google.com/group/openwferu-users
 issue tracker :      http://github.com/jmettraux/ruote-fluo/issues
 irc :                irc.freenode.net #ruote
 
 
-== credits
+## credits
 
-for IE, ruote-fluo uses excanvas.js (ASL 2.0)
-
-http://code.google.com/p/explorercanvas/
-
-many thanks to its authors and community.
+see CREDITS.txt
 
 
-== author
+## author
 
 John Mettraux, jmettraux@gmail.com
-http://jmettraux.wordpress.com
 
 
-== license
+## license
 
 MIT
 

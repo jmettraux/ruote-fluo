@@ -1,0 +1,11 @@
+
+rect.fluo {
+  fill: black;
+  stroke: black;
+  rx: 14;
+  ry: 14;
+}
+
+p.fluo.expname {
+  margin-bottom: 1em;
+}
