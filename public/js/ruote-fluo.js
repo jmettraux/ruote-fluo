@@ -91,6 +91,19 @@ var Fluo = (function() {
     return $(elt);
   };
 
+  function maxWidth($elt) {
+
+    return _.max(_.map($elt.children(), function(c) { return $(c).width() }));
+  }
+
+  function totalHeight($elt) {
+
+    return _.reduce(
+      _.map($elt.children(), function(c) { return $(c).height() }),
+      function(c, val) { return c + val },
+      0);
+  }
+
   function textGroup($container, texts) {
 
     var $g = svg($container, 'g');
@@ -102,18 +115,10 @@ var Fluo = (function() {
       $t.attr('y', y);
     });
 
+    $g._width = maxWidth($g);
+    $g._height = totalHeight($g);
+
     return $g;
-  }
-
-  function maxWidth($elt) {
-    return _.max(_.map($elt.children(), function(c) { return $(c).width() }));
-  }
-
-  function totalHeight($elt) {
-    return _.reduce(
-      _.map($elt.children(), function(c) { return $(c).height() }),
-      function(c, val) { return c + val },
-      0);
   }
 
   function rectAndText($container, texts) {
@@ -124,10 +129,13 @@ var Fluo = (function() {
     var $text = textGroup($g, texts);
     translate($text, MARGIN, 0);
 
+    $g._width = 2 * MARGIN + $text._width;
+    $g._height = 2 * MARGIN + $text._height;
+
     $rect.attr('rx', RECT_R);
     $rect.attr('ry', RECT_R);
-    $rect.attr('width', '' + (2 * MARGIN + maxWidth($text)));
-    $rect.attr('height', '' + (2 * MARGIN + totalHeight($text)));
+    $rect.attr('width', '' + $g._width);
+    $rect.attr('height', '' + $g._height);
 
     return $g;
   }
@@ -142,24 +150,65 @@ var Fluo = (function() {
 
   var RENDER = {};
 
-  RENDER.any = function($container, expid, flow) {
+  RENDER.leaf = function($container, expid, flow) {
 
     var texts = [ flow[0] ];
     _.each(flow[1], function(v, k) { texts.push(k + ': ' + v); });
 
-    var $tg = rectAndText($container, texts);
-    $tg[0].id = "exp_" + expid;
+    var $rat = rectAndText($container, texts);
 
-    return $tg;
+    return $rat;
   }
 
-  RENDER.sequence = function($container, expid, flow) {
+  RENDER.any = function($container, expid, flow) {
+
+    var $g = svg($container, 'g');
+    var $rect = svg($g, 'rect', { class: 'fluo' });
+
+    var texts = [ flow[0] ];
+    _.each(flow[1], function(v, k) { texts.push(k + ': ' + v); });
+
+    var $tg = textGroup($g, texts);
+    translate($tg, MARGIN, 0);
+
+    var x = MARGIN + $tg._width;
+
+    var i = 0;
+    var y = MARGIN;
+    var w = 0;
+
+    _.each(flow[2], function(fl) {
+      var $exp = renderExp($tg, expid + '_' + i, fl);
+      translate($exp, x, y);
+      i = i + 1;
+      y = y + $exp._height + MARGIN;
+      w = _.max([ w, $exp._width ]);
+    });
+
+    $g._width = x + w + MARGIN;
+    $g._height = _.max([ $tg._height, y ]) + MARGIN;
+
+    $rect.attr('rx', RECT_R);
+    $rect.attr('ry', RECT_R);
+    $rect.attr('width', '' + $g._width);
+    $rect.attr('height', '' + $g._height);
+
+    return $g;
   }
+
+  //RENDER.sequence = function($container, expid, flow) {
+  //  // TODO
+  //}
 
   function renderExp($container, expid, flow) {
 
-    return (RENDER[flow[0]] || RENDER['any']).call(
-      THIS, svg($container), expid, flow);
+    var $exp =
+      (RENDER[flow[0]] || RENDER.any).call(THIS, $container, expid, flow);
+
+    $exp[0].id = 'exp_' + expid;
+      // TODO: some kind of prefix?
+
+    return $exp;
   }
 
   this.render = function(div, flow, options) {
@@ -170,7 +219,7 @@ var Fluo = (function() {
 
     $div[0].fluo_options = options;
 
-    $svg = renderExp($div, '0', flow);
+    return renderExp(svg($div), '0', flow);
   }
 
   return this;
