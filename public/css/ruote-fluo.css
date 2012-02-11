@@ -10,10 +10,13 @@ svg rect.fluo {
 }
 svg text {
   font-family: sans-serif;
-  font-size: 14;
+  font-size: 14px;
   /*
   fill: blue;
   */
+}
+svg text.expname {
+  font-size: 16px;
 }
 
 p.fluo.expname {

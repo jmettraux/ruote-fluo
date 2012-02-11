@@ -71,7 +71,7 @@ var Fluo = (function() {
 //  };
 
   var RECT_R = 7;
-  var MARGIN = 5;
+  var MARGIN = 4;
 
   var THIS = this;
 
@@ -110,7 +110,10 @@ var Fluo = (function() {
     var y = 0;
 
     _.each(texts, function(text) {
-      var $t = svg($g, 'text', { class: 'fluo', x: 0 }, text);
+      var t = text;
+      var c = '';
+      if (_.isArray(text)) { c = text[0]; t = text[1]; }
+      var $t = svg($g, 'text', { class: $.trim('fluo ' + c), x: 0 }, t);
       y = y + $t.height();
       $t.attr('y', y);
     });
@@ -152,7 +155,7 @@ var Fluo = (function() {
 
   RENDER.leaf = function($container, expid, flow) {
 
-    var texts = [ flow[0] ];
+    var texts = [ [ 'expname', flow[0] ] ];
     _.each(flow[1], function(v, k) { texts.push(k + ': ' + v); });
 
     var $rat = rectAndText($container, texts);
@@ -165,7 +168,7 @@ var Fluo = (function() {
     var $g = svg($container, 'g');
     var $rect = svg($g, 'rect', { class: 'fluo' });
 
-    var texts = [ flow[0] ];
+    var texts = [ [ 'expname', flow[0] ] ];
     _.each(flow[1], function(v, k) { texts.push(k + ': ' + v); });
 
     var $tg = textGroup($g, texts);
@@ -185,8 +188,8 @@ var Fluo = (function() {
       w = _.max([ w, $exp._width ]);
     });
 
-    $g._width = x + w + MARGIN;
-    $g._height = _.max([ $tg._height, y ]) + MARGIN;
+    $g._width = x + w + 2 * MARGIN;
+    $g._height = _.max([ $tg._height, y ]) + 2 * MARGIN;
 
     $rect.attr('rx', RECT_R);
     $rect.attr('ry', RECT_R);
