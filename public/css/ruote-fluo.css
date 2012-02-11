@@ -1,9 +1,19 @@
 
-rect.fluo {
-  fill: black;
+svg rect.fluo {
+  fill: none;
   stroke: black;
+  stroke-width: 0.7px;
+  /*
   rx: 14;
   ry: 14;
+  */
+}
+svg text {
+  font-family: sans-serif;
+  font-size: 14;
+  /*
+  fill: blue;
+  */
 }
 
 p.fluo.expname {

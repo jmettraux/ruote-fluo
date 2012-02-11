@@ -8,11 +8,18 @@
  *  Made in Japan
  */
 
-$.fn.app = function(html) {
-  var $h = $(html);
-  this.append($h);
-  return $h;
-};
+/*
+ * depends on jquery and underscore
+ *
+ * http://jquery.com
+ * http://documentcloud.github.com/underscore/
+ */
+
+
+//$.fn.svg = function(eltName, attributes, text) {
+//
+//  // ...
+//};
 
 
 var Fluo = (function() {
@@ -63,21 +70,87 @@ var Fluo = (function() {
 //    '-': [ '#C8F690', 'black' ] // some green
 //  };
 
+  var RECT_R = 7;
+  var MARGIN = 5;
+
   var THIS = this;
+
+  //
+  // misc functions
+
+  function svg($container, eltName, attributes, text) {
+
+    eltName = eltName || 'svg';
+    attributes = attributes || {};
+
+    var elt = document.createElementNS('http://www.w3.org/2000/svg', eltName);
+    _.each(attributes, function(v, k) { elt.setAttributeNS(null, k, v); });
+    if (text) elt.appendChild(document.createTextNode(text));
+    $container[0].appendChild(elt);
+
+    return $(elt);
+  };
+
+  function textGroup($container, texts) {
+
+    var $g = svg($container, 'g');
+    var y = 0;
+
+    _.each(texts, function(text) {
+      var $t = svg($g, 'text', { class: 'fluo', x: 0 }, text);
+      y = y + $t.height();
+      $t.attr('y', y);
+    });
+
+    return $g;
+  }
+
+  function maxWidth($elt) {
+    return _.max(_.map($elt.children(), function(c) { return $(c).width() }));
+  }
+
+  function totalHeight($elt) {
+    return _.reduce(
+      _.map($elt.children(), function(c) { return $(c).height() }),
+      function(c, val) { return c + val },
+      0);
+  }
+
+  function rectAndText($container, texts) {
+
+    var $g = svg($container, 'g');
+
+    var $rect = svg($g, 'rect', { class: 'fluo' });
+    var $text = textGroup($g, texts);
+    translate($text, MARGIN, 0);
+
+    $rect.attr('rx', RECT_R);
+    $rect.attr('ry', RECT_R);
+    $rect.attr('width', '' + (2 * MARGIN + maxWidth($text)));
+    $rect.attr('height', '' + (2 * MARGIN + totalHeight($text)));
+
+    return $g;
+  }
+
+  function translate($elt, x, y) {
+
+    $elt.attr('transform', 'translate(' + x + ', ' + y + ')');
+  }
+
+  //
+  // render functions
 
   var RENDER = {};
 
   RENDER.any = function($container, expid, flow) {
-    var $svg = $container.app('<svg></svg>');
-    var $text = $svg.app('<text></text>');
-    $text.append('<p class="fluo expname">' + flow[0] + '</tspan>');
-    _.each(flow[1], function(k, v) {
-      $text.append('<p class="fluo attribute">' + k  + ': ' + JSON.stringify(v) + '</tspan>');
-    });
-    var $rect = $svg.app('<rect class="fluo any"></rect>');
-    $rect.attr('width', '' + $text.width());
-    $rect.attr('height', '' + $text.height());
-    return $svg;
+
+    var texts = [ flow[0] ];
+    _.each(flow[1], function(v, k) { texts.push(k + ': ' + v); });
+
+    var $tg = rectAndText($container, texts);
+    $tg[0].id = "exp_" + expid;
+
+    return $tg;
   }
 
   RENDER.sequence = function($container, expid, flow) {
@@ -86,7 +159,7 @@ var Fluo = (function() {
   function renderExp($container, expid, flow) {
 
     return (RENDER[flow[0]] || RENDER['any']).call(
-      THIS, $container, expid, flow);
+      THIS, svg($container), expid, flow);
   }
 
   this.render = function(div, flow, options) {

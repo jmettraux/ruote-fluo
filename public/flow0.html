@@ -1,6 +1,4 @@
-<!--
-  playing with renderFlow and workitem pins
--->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
 <html>
 
@@ -25,24 +23,27 @@
 
    //document.getElementById('fluo').noOuterBorder = true;
 
-   Fluo.render(
-     'fluo',
-     [ 'define', { 'name': 'nada' }, [
-       [ 'sequence', {}, [
-         [ 'concurrence', { 'count': 1 }, [
-           [ 'alpha', {}, [] ],
-           [ 'bravo', {}, [] ],
-           [ 'charly', {}, [] ]
-         ] ],
-         [ 'david', {}, [] ]
-       ] ]
-     ] ],
-     {
-       'workitems': [ '0_0_0_0' ],
-       'pins': [
-         [ '0_0_0_1', 'er' ],
-         [ '0_0_0_2', 'na', [ '#C8F690', 'black' ] ],
-         [ '0_0_1', '-' ] ] });
+   $(document).ready(function () {
+
+     Fluo.render(
+       'fluo',
+       [ 'define', { 'name': 'nada' }, [
+         [ 'sequence', {}, [
+           [ 'concurrence', { 'count': 1 }, [
+             [ 'alpha', {}, [] ],
+             [ 'bravo', {}, [] ],
+             [ 'charly', {}, [] ]
+           ] ],
+           [ 'david', {}, [] ]
+         ] ]
+       ] ],
+       {
+         'workitems': [ '0_0_0_0' ],
+         'pins': [
+           [ '0_0_0_1', 'er' ],
+           [ '0_0_0_2', 'na', [ '#C8F690', 'black' ] ],
+           [ '0_0_1', '-' ] ] });
+   });
  </script>
 
 </body>
