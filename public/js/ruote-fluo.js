@@ -205,6 +205,39 @@ var Fluo = (function() {
   //
   // render functions
 
+  function renderCard($container, expid, flow, bodyFunc, options) {
+
+    options = options || {};
+
+    var $g = svg($container, 'g');
+
+    var $rect = (options.drawRect == false) ?
+      null : svg($g, 'rect', { class: 'fluo' });
+
+    var texts = [ [ 'expname', flow[0] ] ];
+    _.each(flow[1], function(v, k) { texts.push(k + ': ' + v); });
+
+    var $tg = textGroup($g, texts);
+    translate($tg, MARGIN, 0);
+
+    var x = 2 * MARGIN + $tg._width;
+
+    var dim = bodyFunc($g, x);
+    var w = dim[0]; var h = dim[1];
+
+    $g._width = x + w + MARGIN;
+    $g._height = _.max([ $tg._height + 2 * MARGIN, h ]);
+
+    if ($rect) {
+      $rect.attr('rx', RECT_R);
+      $rect.attr('ry', RECT_R);
+      $rect.attr('width', '' + $g._width);
+      $rect.attr('height', '' + $g._height);
+    }
+
+    return $g;
+  }
+
   var RENDER = {};
 
 //  RENDER.leaf = function($container, expid, flow) {
@@ -230,33 +263,6 @@ var Fluo = (function() {
     $t.attr('y', $t.height());
 
     return $t;
-  }
-
-  function renderCard($container, expid, flow, bodyFunc) {
-
-    var $g = svg($container, 'g');
-    var $rect = svg($g, 'rect', { class: 'fluo' });
-
-    var texts = [ [ 'expname', flow[0] ] ];
-    _.each(flow[1], function(v, k) { texts.push(k + ': ' + v); });
-
-    var $tg = textGroup($g, texts);
-    translate($tg, MARGIN, 0);
-
-    var x = 2 * MARGIN + $tg._width;
-
-    var dim = bodyFunc($g, x);
-    var w = dim[0]; var h = dim[1];
-
-    $g._width = x + w + MARGIN;
-    $g._height = _.max([ $tg._height + 2 * MARGIN, h ]);
-
-    $rect.attr('rx', RECT_R);
-    $rect.attr('ry', RECT_R);
-    $rect.attr('width', '' + $g._width);
-    $rect.attr('height', '' + $g._height);
-
-    return $g;
   }
 
   RENDER.any = function($container, expid, flow) {
@@ -323,7 +329,8 @@ var Fluo = (function() {
         center(_.flatten($exps));
 
         return [ w, h ];
-      });
+      },
+      { drawRect: false });
   }
 
   _.each([
