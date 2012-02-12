@@ -232,7 +232,7 @@ var Fluo = (function() {
     return $t;
   }
 
-  RENDER.any = function($container, expid, flow) {
+  function renderCard($container, expid, flow, bodyFunc) {
 
     var $g = svg($container, 'g');
     var $rect = svg($g, 'rect', { class: 'fluo' });
@@ -243,24 +243,13 @@ var Fluo = (function() {
     var $tg = textGroup($g, texts);
     translate($tg, MARGIN, 0);
 
-    var x = MARGIN + $tg._width;
+    var x = 2 * MARGIN + $tg._width;
 
-    var i = 0;
-    var y = MARGIN;
-    var w = 0;
+    var dim = bodyFunc($g, x);
+    var w = dim[0]; var h = dim[1];
 
-    var exps = _.map(flow[2], function(fl) {
-      var $exp = renderExp($tg, expid + '_' + i, fl);
-      translate($exp, x, y);
-      i = i + 1;
-      y = y + $exp._height + MARGIN;
-      w = _.max([ w, $exp._width ]);
-      return $exp;
-    });
-    //center(exps);
-
-    $g._width = x + w + 2 * MARGIN;
-    $g._height = _.max([ $tg._height + 2 * MARGIN, y ]);
+    $g._width = x + w + MARGIN;
+    $g._height = _.max([ $tg._height + 2 * MARGIN, h ]);
 
     $rect.attr('rx', RECT_R);
     $rect.attr('ry', RECT_R);
@@ -270,14 +259,60 @@ var Fluo = (function() {
     return $g;
   }
 
+  RENDER.any = function($container, expid, flow) {
+
+    return renderCard(
+      $container,
+      expid,
+      flow,
+      function($group, x) {
+
+        var i = 0;
+        var h = MARGIN;
+        var w = 0;
+
+        _.each(flow[2], function(fl) {
+          var $exp = renderExp($group, expid + '_' + i, fl);
+          translate($exp, x, h);
+          i = i + 1;
+          h = h + $exp._height + MARGIN;
+          w = _.max([ w, $exp._width ]);
+        });
+
+        return [ w, h ];
+      });
+  }
+
+  RENDER.sequence = function($container, expid, flow) {
+
+    return renderCard(
+      $container,
+      expid,
+      flow,
+      function($group, x) {
+
+        var i = 0;
+        var h = MARGIN;
+        var w = 0;
+
+        var $exps = _.map(flow[2], function(fl) {
+          var $exp = renderExp($group, expid + '_' + i, fl);
+          translate($exp, x, h);
+          i = i + 1;
+          h = h + $exp._height + MARGIN;
+          w = _.max([ w, $exp._width ]);
+          return $exp;
+        });
+        center($exps);
+
+        return [ w, h ];
+      });
+  }
+
   _.each([
     'set', 'rset', 'unset',
     'rewind', 'continue', 'back', 'break', 'stop', 'cancel', 'skip', 'jump'
   ], function(expname) { RENDER[expname] = RENDER.text; });
-
-  //RENDER.sequence = function($container, expid, flow) {
-  //  // TODO
-  //}
 
   function renderExp($container, expid, flow) {
 
