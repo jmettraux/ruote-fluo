@@ -214,11 +214,18 @@ var Fluo = (function() {
     var $rect = (options.drawRect == false) ?
       null : svg($g, 'rect', { class: 'fluo' });
 
-    var texts = [ [ 'expname', flow[0] ] ];
-    _.each(flow[1], function(v, k) { texts.push(k + ': ' + v); });
+    var $tg = null;
 
-    var $tg = textGroup($g, texts);
-    translate($tg, MARGIN, 0);
+    if (options.optionalExpName && _.isEmpty(flow[1])) {
+      $tg = { _height: 0, _width: 0 };
+    }
+    else {
+      var texts = [ [ 'expname', flow[0] ] ];
+      _.each(flow[1], function(v, k) { texts.push(k + ': ' + v); });
+
+      $tg = textGroup($g, texts);
+      translate($tg, MARGIN, 0);
+    }
 
     var x = 2 * MARGIN + $tg._width;
 
@@ -330,7 +337,7 @@ var Fluo = (function() {
 
         return [ w, h ];
       },
-      { drawRect: false });
+      { drawRect: false, optionalExpName: true });
   }
 
   _.each([
