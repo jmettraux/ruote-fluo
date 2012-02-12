@@ -28,15 +28,9 @@ var Fluo = (function() {
   // http://javascriptweblog.wordpress.com/2010/12/07/namespacing-in-javascript/
   // for the namespacing
 
-//  var HANDLERS = {
-//
-//    //'participant': ParticipantHandler
-//
 //    'sequence': VerticalHandler,
 //    'concurrence': ConcurrenceHandler,
 //    'if': IfHandler,
-//    'set': TextHandler,
-//    'unset': TextHandler,
 //    'sleep': SymbolHandler,
 //    'wait': SymbolHandler,
 //    'error': SymbolHandler,
@@ -46,19 +40,7 @@ var Fluo = (function() {
 //    'cursor': LoopHandler,
 //    'concurrent-iterator': ConcurrentIteratorHandler,
 //
-//    'rewind': TextHandler,
-//    'continue': TextHandler,
-//    'back': TextHandler,
-//    'break': TextHandler,
-//    'stop': TextHandler,
-//    'cancel': TextHandler,
-//    'skip': TextHandler,
-//    'jump': TextHandler,
-//      // 'commands'
-//
-//    //'_atts_': AttributeOnlyHandler,
 //    '_': GhostHandler
-//  };
 //
 //  var MINORS = [ 'set', 'set-fields', 'unset', 'description' ];
 //
@@ -163,6 +145,21 @@ var Fluo = (function() {
     return $rat;
   }
 
+  RENDER.text = function($container, expid, flow) {
+
+    var atts = JSON.stringify(flow[1]).slice(1, -1);
+
+    var $t = svg(
+      $container, 'text', { class: 'fluo' }, $.trim(flow[0] + ' ' + atts));
+
+    $t._width = $t.width();
+    $t._height = $t.height() + MARGIN;
+
+    $t.attr('y', $t.height());
+
+    return $t;
+  }
+
   RENDER.any = function($container, expid, flow) {
 
     var $g = svg($container, 'g');
@@ -198,6 +195,11 @@ var Fluo = (function() {
 
     return $g;
   }
+
+  _.each([
+    'set', 'rset', 'unset',
+    'rewind', 'continue', 'back', 'break', 'stop', 'cancel', 'skip', 'jump'
+  ], function(expname) { RENDER[expname] = RENDER.text; });
 
   //RENDER.sequence = function($container, expid, flow) {
   //  // TODO
