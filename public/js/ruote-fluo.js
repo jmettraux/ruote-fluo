@@ -60,7 +60,28 @@ var Fluo = (function() {
   //
   // misc functions
 
-  function svg($container, eltName, attributes, text) {
+  function addDefinitions($svg) {
+
+    svgTree(
+      $svg,
+      [ 'defs',
+        [
+          [ 'marker',
+            {
+              id: 'arrowhead',
+              viewBox: '0 0 10 10', refX: '0', refY: '5',
+              markerUnits: '4', markerHeight: '3',
+              orient: 'auto'
+            },
+            [
+              [ 'path', { d: 'M 0 0 L 10 5 L 0 10 z' } ]
+            ]
+          ]
+        ]
+      ]);
+  }
+
+  function svgElt($container, eltName, attributes, text) {
 
     eltName = eltName || 'svg';
     attributes = attributes || {};
@@ -70,8 +91,37 @@ var Fluo = (function() {
     if (text) elt.appendChild(document.createTextNode(text));
     $container[0].appendChild(elt);
 
-    return $(elt);
+    var $elt = $(elt);
+    if (eltName == 'svg') addDefinitions($elt);
+
+    return $elt;
   };
+
+  function svgTree($container, tree) {
+
+    var name = tree[0];
+    var attributes = tree[1];
+    var children = tree[2] || [];
+
+    if (_.isArray(attributes)) {
+      children = attributes;
+      attributes = {};
+    }
+
+    $elt = svgElt($container, name, attributes);
+
+    _.each(children, function(t) { svgTree($elt, t) });
+
+    return $elt;
+  }
+
+  function svg($container, eltName, attributes, text) {
+
+    if (_.isArray(eltName))
+      return svgTree($container, eltName);
+    else
+      return svgElt($container, eltName, attributes, text);
+  }
 
   function maxWidth($elt) {
 
@@ -207,7 +257,7 @@ var Fluo = (function() {
       w = _.max([ w, $exp._width ]);
       return $exp;
     });
-    center(exps);
+    //center(exps);
 
     $g._width = x + w + 2 * MARGIN;
     $g._height = _.max([ $tg._height + 2 * MARGIN, y ]);
