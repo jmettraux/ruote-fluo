@@ -125,12 +125,26 @@ var Fluo = (function() {
 //    return $g;
 //  }
 
+  function center(elts) {
+
+    var w = _.inject(
+      elts,
+      function(w, elt) { return _.max([ w, elt._width ]) },
+      0);
+
+    _.each(elts, function(elt) {
+      var dx = (w - elt._width) / 2;
+      translate(elt, dx, 0);
+    });
+  }
+
   function translate($elt, x, y) {
 
     var prev = $elt.attr('transform');
 
     if (prev) {
-      var _, px, py = prev.match(/^translate\((\d+), (\d+)\)$/);
+      var m = prev.match(/^translate\((\d+), (\d+)\)$/);
+      var px = m[1]; var py = m[2];
       x = x + parseInt(px);
       y = y + parseInt(py);
     }
@@ -185,13 +199,15 @@ var Fluo = (function() {
     var y = MARGIN;
     var w = 0;
 
-    _.each(flow[2], function(fl) {
+    var exps = _.map(flow[2], function(fl) {
       var $exp = renderExp($tg, expid + '_' + i, fl);
       translate($exp, x, y);
       i = i + 1;
       y = y + $exp._height + MARGIN;
       w = _.max([ w, $exp._width ]);
+      return $exp;
     });
+    center(exps);
 
     $g._width = x + w + 2 * MARGIN;
     $g._height = _.max([ $tg._height + 2 * MARGIN, y ]);
