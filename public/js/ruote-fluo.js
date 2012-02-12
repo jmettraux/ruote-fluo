@@ -106,26 +106,34 @@ var Fluo = (function() {
     return $g;
   }
 
-  function rectAndText($container, texts) {
-
-    var $g = svg($container, 'g');
-
-    var $rect = svg($g, 'rect', { class: 'fluo' });
-    var $text = textGroup($g, texts);
-    translate($text, MARGIN, 0);
-
-    $g._width = 2 * MARGIN + $text._width;
-    $g._height = 2 * MARGIN + $text._height;
-
-    $rect.attr('rx', RECT_R);
-    $rect.attr('ry', RECT_R);
-    $rect.attr('width', '' + $g._width);
-    $rect.attr('height', '' + $g._height);
-
-    return $g;
-  }
+//  function rectAndText($container, texts) {
+//
+//    var $g = svg($container, 'g');
+//
+//    var $rect = svg($g, 'rect', { class: 'fluo' });
+//    var $text = textGroup($g, texts);
+//    translate($text, MARGIN, 0);
+//
+//    $g._width = 2 * MARGIN + $text._width;
+//    $g._height = 2 * MARGIN + $text._height;
+//
+//    $rect.attr('rx', RECT_R);
+//    $rect.attr('ry', RECT_R);
+//    $rect.attr('width', '' + $g._width);
+//    $rect.attr('height', '' + $g._height);
+//
+//    return $g;
+//  }
 
   function translate($elt, x, y) {
+
+    var prev = $elt.attr('transform');
+
+    if (prev) {
+      var _, px, py = prev.match(/^translate\((\d+), (\d+)\)$/);
+      x = x + parseInt(px);
+      y = y + parseInt(py);
+    }
 
     $elt.attr('transform', 'translate(' + x + ', ' + y + ')');
   }
@@ -135,15 +143,15 @@ var Fluo = (function() {
 
   var RENDER = {};
 
-  RENDER.leaf = function($container, expid, flow) {
-
-    var texts = [ [ 'expname', flow[0] ] ];
-    _.each(flow[1], function(v, k) { texts.push(k + ': ' + v); });
-
-    var $rat = rectAndText($container, texts);
-
-    return $rat;
-  }
+//  RENDER.leaf = function($container, expid, flow) {
+//
+//    var texts = [ [ 'expname', flow[0] ] ];
+//    _.each(flow[1], function(v, k) { texts.push(k + ': ' + v); });
+//
+//    var $rat = rectAndText($container, texts);
+//
+//    return $rat;
+//  }
 
   RENDER.text = function($container, expid, flow) {
 
