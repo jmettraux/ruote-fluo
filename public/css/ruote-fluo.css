@@ -8,6 +8,10 @@ svg rect.fluo {
   ry: 14;
   */
 }
+svg path.fluo {
+  stroke: black;
+  stroke-width: 0.7px;
+}
 svg text {
   font-family: sans-serif;
   font-size: 14px;

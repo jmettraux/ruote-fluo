@@ -28,7 +28,6 @@ var Fluo = (function() {
   // http://javascriptweblog.wordpress.com/2010/12/07/namespacing-in-javascript/
   // for the namespacing
 
-//    'sequence': VerticalHandler,
 //    'concurrence': ConcurrenceHandler,
 //    'if': IfHandler,
 //    'sleep': SymbolHandler,
@@ -69,12 +68,13 @@ var Fluo = (function() {
           [ 'marker',
             {
               id: 'arrowhead',
-              viewBox: '0 0 10 10', refX: '0', refY: '5',
-              markerUnits: '4', markerHeight: '3',
+              viewBox: '0 0 100 100', refX: '90', refY: '50',
+              markerUnits: 'strokeWidth',
+              markerWidth: '10', markerHeight: '10',
               orient: 'auto'
             },
             [
-              [ 'path', { d: 'M 0 0 L 10 5 L 0 10 z' } ]
+              [ 'path', { class: 'fluo', d: 'M 0 0 L 100 50 L 0 100 z' } ]
             ]
           ]
         ]
@@ -296,14 +296,31 @@ var Fluo = (function() {
         var w = 0;
 
         var $exps = _.map(flow[2], function(fl) {
+
           var $exp = renderExp($group, expid + '_' + i, fl);
           translate($exp, x, h);
           i = i + 1;
-          h = h + $exp._height + MARGIN;
+          h = h + $exp._height;
           w = _.max([ w, $exp._width ]);
-          return $exp;
+
+          if (i >= flow[2].length) return $exp;
+
+          var $arrow = svg(
+            $group,
+            'path',
+            {
+              class: 'fluo', d: 'M 0 0 L 0 14', 'marker-end': 'url(#arrowhead)'
+            });
+          translate($arrow, x, h);
+          h = h + 14;
+
+          $arrow._width = $arrow.width();
+          $arrow._height = $arrow.height();
+
+          return [ $exp, $arrow ];
         });
-        center($exps);
+
+        center(_.flatten($exps));
 
         return [ w, h ];
       });
