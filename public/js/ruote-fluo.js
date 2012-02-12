@@ -189,7 +189,7 @@ var Fluo = (function() {
     });
 
     $g._width = x + w + 2 * MARGIN;
-    $g._height = _.max([ $tg._height, y ]) + 2 * MARGIN;
+    $g._height = _.max([ $tg._height + 2 * MARGIN, y ]);
 
     $rect.attr('rx', RECT_R);
     $rect.attr('ry', RECT_R);
