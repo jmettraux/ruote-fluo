@@ -211,18 +211,17 @@ var Fluo = (function() {
 
     var $g = svg($container, 'g');
 
-    var $rect = (options.drawRect == false) ?
+    var $rect = (options.noCard) ?
       null : svg($g, 'rect', { class: 'fluo' });
 
     var $tg = null;
 
-    if (options.optionalExpName && _.isEmpty(flow[1])) {
+    if (options.noCard) {
       $tg = { _height: 0, _width: 0 };
     }
     else {
       var texts = [ [ 'expname', flow[0] ] ];
       _.each(flow[1], function(v, k) { texts.push(k + ': ' + v); });
-
       $tg = textGroup($g, texts);
       translate($tg, MARGIN, 0);
     }
@@ -230,9 +229,10 @@ var Fluo = (function() {
     var x = 2 * MARGIN + $tg._width;
 
     var dim = bodyFunc($g, x);
+
     var w = dim[0]; var h = dim[1];
 
-    $g._width = x + w + MARGIN;
+    $g._width = x + w + ($rect ? MARGIN : 0);
     $g._height = _.max([ $tg._height + 2 * MARGIN, h ]);
 
     if ($rect) {
@@ -298,6 +298,8 @@ var Fluo = (function() {
 
   RENDER.sequence = function($container, expid, flow) {
 
+    var noCard = _.isEmpty(flow[1]);
+
     return renderCard(
       $container,
       expid,
@@ -305,7 +307,7 @@ var Fluo = (function() {
       function($group, x) {
 
         var i = 0;
-        var h = MARGIN;
+        var h = noCard ? 0 : MARGIN;
         var w = 0;
 
         var $exps = _.map(flow[2], function(fl) {
@@ -337,7 +339,7 @@ var Fluo = (function() {
 
         return [ w, h ];
       },
-      { drawRect: false, optionalExpName: true });
+      { 'noCard': noCard });
   }
 
   _.each([
