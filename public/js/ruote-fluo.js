@@ -179,11 +179,12 @@ var Fluo = (function() {
 
     var w = _.inject(
       elts,
-      function(w, elt) { return _.max([ w, elt._width ]) },
+      function(w, elt) { return _.max([ w, elt._width, elt._center || 0 ]); },
       0);
 
     _.each(elts, function(elt) {
       var dx = (w - elt._width) / 2;
+      var c = elt._center; if (c) dx = (w - c) / 2;
       translate(elt, dx, 0);
     });
   }
@@ -241,6 +242,8 @@ var Fluo = (function() {
       $rect.attr('width', '' + $g._width);
       $rect.attr('height', '' + $g._height);
     }
+
+    if (options.rightCentered) $g._center = ($g._width - w / 2 - MARGIN) * 2;
 
     return $g;
   }
@@ -364,8 +367,8 @@ var Fluo = (function() {
         });
 
         return [ w - MARGIN, _.max(heights) ];
-      });
-      //{ noRect: true });
+      },
+      { rightCentered: true });
   }
 
   _.each([
