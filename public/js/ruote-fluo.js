@@ -211,7 +211,7 @@ var Fluo = (function() {
 
     var $g = svg($container, 'g');
 
-    var $rect = (options.noCard) ?
+    var $rect = (options.noCard || options.noRect) ?
       null : svg($g, 'rect', { class: 'fluo' });
 
     var $tg = null;
@@ -365,6 +365,7 @@ var Fluo = (function() {
 
         return [ w - MARGIN, _.max(heights) ];
       });
+      //{ noRect: true });
   }
 
   _.each([
