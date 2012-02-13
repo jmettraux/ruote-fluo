@@ -342,6 +342,31 @@ var Fluo = (function() {
       { 'noCard': noCard });
   }
 
+  RENDER.concurrence = function($container, expid, flow) {
+
+    return renderCard(
+      $container,
+      expid,
+      flow,
+      function($group, x) {
+
+        var i = 0;
+        var w = 0;
+
+        var heights = _.map(flow[2], function(fl) {
+
+          var $exp = renderExp($group, expid + '_' + i, fl);
+          translate($exp, x + w, MARGIN);
+          w = w + $exp._width + MARGIN;
+          i = i + 1
+
+          return $exp._height;
+        });
+
+        return [ w - MARGIN, _.max(heights) ];
+      });
+  }
+
   _.each([
     'set', 'rset', 'unset',
     'rewind', 'continue', 'back', 'break', 'stop', 'cancel', 'skip', 'jump'
