@@ -991,7 +991,7 @@ var Fluo = function () {
   }
 
   function resolveContext (c) {
-    if (c.translate) return c;
+    //if (c.translate) return c;
     return resolveCanvas(c).getContext('2d');
   }
 
