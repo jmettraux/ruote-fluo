@@ -128,9 +128,7 @@ var Fluo = (function() {
   function width($elt) {
 
     if ($elt[0].nodeName == 'text' && $elt.width() == 0) { // FireFox...
-      var fs = parseInt($elt.css('font-size').slice(0, -2));
-      var tn = $elt[0].childNodes[0];
-      return fs * tn.length * 0.5;
+      return $elt[0].getBBox().width;
     } else { // the rest
       return $elt.width();
     }
@@ -141,8 +139,7 @@ var Fluo = (function() {
   function height($elt) {
 
     if ($elt[0].nodeName == 'text' && $elt.height() == 0) { // FireFox...
-      var fs = parseInt($elt.css('font-size').slice(0, -2));
-      return fs + 2;
+      return $elt[0].getBBox().height;
     } else { // the rest
       return $elt.height();
     }
