@@ -123,7 +123,10 @@ var Fluo = (function() {
       return svgElt($container, eltName, attributes, text);
   }
 
+  // working around a ffox issue with $elt.width();
+  //
   function width($elt) {
+
     if ($elt[0].nodeName == 'text' && $elt.width() == 0) { // FireFox...
       var fs = parseInt($elt.css('font-size').slice(0, -2));
       var tn = $elt[0].childNodes[0];
@@ -132,7 +135,11 @@ var Fluo = (function() {
       return $elt.width();
     }
   }
+
+  // working around a ffox issue with $elt.height();
+  //
   function height($elt) {
+
     if ($elt[0].nodeName == 'text' && $elt.height() == 0) { // FireFox...
       var fs = parseInt($elt.css('font-size').slice(0, -2));
       return fs + 2;
@@ -283,7 +290,10 @@ var Fluo = (function() {
     var atts = JSON.stringify(flow[1]).slice(1, -1);
 
     var $t = svg(
-      $container, 'text', { class: 'fluo' }, $.trim(flow[0] + ' ' + atts));
+      $container,
+      'text',
+      { class: 'fluo text_exp' },
+      $.trim(flow[0] + ' ' + atts));
 
     $t._width = width($t);
     $t._height = height($t) + MARGIN;
