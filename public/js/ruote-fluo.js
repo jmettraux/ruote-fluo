@@ -123,15 +123,33 @@ var Fluo = (function() {
       return svgElt($container, eltName, attributes, text);
   }
 
+  function width($elt) {
+    if ($elt[0].nodeName == 'text' && $elt.width() == 0) { // FireFox...
+      var fs = parseInt($elt.css('font-size').slice(0, -2));
+      var tn = $elt[0].childNodes[0];
+      return fs * tn.length * 0.5;
+    } else { // the rest
+      return $elt.width();
+    }
+  }
+  function height($elt) {
+    if ($elt[0].nodeName == 'text' && $elt.height() == 0) { // FireFox...
+      var fs = parseInt($elt.css('font-size').slice(0, -2));
+      return fs + 2;
+    } else { // the rest
+      return $elt.height();
+    }
+  }
+
   function maxWidth($elt) {
 
-    return _.max(_.map($elt.children(), function(c) { return $(c).width() }));
+    return _.max(_.map($elt.children(), function(c) { return width($(c)); }));
   }
 
   function totalHeight($elt) {
 
     return _.reduce(
-      _.map($elt.children(), function(c) { return $(c).height() }),
+      _.map($elt.children(), function(c) { return height($(c)); }),
       function(c, val) { return c + val },
       0);
   }
@@ -146,7 +164,7 @@ var Fluo = (function() {
       var c = '';
       if (_.isArray(text)) { c = text[0]; t = text[1]; }
       var $t = svg($g, 'text', { class: $.trim('fluo ' + c), x: 0 }, t);
-      y = y + $t.height();
+      y = y + height($t);
       $t.attr('y', y);
     });
 
@@ -267,10 +285,10 @@ var Fluo = (function() {
     var $t = svg(
       $container, 'text', { class: 'fluo' }, $.trim(flow[0] + ' ' + atts));
 
-    $t._width = $t.width();
-    $t._height = $t.height() + MARGIN;
+    $t._width = width($t);
+    $t._height = height($t) + MARGIN;
 
-    $t.attr('y', $t.height());
+    $t.attr('y', height($t));
 
     return $t;
   }
@@ -332,8 +350,8 @@ var Fluo = (function() {
           translate($arrow, x, h);
           h = h + 14;
 
-          $arrow._width = $arrow.width();
-          $arrow._height = $arrow.height();
+          $arrow._width = width($arrow);
+          $arrow._height = height($arrow);
 
           return [ $exp, $arrow ];
         });
@@ -395,7 +413,14 @@ var Fluo = (function() {
 
     $div[0].fluo_options = options;
 
-    return renderExp(svg($div), '0', flow);
+    $g = renderExp(svg($div), '0', flow);
+
+    $svg = $g.parent();
+    $svg.attr('width', $g._width + 3);
+    $svg.attr('height', $g._height + 3);
+      // this is only necessary for FireFox...
+
+    return $g;
   }
 
   return this;
