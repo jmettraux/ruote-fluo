@@ -303,6 +303,32 @@ var Fluo = (function() {
   //
   // render functions
 
+  // Returns [ text, atts ] where text is the key of the first entry
+  // whose value is null. Returned text may be null.
+  //
+  function splitAttributes(flow) {
+
+    //var atts = flow[1];
+    //var text = _.find(atts, function(v, k) { return (v == null); });
+      // doesn't work (as Ruby) with underscore-1.3.3
+    var atts = null;
+    var text = null;
+
+    _.each(flow[1], function(v, k) {
+      if (v == null && text == null) text = k;
+    });
+
+    if (text) {
+      //atts = _.select(flow[1], function(v, k) { return (k != text); });
+        // doesn't work (as Ruby) with underscore-1.3.3
+      atts = {};
+      _.each(flow[1], function(v, k) { if (k != text) atts[k] = v; });
+        // I wish I could foldl
+    }
+
+    return [ text, atts || flow[1] ];
+  }
+
   function renderCard($container, expid, flow, bodyFunc, options) {
 
     options = options || {};
@@ -318,8 +344,9 @@ var Fluo = (function() {
       $tg = { _height: 0, _width: 0 };
     }
     else {
-      var texts = [ [ 'expname', flow[0] ] ];
-      _.each(flow[1], function(v, k) { texts.push(k + ': ' + v); });
+      var s = splitAttributes(flow);
+      var texts = [ [ 'expname', flow[0] + (s[0] ? ' ' + s[0] : '') ] ];
+      _.each(s[1], function(v, k) { texts.push(k + ': ' + v); });
       $tg = textGroup($g, texts);
       translate($tg, MARGIN, 0);
     }
