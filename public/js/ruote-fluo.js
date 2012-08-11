@@ -473,21 +473,21 @@ var Fluo = (function() {
 
   RENDER.wait = function($container, expid, flow) {
 
-    // implement me !
+    // TODO: try with renderCard
 
-    var atts = JSON.stringify(flow[1]).slice(1, -1);
+    var $g = svg($container, 'g', {});
 
-    var $t = svg(
-      $container,
-      'use',
-      { 'xlink:href': '#timer' });
+    var $t = svg($g, 'use', { 'xlink:href': '#timer' });
 
-    $t._width = width($t);
-    $t._height = height($t) + MARGIN;
+    var texts = _.collect(
+      flow[1], function(v, k) { return '' + k + ': ' + v; });
+    var $tg = textGroup($g, texts);
+    translate($tg, 0, height($t));
 
-    //$t.attr('y', height($t));
+    $g._width = width($t);
+    $g._height = MARGIN + height($t) + height($tg);
 
-    return $t;
+    return $g;
   }
 
   _.each([
