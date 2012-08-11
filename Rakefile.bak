@@ -23,6 +23,8 @@ require 'rake/testtask'
 #
 # MINIFYING
 
+# TODO: replace with yui-compressor
+
 require 'rubygems'
 require 'jsmin' # sudo gem install jsmin
 

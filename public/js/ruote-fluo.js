@@ -75,7 +75,7 @@ var Fluo = (function() {
           orient: 'auto'
         },
         [
-          [ 'path', { class: 'fluo', d: 'M 0 0 L 100 50 L 0 100 z' } ]
+          [ 'path', { 'class': 'fluo', d: 'M 0 0 L 100 50 L 0 100 z' } ]
         ]
       ])
 
@@ -87,7 +87,7 @@ var Fluo = (function() {
         [
           [ 'circle',
             {
-              class: 'fluo timer_external_circle',
+              'class': 'fluo timer_external_circle',
               cx: '16', cy: '16', r: '16',
               fill: 'none', stroke: 'black',
               'stroke-width': '1'
@@ -95,7 +95,7 @@ var Fluo = (function() {
           ],
           [ 'circle',
             {
-              class: 'fluo timer_internal_circle',
+              'class': 'fluo timer_internal_circle',
               cx: '16', cy: '16', r: '11',
               fill: 'none', stroke: 'black',
               'stroke-width': '1'
@@ -104,7 +104,7 @@ var Fluo = (function() {
           [ 'path',
             {
               id: 'tt',
-              class: 'fluo timer_tick',
+              'class': 'fluo timer_tick',
               d: 'M 16 05 L 16 09',
               fill: 'none', stroke: 'black',
               'stroke-width': '1'
@@ -123,7 +123,7 @@ var Fluo = (function() {
     timer[2].push(
       [ 'path',
         {
-          class: 'fluo timer_hour_hand',
+          'class': 'fluo timer_hour_hand',
           d: 'M 16 11 L 16 16',
           fill: 'none', stroke: 'black',
           'stroke-width': '1',
@@ -133,7 +133,7 @@ var Fluo = (function() {
     timer[2].push(
       [ 'path',
         {
-          class: 'fluo timer_minute_hand',
+          'class': 'fluo timer_minute_hand',
           d: 'M 16 09 L 16 16',
           fill: 'none', stroke: 'black',
           'stroke-width': '1'
@@ -240,7 +240,7 @@ var Fluo = (function() {
       var t = text;
       var c = '';
       if (_.isArray(text)) { c = text[0]; t = text[1]; }
-      var $t = svg($g, 'text', { class: $.trim('fluo ' + c), x: 0 }, t);
+      var $t = svg($g, 'text', { 'class': $.trim('fluo ' + c), x: 0 }, t);
       y = y + height($t);
       $t.attr('y', y);
     });
@@ -308,7 +308,7 @@ var Fluo = (function() {
     var $g = svg($container, 'g');
 
     var $rect = (options.noCard || options.noRect) ?
-      null : svg($g, 'rect', { class: 'fluo' });
+      null : svg($g, 'rect', { 'class': 'fluo' });
 
     var $tg = null;
 
@@ -362,7 +362,7 @@ var Fluo = (function() {
     var $t = svg(
       $container,
       'text',
-      { class: 'fluo text_exp' },
+      { 'class': 'fluo text_exp' },
       $.trim(flow[0] + ' ' + atts));
 
     $t._width = width($t);
@@ -425,7 +425,7 @@ var Fluo = (function() {
             $group,
             'path',
             {
-              class: 'fluo', d: 'M 0 0 L 0 14', 'marker-end': 'url(#arrowhead)'
+              'class': 'fluo', d: 'M 0 0 L 0 14', 'marker-end': 'url(#arrowhead)'
             });
           translate($arrow, x, h);
           h = h + 14;
