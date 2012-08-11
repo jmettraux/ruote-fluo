@@ -51,6 +51,8 @@ var Fluo = (function() {
 //    '-': [ '#C8F690', 'black' ] // some green
 //  };
 
+  var VERSION = '2.3.0';
+
   var RECT_R = 7;
   var MARGIN = 4;
 
