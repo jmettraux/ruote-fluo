@@ -61,24 +61,88 @@ var Fluo = (function() {
 
   function addDefinitions($svg) {
 
-    svgTree(
-      $svg,
-      [ 'defs',
+    var tree = [ 'defs', [] ];
+
+    // arrowhead marker
+
+    tree[1].push(
+      [ 'marker',
+        {
+          id: 'arrowhead',
+          viewBox: '0 0 100 100', refX: '90', refY: '50',
+          markerUnits: 'strokeWidth',
+          markerWidth: '10', markerHeight: '10',
+          orient: 'auto'
+        },
         [
-          [ 'marker',
-            {
-              id: 'arrowhead',
-              viewBox: '0 0 100 100', refX: '90', refY: '50',
-              markerUnits: 'strokeWidth',
-              markerWidth: '10', markerHeight: '10',
-              orient: 'auto'
-            },
-            [
-              [ 'path', { class: 'fluo', d: 'M 0 0 L 100 50 L 0 100 z' } ]
-            ]
-          ]
+          [ 'path', { class: 'fluo', d: 'M 0 0 L 100 50 L 0 100 z' } ]
         ]
+      ])
+
+    // timer
+
+    var timer =
+      [ 'g',
+        { id: 'timer' },
+        [
+          [ 'circle',
+            {
+              class: 'fluo timer_external_circle',
+              cx: '16', cy: '16', r: '16',
+              fill: 'none', stroke: 'black',
+              'stroke-width': '1'
+            }
+          ],
+          [ 'circle',
+            {
+              class: 'fluo timer_internal_circle',
+              cx: '16', cy: '16', r: '11',
+              fill: 'none', stroke: 'black',
+              'stroke-width': '1'
+            }
+          ],
+          [ 'path',
+            {
+              id: 'tt',
+              class: 'fluo timer_tick',
+              d: 'M 16 05 L 16 09',
+              fill: 'none', stroke: 'black',
+              'stroke-width': '1'
+            }
+          ],
+        ]
+      ];
+
+    _.times(11, function(i) {
+      var a = (i + 1) * 30;
+      timer[2].push(
+        [ 'use',
+          { 'xlink:href': '#tt', transform: 'rotate(' + a + ', 16, 16)' } ]);
+    });
+
+    timer[2].push(
+      [ 'path',
+        {
+          class: 'fluo timer_hour_hand',
+          d: 'M 16 11 L 16 16',
+          fill: 'none', stroke: 'black',
+          'stroke-width': '1',
+          transform: 'rotate(120, 16, 16)'
+        }
       ]);
+    timer[2].push(
+      [ 'path',
+        {
+          class: 'fluo timer_minute_hand',
+          d: 'M 16 09 L 16 16',
+          fill: 'none', stroke: 'black',
+          'stroke-width': '1'
+        }
+      ]);
+
+    tree[1].push(timer);
+
+    svgTree($svg, tree)
   }
 
   function svgElt($container, eltName, attributes, text) {
@@ -87,7 +151,16 @@ var Fluo = (function() {
     attributes = attributes || {};
 
     var elt = document.createElementNS('http://www.w3.org/2000/svg', eltName);
-    _.each(attributes, function(v, k) { elt.setAttributeNS(null, k, v); });
+    _.each(
+      attributes,
+      function(v, k) {
+        var ns = null;
+        var m = k.match(/^([a-z]+):([a-z-]+)$/)
+        if (m) ns = m[1];
+        if (ns == 'xlink') ns = 'http://www.w3.org/1999/xlink';
+        elt.setAttributeNS(ns, k, v);
+      });
+
     if (text) elt.appendChild(document.createTextNode(text));
     $container[0].appendChild(elt);
 
@@ -108,7 +181,7 @@ var Fluo = (function() {
       attributes = {};
     }
 
-    $elt = svgElt($container, name, attributes);
+    var $elt = svgElt($container, name, attributes);
 
     _.each(children, function(t) { svgTree($elt, t) });
 
@@ -127,7 +200,7 @@ var Fluo = (function() {
   //
   function width($elt) {
 
-    if ($elt[0].nodeName == 'text' && $elt.width() == 0) { // FireFox...
+    if ($elt.width() == 0) { // FireFox...
       return $elt[0].getBBox().width;
     } else { // the rest
       return $elt.width();
@@ -138,7 +211,7 @@ var Fluo = (function() {
   //
   function height($elt) {
 
-    if ($elt[0].nodeName == 'text' && $elt.height() == 0) { // FireFox...
+    if ($elt.height() == 0) { // FireFox...
       return $elt[0].getBBox().height;
     } else { // the rest
       return $elt.height();
@@ -396,6 +469,25 @@ var Fluo = (function() {
       { rightCentered: true });
   }
 
+  RENDER.wait = function($container, expid, flow) {
+
+    // implement me !
+
+    var atts = JSON.stringify(flow[1]).slice(1, -1);
+
+    var $t = svg(
+      $container,
+      'use',
+      { 'xlink:href': '#timer' });
+
+    $t._width = width($t);
+    $t._height = height($t) + MARGIN;
+
+    //$t.attr('y', height($t));
+
+    return $t;
+  }
+
   _.each([
     'set', 'rset', 'unset',
     'rewind', 'continue', 'back', 'break', 'stop', 'cancel', 'skip', 'jump'
@@ -423,6 +515,10 @@ var Fluo = (function() {
     $g = renderExp(svg($div), '0', flow);
 
     $svg = $g.parent();
+
+    //$svg.attr('xmlns', 'http://www.w3.org/2000/svg');
+    //$svg.attr('xmlns:xlink', 'http://www.w3.org/1999/xlink');
+
     $svg.attr('width', $g._width + 3);
     $svg.attr('height', $g._height + 3);
       // this is only necessary for FireFox...
