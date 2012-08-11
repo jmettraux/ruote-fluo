@@ -96,7 +96,7 @@ var Fluo = (function() {
           [ 'circle',
             {
               'class': 'fluo timer_internal_circle',
-              cx: '16', cy: '16', r: '11',
+              cx: '16', cy: '16', r: '12',
               fill: 'none', stroke: 'black',
               'stroke-width': '1'
             }
@@ -105,7 +105,7 @@ var Fluo = (function() {
             {
               id: 'tt',
               'class': 'fluo timer_tick',
-              d: 'M 16 05 L 16 09',
+              d: 'M 16 05 L 16 08',
               fill: 'none', stroke: 'black',
               'stroke-width': '1'
             }
