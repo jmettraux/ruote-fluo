@@ -1,6 +1,5 @@
 
-CREDITS
-=======
+# CREDITS
 
 John Mettraux - http://lambda.io/processi
 Jamandru Reynolds - http://geometron.net/
@@ -8,5 +7,11 @@ Rob Taylor - https://github.com/robtaylor
 Patrice Cappelaere - https://github.com/cappelaere
 Juan-Pedro Paredes
 
-Many thanks to the authors, the contributors and the communities of underscore.js and jquery.js
+
+# THANKS
+
+Many thanks to the authors, the contributors and the communities of:
+
+* jquery.js
+* underscore.js
 
