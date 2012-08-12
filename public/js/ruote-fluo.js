@@ -173,9 +173,7 @@ var Fluo = (function() {
         if (m) ns = m[1];
         if (ns == 'xlink') ns = 'http://www.w3.org/1999/xlink';
 
-        if (eltName == 'path' && k == 'd' && _.isArray(v)) {
-          v = _.map(v, function(e) { return '' + e }).join(' ');
-        }
+        if (_.isArray(v)) v = v.join(' ');
 
         elt.setAttributeNS(ns, k, v);
       });
@@ -352,10 +350,10 @@ var Fluo = (function() {
 
     options = options || {};
 
-    var $g = svg($container, 'g');
+    var $card = svg($container, 'g', { 'class': 'fluo card' });
 
     var $rect = (options.noCard || options.noRect) ?
-      null : svg($g, 'rect', { 'class': 'fluo' });
+      null : svg($card, 'rect', { 'class': 'fluo' });
 
     var $tg = null;
 
@@ -366,29 +364,34 @@ var Fluo = (function() {
       var s = splitAttributes(flow);
       var texts = [ [ 'expname', flow[0] + (s[0] ? ' ' + s[0] : '') ] ];
       _.each(s[1], function(v, k) { texts.push(k + ': ' + v); });
-      $tg = textGroup($g, texts);
+      $tg = textGroup($card, texts);
       translate($tg, MARGIN, 0);
     }
 
     var x = 2 * MARGIN + $tg._width;
 
-    var dim = bodyFunc($g, x);
+    var $body = svg($card, 'g', { 'class': 'fluo card_body' });
+    translate($body, x, 0);
+
+    var dim = bodyFunc($body);
 
     var w = dim[0]; var h = dim[1];
 
-    $g._width = x + w + ($rect ? MARGIN : 0);
-    $g._height = _.max([ $tg._height + 2 * MARGIN, h ]);
+    $card._width = x + w + ($rect ? MARGIN : 0);
+    $card._height = _.max([ $tg._height + 2 * MARGIN, h ]);
 
     if ($rect) {
       $rect.attr('rx', RECT_R);
       $rect.attr('ry', RECT_R);
-      $rect.attr('width', '' + $g._width);
-      $rect.attr('height', '' + $g._height);
+      $rect.attr('width', '' + $card._width);
+      $rect.attr('height', '' + $card._height);
     }
 
-    if (options.rightCentered) $g._center = ($g._width - w / 2 - MARGIN) * 2;
+    if (options.rightCentered) {
+      $card._center = ($card._width - w / 2 - MARGIN) * 2;
+    }
 
-    return $g;
+    return $card;
   }
 
   var RENDER = {};
@@ -427,15 +430,15 @@ var Fluo = (function() {
       $container,
       expid,
       flow,
-      function($group, x) {
+      function($body) {
 
         var i = 0;
         var h = MARGIN;
         var w = 0;
 
         _.each(flow[2], function(fl) {
-          var $exp = renderExp($group, expid + '_' + i, fl);
-          translate($exp, x, h);
+          var $exp = renderExp($body, expid + '_' + i, fl);
+          translate($exp, 0, h);
           i = i + 1;
           h = h + $exp._height + MARGIN;
           w = _.max([ w, $exp._width ]);
@@ -453,7 +456,7 @@ var Fluo = (function() {
       $container,
       expid,
       flow,
-      function($group, x) {
+      function($body) {
 
         var i = 0;
         var h = noCard ? 0 : MARGIN;
@@ -461,8 +464,8 @@ var Fluo = (function() {
 
         var $exps = _.map(flow[2], function(fl) {
 
-          var $exp = renderExp($group, expid + '_' + i, fl);
-          translate($exp, x, h);
+          var $exp = renderExp($body, expid + '_' + i, fl);
+          translate($exp, 0, h);
           i = i + 1;
           h = h + $exp._height;
           w = _.max([ w, $exp._width ]);
@@ -470,12 +473,12 @@ var Fluo = (function() {
           if (i >= flow[2].length) return $exp;
 
           var $arrow = svg(
-            $group,
+            $body,
             'path',
             {
               'class': 'fluo', d: 'M 0 0 L 0 14', 'marker-end': 'url(#arrowhead)'
             });
-          translate($arrow, x, h);
+          translate($arrow, 0, h);
           h = h + 14;
 
           $arrow._width = width($arrow);
@@ -497,15 +500,15 @@ var Fluo = (function() {
       $container,
       expid,
       flow,
-      function($group, x) {
+      function($body) {
 
         var i = 0;
         var w = 0;
 
         var heights = _.map(flow[2], function(fl) {
 
-          var $exp = renderExp($group, expid + '_' + i, fl);
-          translate($exp, x + w, MARGIN);
+          var $exp = renderExp($body, expid + '_' + i, fl);
+          translate($exp, w, MARGIN);
           w = w + $exp._width + MARGIN;
           i = i + 1
 
@@ -523,10 +526,9 @@ var Fluo = (function() {
       $container,
       expid,
       flow,
-      function($group, x) {
+      function($body) {
 
-        var $t = svg($group, 'use', { 'xlink:href': '#timer' });
-        translate($t, x, 0);
+        var $t = svg($body, 'use', { 'xlink:href': '#timer' });
 
         return [ 2 * MARGIN + width($t), height($t) ];
       },
