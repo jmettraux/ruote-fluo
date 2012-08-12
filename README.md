@@ -1,9 +1,9 @@
 
 # ruote-fluo
 
-http://ruote.rubyforge.org
+<http://ruote.rubyforge.org>
 
-This is the development bench of the javascript library used to render graphically process definitions in ruote-kit (http://github.com/kennethkalmer/ruote-kit)
+This is the development bench of the javascript library used to render graphically process definitions in ruote-kit (<https://github.com/kennethkalmer/ruote-kit>)
 
 
 ## using
@@ -18,15 +18,13 @@ then head with your browser (Firefox or Safari) to http://localhost:4567
 
 ## source
 
-http://github.com/jmettraux/ruote-fluo
-
-  git clone git://github.com/jmettraux/ruote-fluo.git
+<https://github.com/jmettraux/ruote-fluo>
 
 
 ## feedback
 
-user mailing list :  http://groups.google.com/group/openwferu-users
-issue tracker :      http://github.com/jmettraux/ruote-fluo/issues
+user mailing list :  <http://groups.google.com/group/openwferu-users>
+issue tracker :      <https://github.com/jmettraux/ruote-fluo/issues>
 irc :                irc.freenode.net #ruote
 
 
