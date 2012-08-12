@@ -98,7 +98,7 @@ var Fluo = (function() {
         [
           [ 'circle',
             {
-              'class': 'fluo timer_external_circle',
+              'class': 'fluo',
               cx: '16', cy: '16', r: '16',
               fill: 'none', stroke: 'black',
               'stroke-width': '1'
@@ -106,7 +106,7 @@ var Fluo = (function() {
           ],
           [ 'circle',
             {
-              'class': 'fluo timer_internal_circle',
+              'class': 'fluo',
               cx: '16', cy: '16', r: '12',
               fill: 'none', stroke: 'black',
               'stroke-width': '1'
@@ -115,7 +115,7 @@ var Fluo = (function() {
           [ 'path',
             {
               id: 'tt',
-              'class': 'fluo timer_tick',
+              'class': 'fluo',
               d: 'M 16 05 L 16 08',
               fill: 'none', stroke: 'black',
               'stroke-width': '1'
@@ -134,7 +134,7 @@ var Fluo = (function() {
     timer[2].push(
       [ 'path',
         {
-          'class': 'fluo timer_hour_hand',
+          'class': 'fluo',
           d: 'M 16 11 L 16 16',
           fill: 'none', stroke: 'black',
           'stroke-width': '1',
@@ -144,7 +144,7 @@ var Fluo = (function() {
     timer[2].push(
       [ 'path',
         {
-          'class': 'fluo timer_minute_hand',
+          'class': 'fluo',
           d: 'M 16 09 L 16 16',
           fill: 'none', stroke: 'black',
           'stroke-width': '1'
