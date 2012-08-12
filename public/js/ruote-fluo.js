@@ -387,7 +387,8 @@ var Fluo = (function() {
       translate($tg, MARGIN, 0);
     }
 
-    var x = 2 * MARGIN + $tg._width;
+    var x = $tg._width;
+    if ( ! options.noCard) x = x + 2 * MARGIN;
 
     var $body = svg($card, 'g', { 'class': 'fluo card_body' });
     translate($body, x, 0);
@@ -399,7 +400,9 @@ var Fluo = (function() {
     $card._width = x + w + ($rect ? MARGIN : 0);
 
     $card._height = _.max([ $tg._height, h ]);
-    if ( ! options['short']) $card._height = $card._height + 2 * MARGIN;
+    if ( ! options['short'] && ! options['noCard']) {
+       $card._height = $card._height + 2 * MARGIN;
+    }
 
     if ($rect) {
       $rect.attr('rx', RECT_R);
@@ -494,6 +497,7 @@ var Fluo = (function() {
           w = _.max([ w, $exp._width ]);
 
           if (i >= flow[2].length) return $exp;
+            // TODO: there is no shortcircuit here... investigate...
 
           var $arrow = svg(
             $body,
@@ -534,6 +538,7 @@ var Fluo = (function() {
 
           var $exp = renderExp($body, expid + '_' + i, fl);
           translate($exp, w, MARGIN);
+          console.log([ w, $exp._width ]);
           w = w + $exp._width + MARGIN;
           i = i + 1
 
@@ -554,8 +559,6 @@ var Fluo = (function() {
       var $c = $(c);
       var cw = width($c); var ch = height($c);
       var cx = position($c).x;
-
-      console.log([ i, $card._body.children().length ]);
 
       roundedPath(
         $card._body,

@@ -32,7 +32,10 @@
            [ 'olaf', { 'task': 'clean dishes' }, [] ],
            [ 'concurrence', { 'count': 1 }, [
              [ 'alpha', {}, [] ],
-             [ 'bravo', {}, [] ],
+             [ 'sequence', {}, [
+               [ 'arthur', {}, [] ],
+               [ 'bob', {}, [] ]
+             ] ],
              [ 'charly', { 'task': 'reset lab' }, [] ]
            ] ],
            [ 'david', { 'timeout': '5d' }, [] ],
