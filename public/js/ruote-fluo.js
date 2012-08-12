@@ -306,23 +306,28 @@ var Fluo = (function() {
     $elt.attr('transform', 'translate(' + (p.x + x) + ', ' + (p.y + y) + ')');
   }
 
-  function roundedPath($container, startx, starty, endx, endy, pos) {
+  function roundedPath($container, startx, starty, endx, endy, opts) {
 
     var d = null;
+    var r = MARGIN;
 
-    if (pos == 'top') {
+    if ( ! opts.bottom) {
       d = [
         'M', startx, starty,
-        'L', endx, starty,
+        'L', endx + (endx > startx ? -1 : 1) * r, starty,
+        'Q', endx, starty, endx, starty + r,
         'L', endx, endy
       ]
+      if (opts.inner) d = [ 'M' ].concat(d.slice(4));
     }
     else {
       d = [
         'M', startx, starty,
-        'L', startx, endy,
+        'L', startx, endy - r,
+        'Q', startx, endy, startx + (endx > startx ? 1 : -1) * r, endy,
         'L', endx, endy
       ]
+      if (opts.inner) d = d.slice(0, 11);
     }
 
     return svg(
@@ -540,19 +545,26 @@ var Fluo = (function() {
       { noRect: true, rightCentered: true });
 
     var bw = width($card._body);
+    var i = 0;
+    var ccount = $card._body.children().length;
 
     _($card._body.children()).each(function(c) {
 
+      i = i + 1;
       var $c = $(c);
       var cw = width($c); var ch = height($c);
       var cx = position($c).x;
 
+      console.log([ i, $card._body.children().length ]);
+
       roundedPath(
         $card._body,
-        bw / 2 - MARGIN, 0, cx + cw / 2, MARGIN, 'top');
+        bw / 2 - MARGIN, 0, cx + cw / 2, MARGIN,
+        { bottom: false, inner: i > 1 && i < ccount });
       roundedPath(
         $card._body,
-        cx + cw / 2, ch + MARGIN, bw / 2 - MARGIN, $card._height, 'bottom');
+        cx + cw / 2, ch + MARGIN, bw / 2 - MARGIN, $card._height,
+        { bottom: true, inner: i > 1 && i < ccount });
     });
 
     return $card;
