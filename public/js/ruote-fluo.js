@@ -542,15 +542,24 @@ var Fluo = (function() {
 
     $svg = $g.parent();
 
-    //$svg.attr('xmlns', 'http://www.w3.org/2000/svg');
-    //$svg.attr('xmlns:xlink', 'http://www.w3.org/1999/xlink');
-
     $svg.attr('width', $g._width + 3);
     $svg.attr('height', $g._height + 3);
       // this is only necessary for FireFox...
 
+    //var e = document.getElementById('exp_0_0_6');
+    //var ctm = e.getScreenCTM();
+    //svg($g, 'path', {
+    //  d: 'M ' + ctm.e + ' ' + ctm.f + ' L 100 100 L 90 110',
+    //  fill: 'none', stroke: 'black',
+    //  'stroke-width': '1'
+    //});
+
     return $g;
   }
+
+  // alias for compatibility with canvas ruote-fluo
+  //
+  this.renderFlow = this.render;
 
   return this;
 
