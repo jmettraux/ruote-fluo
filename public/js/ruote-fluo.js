@@ -494,10 +494,12 @@ var Fluo = (function() {
             $body,
             'path',
             {
-              'class': 'fluo', d: 'M 0 0 L 0 14', 'marker-end': 'url(#arrowhead)'
+              'class': 'fluo',
+              d: 'M 0 0 L 0 11',
+              'marker-end': 'url(#arrowhead)'
             });
           translate($arrow, 0, h);
-          h = h + 14;
+          h = h + 11;
 
           $arrow._width = width($arrow);
           $arrow._height = height($arrow);
