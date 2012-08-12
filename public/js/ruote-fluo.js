@@ -99,7 +99,7 @@ var Fluo = (function() {
           [ 'circle',
             {
               'class': 'fluo',
-              cx: '16', cy: '16', r: '16',
+              cx: '14', cy: '14', r: '14',
               fill: 'none', stroke: 'black',
               'stroke-width': '1'
             }
@@ -107,7 +107,7 @@ var Fluo = (function() {
           [ 'circle',
             {
               'class': 'fluo',
-              cx: '16', cy: '16', r: '12',
+              cx: '14', cy: '14', r: '10',
               fill: 'none', stroke: 'black',
               'stroke-width': '1'
             }
@@ -116,7 +116,7 @@ var Fluo = (function() {
             {
               id: 'tt',
               'class': 'fluo',
-              d: 'M 16 05 L 16 08',
+              d: 'M 14 05 L 14 07',
               fill: 'none', stroke: 'black',
               'stroke-width': '1'
             }
@@ -128,24 +128,24 @@ var Fluo = (function() {
       var a = (i + 1) * 30;
       timer[2].push(
         [ 'use',
-          { 'xlink:href': '#tt', transform: 'rotate(' + a + ', 16, 16)' } ]);
+          { 'xlink:href': '#tt', transform: 'rotate(' + a + ', 14, 14)' } ]);
     });
 
     timer[2].push(
       [ 'path',
         {
           'class': 'fluo',
-          d: 'M 16 11 L 16 16',
+          d: 'M 14 10 L 14 14',
           fill: 'none', stroke: 'black',
           'stroke-width': '1',
-          transform: 'rotate(120, 16, 16)'
+          transform: 'rotate(120, 14, 14)'
         }
       ]);
     timer[2].push(
       [ 'path',
         {
           'class': 'fluo',
-          d: 'M 16 09 L 16 16',
+          d: 'M 14 08 L 14 14',
           fill: 'none', stroke: 'black',
           'stroke-width': '1'
         }
