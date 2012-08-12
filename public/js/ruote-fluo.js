@@ -291,7 +291,9 @@ var Fluo = (function() {
 
   function position($elt) {
 
-    var m = ($elt.attr('transform') || '').match(/^translate\((\d+), (\d+)\)$/);
+    var m = (
+      $elt.attr('transform') || ''
+    ).match(/^translate\((\d+(?:\.\d+)?), (\d+(?:\.\d+)?)\)$/);
 
     if ( ! m) return { x: 0, y: 0 };
 
@@ -302,6 +304,31 @@ var Fluo = (function() {
 
     var p = position($elt);
     $elt.attr('transform', 'translate(' + (p.x + x) + ', ' + (p.y + y) + ')');
+  }
+
+  function roundedPath($container, startx, starty, endx, endy, pos) {
+
+    var d = null;
+
+    if (pos == 'top') {
+      d = [
+        'M', startx, starty,
+        'L', endx, starty,
+        'L', endx, endy
+      ]
+    }
+    else {
+      d = [
+        'M', startx, starty,
+        'L', startx, endy,
+        'L', endx, endy
+      ]
+    }
+
+    return svg(
+      $container,
+      'path',
+      { 'class': 'fluo rounded_path', 'd': d, 'fill': 'none' });
   }
 
   //
@@ -508,28 +535,23 @@ var Fluo = (function() {
 
         return [ w - MARGIN, _.max(heights) ];
       },
-      { noRect: false, rightCentered: true });
+      { noRect: true, rightCentered: true });
 
-//    var i = 0;
-//    var bw = width($card._body); var bh = height($card._body);
-//
-//    _($card._body.children()).each(function(c) {
-//      i = i + 1;
-//      var $c = $(c);
-//      var cw = width($c); var ch = height($c);
-//      var cx = position($c).x; var cy = position($c).y;
-//      svg(
-//        $card._body,
-//        'path',
-//        { 'class': 'fluo arc',
-//          'd': [
-//            'M', bw / 2, 0,
-//            'L', cx + cw / 2, 0,
-//            'L', cx + cw / 2, $card._height,
-//            'L', bw / 2, $card._height
-//          ],
-//          'fill': 'none' });
-//    });
+    var bw = width($card._body);
+
+    _($card._body.children()).each(function(c) {
+
+      var $c = $(c);
+      var cw = width($c); var ch = height($c);
+      var cx = position($c).x;
+
+      roundedPath(
+        $card._body,
+        bw / 2 - MARGIN, 0, cx + cw / 2, MARGIN, 'top');
+      roundedPath(
+        $card._body,
+        cx + cw / 2, ch + MARGIN, bw / 2 - MARGIN, $card._height, 'bottom');
+    });
 
     return $card;
   }
