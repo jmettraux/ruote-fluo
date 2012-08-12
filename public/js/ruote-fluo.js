@@ -220,7 +220,7 @@ var Fluo = (function() {
   function width($elt) {
 
     if ($elt.width() == 0) { // FireFox...
-      return $elt[0].getBBox().width;
+      return dimension($elt).width;
     } else { // the rest
       return $elt.width();
     }
@@ -231,7 +231,7 @@ var Fluo = (function() {
   function height($elt) {
 
     if ($elt.height() == 0) { // FireFox...
-      return $elt[0].getBBox().height;
+      return dimension($elt).height;
     } else { // the rest
       return $elt.height();
     }
@@ -270,25 +270,6 @@ var Fluo = (function() {
     return $g;
   }
 
-//  function rectAndText($container, texts) {
-//
-//    var $g = svg($container, 'g');
-//
-//    var $rect = svg($g, 'rect', { class: 'fluo' });
-//    var $text = textGroup($g, texts);
-//    translate($text, MARGIN, 0);
-//
-//    $g._width = 2 * MARGIN + $text._width;
-//    $g._height = 2 * MARGIN + $text._height;
-//
-//    $rect.attr('rx', RECT_R);
-//    $rect.attr('ry', RECT_R);
-//    $rect.attr('width', '' + $g._width);
-//    $rect.attr('height', '' + $g._height);
-//
-//    return $g;
-//  }
-
   function center(elts) {
 
     var w = _.inject(
@@ -303,18 +284,24 @@ var Fluo = (function() {
     });
   }
 
+  function dimension($elt) {
+
+    return $elt[0].getBBox();
+  }
+
+  function position($elt) {
+
+    var m = ($elt.attr('transform') || '').match(/^translate\((\d+), (\d+)\)$/);
+
+    if ( ! m) return { x: 0, y: 0 };
+
+    return { x: parseFloat(m[1]), y: parseFloat(m[2]) };
+  }
+
   function translate($elt, x, y) {
 
-    var prev = $elt.attr('transform');
-
-    if (prev) {
-      var m = prev.match(/^translate\((\d+), (\d+)\)$/);
-      var px = m[1]; var py = m[2];
-      x = x + parseInt(px);
-      y = y + parseInt(py);
-    }
-
-    $elt.attr('transform', 'translate(' + x + ', ' + y + ')');
+    var p = position($elt);
+    $elt.attr('transform', 'translate(' + (p.x + x) + ', ' + (p.y + y) + ')');
   }
 
   //
@@ -378,7 +365,7 @@ var Fluo = (function() {
     var w = dim[0]; var h = dim[1];
 
     $card._width = x + w + ($rect ? MARGIN : 0);
-    $card._height = _.max([ $tg._height + 2 * MARGIN, h ]);
+    $card._height = _.max([ $tg._height, h ]) + 2 * MARGIN;
 
     if ($rect) {
       $rect.attr('rx', RECT_R);
@@ -390,6 +377,8 @@ var Fluo = (function() {
     if (options.rightCentered) {
       $card._center = ($card._width - w / 2 - MARGIN) * 2;
     }
+
+    $card._body = $body;
 
     return $card;
   }
@@ -496,7 +485,7 @@ var Fluo = (function() {
 
   RENDER.concurrence = function($container, expid, flow) {
 
-    return renderCard(
+    var $card = renderCard(
       $container,
       expid,
       flow,
@@ -517,7 +506,30 @@ var Fluo = (function() {
 
         return [ w - MARGIN, _.max(heights) ];
       },
-      { noRect: true, rightCentered: true });
+      { noRect: false, rightCentered: true });
+
+//    var i = 0;
+//    var bw = width($card._body); var bh = height($card._body);
+//
+//    _($card._body.children()).each(function(c) {
+//      i = i + 1;
+//      var $c = $(c);
+//      var cw = width($c); var ch = height($c);
+//      var cx = position($c).x; var cy = position($c).y;
+//      svg(
+//        $card._body,
+//        'path',
+//        { 'class': 'fluo arc',
+//          'd': [
+//            'M', bw / 2, 0,
+//            'L', cx + cw / 2, 0,
+//            'L', cx + cw / 2, $card._height,
+//            'L', bw / 2, $card._height
+//          ],
+//          'fill': 'none' });
+//    });
+
+    return $card;
   }
 
   RENDER.wait = function($container, expid, flow) {
