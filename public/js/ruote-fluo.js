@@ -156,6 +156,8 @@ var Fluo = (function() {
     svgTree($svg, tree)
   }
 
+  // Adds an [SVG] element to the DOM
+  //
   function svgElt($container, eltName, attributes, text) {
 
     eltName = eltName || 'svg';
@@ -165,10 +167,16 @@ var Fluo = (function() {
     _.each(
       attributes,
       function(v, k) {
+
         var ns = null;
         var m = k.match(/^([a-z]+):([a-z-]+)$/)
         if (m) ns = m[1];
         if (ns == 'xlink') ns = 'http://www.w3.org/1999/xlink';
+
+        if (eltName == 'path' && k == 'd' && _.isArray(v)) {
+          v = _.map(v, function(e) { return '' + e }).join(' ');
+        }
+
         elt.setAttributeNS(ns, k, v);
       });
 
@@ -181,6 +189,8 @@ var Fluo = (function() {
     return $elt;
   };
 
+  // Walks an SVG tree and adds its elements to the DOM on the go
+  //
   function svgTree($container, tree) {
 
     var name = tree[0];
@@ -504,7 +514,7 @@ var Fluo = (function() {
 
         return [ w - MARGIN, _.max(heights) ];
       },
-      { noRect: false, rightCentered: true });
+      { noRect: true, rightCentered: true });
   }
 
   RENDER.wait = function($container, expid, flow) {
