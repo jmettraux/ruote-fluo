@@ -365,7 +365,9 @@ var Fluo = (function() {
     var w = dim[0]; var h = dim[1];
 
     $card._width = x + w + ($rect ? MARGIN : 0);
-    $card._height = _.max([ $tg._height, h ]) + 2 * MARGIN;
+
+    $card._height = _.max([ $tg._height, h ]);
+    if ( ! options['short']) $card._height = $card._height + 2 * MARGIN;
 
     if ($rect) {
       $rect.attr('rx', RECT_R);
@@ -544,7 +546,7 @@ var Fluo = (function() {
 
         return [ 2 * MARGIN + width($t), height($t) ];
       },
-      { noRect: true, rightCentered: true });
+      { noRect: true, 'short': true, rightCentered: true });
   }
 
   _.each([
