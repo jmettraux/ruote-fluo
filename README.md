@@ -23,9 +23,9 @@ TODO
 
 ## feedback
 
-user mailing list :  <http://groups.google.com/group/openwferu-users>
-issue tracker :      <https://github.com/jmettraux/ruote-fluo/issues>
-irc :                irc.freenode.net #ruote
+* user mailing list :  <http://groups.google.com/group/openwferu-users>
+* issue tracker :      <https://github.com/jmettraux/ruote-fluo/issues>
+* irc :                irc.freenode.net #ruote
 
 
 ## credits
