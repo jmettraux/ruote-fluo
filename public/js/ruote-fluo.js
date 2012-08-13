@@ -526,7 +526,7 @@ var Fluo = (function() {
 
           var $exp = renderExp($body, expid + '_' + i, fl);
           translate($exp, w, MARGIN);
-          console.log([ w, $exp._width ]);
+
           w = w + $exp._width + MARGIN;
           i = i + 1
 
