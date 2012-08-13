@@ -6,14 +6,14 @@
 This is the development bench of the javascript library used to render graphically process definitions in ruote-kit (<https://github.com/kennethkalmer/ruote-kit>)
 
 
+## playing
+
+Point your browser to TODO
+
+
 ## using
 
-  gem install ruote rack sinatra thin builder
-  git clone git://github.com/jmettraux/ruote-fluo.git
-  cd ruote-fluo
-  ruby lib/ruote-fluo.rb
-
-then head with your browser (Firefox or Safari) to http://localhost:4567
+TODO
 
 
 ## source
