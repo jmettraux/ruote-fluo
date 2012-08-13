@@ -34,7 +34,7 @@
 //]
 
 try {
-  HTMLElement.prototype.firstChildOfClass = function (className) {
+  HTMLElement.prototype.firstChildOfClass = function(className) {
     for (var i=0; i < this.childNodes.length; i++) {
       var c = this.childNodes[i];
       if (c.className == className) return c;
@@ -45,14 +45,14 @@ try {
   // when testing via spidermonkey
 }
 
-String.prototype.tstrip = function () {
+String.prototype.tstrip = function() {
   var s = this;
   while (s.charAt(0) == ' ') s = s.substring(1);
   while (s.charAt(s.length - 1) == ' ') s = s.substring(0, s.length - 1);
   return s;
 }
 
-var FluoEditor = function () {
+var FluoEditor = function() {
 
   var TEXTS = {
     add_child_expression: 'add a child expression',
@@ -70,12 +70,12 @@ var FluoEditor = function () {
 
   var Attributes = function() {
 
-    function tryParse (s) {
+    function tryParse(s) {
       try { return JSON.parse(s); } catch (e) {}
       return undefined;
     }
 
-    function parse (s) {
+    function parse(s) {
 
       s = s.tstrip();
 
@@ -115,9 +115,9 @@ var FluoEditor = function () {
     return { parse: parse };
   }();
 
-  var ExpressionHead = function () {
+  var ExpressionHead = function() {
 
-    function createButton (rfeClass, tooltip, callback) {
+    function createButton(rfeClass, tooltip, callback) {
 
       var i = document.createElement('a');
       i.callback = callback;
@@ -128,7 +128,7 @@ var FluoEditor = function () {
       return i;
     }
 
-    function addHeadButtons (expdiv) {
+    function addHeadButtons(expdiv) {
 
       var outOpacity = 0.0;
 
@@ -138,11 +138,11 @@ var FluoEditor = function () {
 
       var root = findRfeRoot(expdiv);
 
-      expdiv.onmouseover = function () {
+      expdiv.onmouseover = function() {
         buttons.style.opacity = 1.0;
         if (root.onOver) root.onOver(computeExpId(expdiv.parentNode));
       };
-      expdiv.onmouseout = function () {
+      expdiv.onmouseout = function() {
         buttons.style.opacity = outOpacity;
         if (root.onOver) root.onOver(null);
       };
@@ -150,7 +150,7 @@ var FluoEditor = function () {
       buttons.appendChild(createButton(
         'rfe_add',
         FluoEditor.TEXTS.add_child_expression,
-        function () {
+        function() {
           FluoEditor.addExpression(expdiv.parentNode, [ '---', {}, [] ]);
         }));
 
@@ -159,27 +159,27 @@ var FluoEditor = function () {
         buttons.appendChild(createButton(
           'rfe_cut',
           FluoEditor.TEXTS.cut_expression,
-          function () {
+          function() {
             FluoEditor.removeExpression(expdiv.parentNode);
           }));
         buttons.appendChild(createButton(
           'rfe_moveup',
           FluoEditor.TEXTS.moveup_expression,
-          function () {
+          function() {
             FluoEditor.moveExpression(expdiv.parentNode, -1);
             buttons.style.opacity = outOpacity;
           }));
         buttons.appendChild(createButton(
           'rfe_movedown',
           FluoEditor.TEXTS.movedown_expression,
-          function () {
+          function() {
             FluoEditor.moveExpression(expdiv.parentNode, +1);
             buttons.style.opacity = outOpacity;
           }));
         buttons.appendChild(createButton(
           'rfe_paste',
           FluoEditor.TEXTS.paste_expression,
-          function () {
+          function() {
             var clip = document._rfe_clipboard;
             if (clip) FluoEditor.insertExpression(expdiv.parentNode, clip);
           }));
@@ -190,7 +190,7 @@ var FluoEditor = function () {
 
     var headPattern = /^(\S+)(.*)$/;
 
-    function renderAttributes (h) {
+    function renderAttributes(h) {
 
       //var keys = [];
       //for (var k in h) keys.push(k);
@@ -226,7 +226,7 @@ var FluoEditor = function () {
 
     return {
 
-      render: function (node, exp) {
+      render: function(node, exp) {
 
         var expname = exp[0];
 
