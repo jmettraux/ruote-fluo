@@ -37,7 +37,6 @@ var Fluo = (function() {
   // http://javascriptweblog.wordpress.com/2010/12/07/namespacing-in-javascript/
   // for the namespacing
 
-//    'concurrence': ConcurrenceHandler,
 //    'if': IfHandler,
 //    'sleep': SymbolHandler,
 //    'wait': SymbolHandler,
@@ -51,7 +50,6 @@ var Fluo = (function() {
 //    '_': GhostHandler
 //
 //  var MINORS = [ 'set', 'set-fields', 'unset', 'description' ];
-//
 //  var DEFINERS = [ 'process-definition', 'workflow-definition', 'define' ];
 //
 //  var COLOURS = {
@@ -336,9 +334,6 @@ var Fluo = (function() {
       { 'class': 'fluo rounded_path', 'd': d, 'fill': 'none' });
   }
 
-  //
-  // render functions
-
   // Returns [ text, atts ] where text is the key of the first entry
   // whose value is null. Returned text may be null.
   //
@@ -364,6 +359,9 @@ var Fluo = (function() {
 
     return [ text, atts || flow[1] ];
   }
+
+  //
+  // render functions
 
   function renderCard($container, expid, flow, bodyFunc, options) {
 
@@ -421,16 +419,6 @@ var Fluo = (function() {
   }
 
   var RENDER = {};
-
-//  RENDER.leaf = function($container, expid, flow) {
-//
-//    var texts = [ [ 'expname', flow[0] ] ];
-//    _.each(flow[1], function(v, k) { texts.push(k + ': ' + v); });
-//
-//    var $rat = rectAndText($container, texts);
-//
-//    return $rat;
-//  }
 
   RENDER.text = function($container, expid, flow) {
 
@@ -587,22 +575,29 @@ var Fluo = (function() {
       },
       { noRect: true, 'short': true, rightCentered: true });
   }
+  RENDER.sleep = RENDER.wait;
 
   _.each([
     'set', 'rset', 'unset',
     'rewind', 'continue', 'back', 'break', 'stop', 'cancel', 'skip', 'jump'
-  ], function(expname) { RENDER[expname] = RENDER.text; });
+  ], function(expname) {
+    RENDER[expname] = RENDER.text;
+  });
 
   function renderExp($container, expid, flow) {
 
-    var $exp =
-      (RENDER[flow[0]] || RENDER.any).call(THIS, $container, expid, flow);
+    var $exp = (
+      RENDER[flow[0]] || RENDER.any
+    ).call(THIS, $container, expid, flow);
 
     $exp[0].id = 'exp_' + expid;
       // TODO: some kind of prefix?
 
     return $exp;
   }
+
+  //
+  // "public" functions
 
   this.render = function(div, flow, options) {
 
