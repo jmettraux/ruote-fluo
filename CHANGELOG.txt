@@ -2,7 +2,12 @@
 = ruote-fluo  CHANGELOG.txt
 
 
-== ruote-fluo 2.2.1      not yet released
+== ruote-fluo 2.3.0      not yet released
+
+- moved to SVG (and jquery, underscore and qunit)
+
+
+== ruote-fluo 2.2.1      released continuously with ruote-kit
 
 - adapted to Firefox 7.x (mozDrawText -> fillText)
 - Fluo.resize and Fluo.resizeForMaxWidth

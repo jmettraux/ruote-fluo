@@ -1,5 +1,0 @@
-
-http://stackoverflow.com/questions/941170/does-anyone-could-make-excanvas-work-in-ie-8-with-jquery
-
-http://code.google.com/p/explorercanvas/wiki/Instructions
-

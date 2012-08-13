@@ -1,18 +1,3 @@
 
-[ ] local storage
-[ ] display properties for sequence (cursor ?)
-
-[ ] maybe, do not show "define" or "process_definition" if there are no props
-[ ] take copy button from quaderno
-
-[ ] translations ? (task names, activity descriptions)
-
-[ ] fix _set
-[ ] editor : better reaction on unparseable input
-
-[ ] erb -> haml
-
-[ ] asRuby (asXml ?)
-
-[ ] concurrent_iterator && citerator
+[o] move to SVG
 

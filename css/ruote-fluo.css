@@ -1,0 +1,35 @@
+
+svg rect.fluo {
+  fill: none;
+  stroke: black;
+  stroke-width: 1.1px;
+  /*
+  rx: 14;
+  ry: 14;
+  */
+}
+
+svg path.fluo {
+  stroke: black;
+  stroke-width: 0.7px;
+}
+
+svg text {
+  font-family: Helvetica Neue;
+  font-size: 12px;
+  /*
+  fill: blue;
+  */
+}
+svg text.text_exp {
+  font-size: 14px;
+}
+svg text.expname {
+  font-size: 14px;
+  font-weight: 500;
+}
+
+p.fluo.expname {
+  margin-bottom: 1em;
+}
+
