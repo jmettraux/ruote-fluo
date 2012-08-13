@@ -604,6 +604,7 @@ var Fluo = (function() {
     options = options || {};
 
     $div = $(_.isString(div) ? "#" + div : div);
+    $div.children().remove();
 
     $div[0].fluo_options = options;
 
@@ -626,9 +627,13 @@ var Fluo = (function() {
     return $g;
   }
 
-  // alias for compatibility with canvas ruote-fluo
+  // alias (for compatibility with canvas ruote-fluo)
   //
   this.renderFlow = this.render;
+
+  // empty implementation (for compatibility with canvas ruote-fluo)
+  //
+  this.crop = function() {}
 
   return this;
 

@@ -15,7 +15,7 @@ h3 {
 
 .menubar {
   height: 28px;
-  background-image: url(/images/menubar.png);
+  background-image: url(../images/menubar.png);
 }
 
 A:link.menubar_link,A:visited.menubar_link {

@@ -1,0 +1,110 @@
+
+<html>
+
+  <head>
+
+    <title>fluo bench</title>
+
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+
+    <script src="./js/jquery-1.7.2.min.js"></script>
+    <script src="./js/underscore-1.3.3.min.js"></script>
+
+    <script src="../js/ruote-fluo.js"></script>
+    <script src="../js/ruote-fluo-editor.js"></script>
+
+    <link href="./css/fluo-bench.css" rel="stylesheet" type="text/css" />
+    <link href="../css/ruote-fluo.css" rel="stylesheet" type="text/css" />
+    <link href="../css/ruote-fluo-editor.css" rel="stylesheet" type="text/css" />
+  </head>
+
+<body>
+
+  <script>
+    function undo() {
+      FluoEditor.undo('editor');
+      return false;
+    }
+    function as(type) {
+      document.getElementById('definition_out_type').value = type;
+      document.getElementById('definition_input').value = FluoEditor.asJson('editor');
+      document.getElementById('definition_form').submit();
+      return false;
+    }
+    //function toggleMinor() {
+    //  Fluo.toggleMinor('fluo');
+    //  Fluo.crop('fluo');
+    //  return false;
+    //}
+    //function rotate() {
+    //  Fluo.toggleVertical('fluo');
+    //  Fluo.crop('fluo');
+    //  return false;
+    //}
+  </script>
+
+  <div class="menubar">
+    <div class="menubar_links" style="float: left;">
+      <a class="menubar_link" href="/defs">defs</a>
+      <a class="menubar_link" href="#" onclick="return undo();">undo</a>
+      <a class="menubar_link" href="#" onclick="return as('xml');">as xml</a>
+      <a class="menubar_link" href="#" onclick="return as('ruby');">as ruby</a>
+      <a class="menubar_link" href="#" onclick="return as('json');">as json</a>
+    </div>
+    <div class="menubar_links" style="float: right;">
+      <a class="menubar_link" href="#" onclick="return toggleMinor();">show/hide minor</a>
+      <a class="menubar_link" href="#" onclick="return rotate();">rotate</a>
+    </div>
+  </div>
+
+  <div>
+
+    <div style="float:left; width: 53%">
+
+      <div id="editor" style="margin-left: 10px; margin-top: 10px;"></div>
+
+      <script>
+
+        var editor = document.getElementById('editor');
+        var tree =
+          [ 'define', { test0: null }, [
+            [ 'concurrence', { count: 1 }, [
+              [ 'alpha', {}, [] ],
+              [ 'bravo', {}, [] ]
+            ] ],
+            [ 'charly', { task: "wash cups" }, [] ]
+          ] ];
+
+        FluoEditor.render(editor, tree);
+
+        editor.onChange = function (tree) {
+          Fluo.render('fluo', tree);
+        };
+        editor.onOver = function (expid) {
+          //Fluo.highlight('fluo', expid);
+        };
+      </script>
+    </div>
+
+    <div id="leftpane" style="float:left; width: 45%">
+
+      <div id="fluo"></div>
+
+      <script>
+        document.getElementById('fluo').noOuterBorder = true;
+        Fluo.render('fluo', tree);
+      </script>
+    </div>
+
+  </div>
+
+  <!--
+  <form id="definition_form" action="/def" method="POST">
+    <input id="definition_out_type" type="hidden" name="out_type" value="xml"></input>
+    <input id="definition_input" type="hidden" name="definition"></input>
+  </form>
+  -->
+
+</body>
+</html>
+

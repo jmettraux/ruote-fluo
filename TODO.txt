@@ -1,3 +1,5 @@
 
 [o] move to SVG
 
+[ ] define: implicit sequence (arrows!)
+
