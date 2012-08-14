@@ -126,12 +126,12 @@ var RuoteFluo = (function() {
         ]
       ];
 
-    _.times(11, function(i) {
+    for (var i = 0; i < 12; i++) {
       var a = (i + 1) * 30;
       timer[2].push(
         [ 'use',
           { 'xlink:href': '#tt', transform: 'rotate(' + a + ', 14, 14)' } ]);
-    });
+    }
 
     timer[2].push(
       [ 'path',
