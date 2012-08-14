@@ -21,7 +21,7 @@
  */
 
 /*
- * depends on jquery and underscore
+ * depends on jQuery and underscore
  *
  * http://jquery.com
  * http://documentcloud.github.com/underscore/

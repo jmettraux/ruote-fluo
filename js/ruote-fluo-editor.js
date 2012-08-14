@@ -26,16 +26,19 @@
  */
 
 /*
- * depends on jquery and underscore
+ * depends on jQuery
  *
  * http://jquery.com
- * http://documentcloud.github.com/underscore/
  *
  * minified versions of this file available / can generated at
  *
  * https://github.com/jmettraux/ruote-fluo
  */
 
+
+//
+// John, a relaxed Json parser
+//
 var John = (function() {
 
   function tryParse(s) {
@@ -194,20 +197,9 @@ var John = (function() {
 }).apply({});
 
 
-// TODO: use jquery instead
 //
-try {
-  HTMLElement.prototype.firstChildOfClass = function(className) {
-    for (var i=0; i < this.childNodes.length; i++) {
-      var c = this.childNodes[i];
-      if (c.className == className) return c;
-    }
-    return null;
-  }
-} catch (e) {
-  // when testing via spidermonkey
-}
-
+// FluoEditor
+//
 var FluoEditor = function() {
 
   var TEXTS = {
@@ -396,11 +388,7 @@ var FluoEditor = function() {
         var name = node.childNodes[0].firstChild.nodeValue;
         var atts = node.childNodes[1].firstChild.nodeValue;
 
-        atts = John.parse('{' + atts + '}');
-
-        var children = [];
-
-        return [ name, atts, children ];
+        return [ name, John.parse('{' + atts + '}'), [] ];
       }
     };
   }();
@@ -583,35 +571,19 @@ var FluoEditor = function() {
 
   function toTree(node) {
 
-    node.focus();
-      //
-      // making sure all the input boxes get blurred...
+    var $node = $(node);
 
-    if (node.className != 'rfe_expression') {
-      node = node.firstChildOfClass('rfe_expression');
+    $node.focus(); // making sure all the input boxes get blurred...
+
+    if ( ! $node.hasClass('rfe_expression')) {
+      $node = $node.children('.rfe_expression').first();
     }
 
-    //
-    // expression itself
+    var exp = ExpressionHead.toExp($node[0]);
 
-    var exp = ExpressionHead.toExp(node);
-
-    //
-    // children
-
-    var divs = node.childNodes;
-
-    var children = exp[2];
-
-    for (var i=0; i<divs.length; i++) {
-      var e = divs[i];
-      if (e.nodeType != 1) continue;
-      if (e.className != 'rfe_expression') continue;
-      children.push(toTree(e));
-    }
-
-    //
-    // done
+    $node.children('.rfe_expression').each(function(i, c) {
+      exp[2].push(toTree(c));
+    });
 
     return exp;
   }
