@@ -87,10 +87,10 @@ a.rfe_paste:hover {
   font: 14px/1em monaco, mono;
   border: 0;
   padding: 0 10px;
-  padding-top: 1px;
+  padding-top: 0px;
   margin: 0;
   margin-left: -11px;
-  margin-bottom: 1px;
+  margin-bottom: 0px;
   width: 400px;
   background: #86e74c;
   border-radius: 15px;
@@ -105,7 +105,7 @@ img.rfe_button {
 /* safari */
 @media screen and (-webkit-min-device-pixel-ratio:0) {
 .rfe_exp > input[type="text"] {
-  padding-top: 2px;
+  padding-top: 0px;
   margin-bottom: 0;
 }
 

@@ -182,6 +182,10 @@ var John = (function() {
   }
 
   this._es = extractString; // for testing purposes
+
+  //
+  // the public interface
+
   this.parse = parse;
   this.stringify = stringify;
 
