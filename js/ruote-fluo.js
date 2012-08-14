@@ -175,7 +175,7 @@ var RuoteFluo = (function() {
         if (m) ns = m[1];
         if (ns == 'xlink') ns = 'http://www.w3.org/1999/xlink';
 
-        if (_.isArray(v)) v = v.join(' ');
+        if (v instanceof Array) v = v.join(' ');
 
         elt.setAttributeNS(ns, k, v);
       });
@@ -197,7 +197,7 @@ var RuoteFluo = (function() {
     var attributes = tree[1];
     var children = tree[2] || [];
 
-    if (_.isArray(attributes)) {
+    if (attributes instanceof Array) {
       children = attributes;
       attributes = {};
     }
@@ -211,7 +211,7 @@ var RuoteFluo = (function() {
 
   function svg($container, eltName, attributes, text) {
 
-    if (_.isArray(eltName))
+    if (eltName instanceof Array)
       return svgTree($container, eltName);
     else
       return svgElt($container, eltName, attributes, text);
@@ -260,7 +260,7 @@ var RuoteFluo = (function() {
     _.each(texts, function(text) {
       var t = text;
       var c = '';
-      if (_.isArray(text)) { c = text[0]; t = text[1]; }
+      if (text instanceof Array) { c = text[0]; t = text[1]; }
       var $t = svg($g, 'text', { 'class': $.trim('fluo ' + c), x: 0 }, t);
       y = y + height($t);
       $t.attr('y', y);
