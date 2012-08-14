@@ -305,6 +305,7 @@ var FluoEditor = function() {
         var atts = John.stringify(exp[1]);
         if (atts == '{}') atts = '';
         else atts = atts.slice(1, -1);
+        atts = atts.trim();
 
         var d = document.createElement('div');
         d.setAttribute('class', 'rfe_exp');
