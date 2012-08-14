@@ -2,49 +2,42 @@
 //
 // testing ruote-fluo-editor
 //
+// Tue Aug 14 01:13:12 JST 2012
+//
 
-function jequal(a, b, message) {
-  equal(JSON.stringify(a), JSON.stringify(b), message)
+function jequal(actual, expected, message) {
+
+  equal(
+    JSON.stringify(John.parse('{' + actual + '}')),
+    JSON.stringify(expected),
+    message)
 }
 
 test('attributes parse test', function() {
 
-  function parse(source) {
-    return FluoEditor.Attributes.parse(source);
-  }
+  jequal('alpha', { alpha: null });
+  jequal('"alpha"', { alpha: null });
 
-  jequal({ alpha: null }, parse('alpha'));
-  jequal({ alpha: null }, parse('"alpha"'));
+  jequal('ref:alpha', { ref: 'alpha' });
+  jequal('ref:"alpha"', { ref: 'alpha' });
+  jequal('ref: "alpha"', { ref: 'alpha' });
 
-  //jequal({ ref: 'alpha' }, parse('ref:alpha'));
-  //jequal({ ref: 'alpha' }, parse('ref:"alpha"'));
+  jequal('"ref":"alpha"', { ref: 'alpha' });
+  jequal('"ref": "alpha"', { ref: 'alpha' });
 
-  jequal({ ref: 'alpha' }, parse('"ref":"alpha"'));
-  jequal({ ref: 'alpha' }, parse('"ref": "alpha"'));
+  jequal(' "${f:success}"', { '${f:success}': null });
 
-  jequal({ '${f:success}': null }, parse(' "${f:success}"'));
+  jequal('alpha, "task": "clean lab"', { alpha: null, task: 'clean lab' });
+  jequal('"alpha", "task": "clean lab"', { alpha: null, task: 'clean lab' });
 
-  jequal(
-    { alpha: null, task: 'clean lab' },
-    parse('alpha, "task": "clean lab"'));
-  jequal(
-    { alpha: null, task: 'clean lab' },
-    parse('"alpha", "task": "clean lab"'));
+  jequal('"val":1, "var":[2]', { val: 1, 'var': [ 2 ] });
 
-  jequal({ val: 1, 'var': [ 2 ] }, parse('"val":1, "var":[2]'));
+  jequal('"name": "my def", "revision": 0', { name: 'my def', revision: 0 });
 
-  jequal(
-    { name: 'my def', revision: 0 },
-    parse('"name": "my def", "revision": 0'));
+  jequal('${f:nada}', { '${f:nada}': null });
+  jequal('"${f:nada}"', { '${f:nada}': null });
 
-  jequal({ '${f:nada}': null }, parse('${f:nada}'));
-  jequal({ '${f:nada}': null }, parse('"${f:nada}"'));
-
-  jequal(
-    { '${f:next}': null, 'if': '${f:ok}' },
-    parse('${f:next}, "if": "${f:ok}"'));
-  jequal(
-    { '${f:next}': null, 'if': '${f:ok}' },
-    parse('"${f:next}", "if": "${f:ok}"'));
+  jequal('${f:next}, "if": "${f:ok}"', { '${f:next}': null, 'if': '${f:ok}' });
+  jequal('"${f:next}", "if": "${f:ok}"', { '${f:next}': null, 'if': '${f:ok}' });
 });
 

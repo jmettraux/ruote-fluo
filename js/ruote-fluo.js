@@ -36,6 +36,10 @@ var Fluo = (function() {
   // see
   // http://javascriptweblog.wordpress.com/2010/12/07/namespacing-in-javascript/
   // for the namespacing
+  //
+  // var MyModule = (function() {
+  //   return this;
+  // }).apply({});
 
 //    'if': IfHandler,
 //    'sleep': SymbolHandler,

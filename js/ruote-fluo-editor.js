@@ -25,13 +25,137 @@
  *  between Tsukuba and Akihabara.
  */
 
-//var flow = [ 'process-definition', { 'name': 'toto', 'revision': '1.0' }, [
-//    [ 'sequence', {}, [
-//      [ 'participant', { 'ref': 'alpha' }, [] ],
-//      [ 'bravo', {}, [] ]
-//    ]]
-//  ]
-//]
+/*
+ * depends on jquery and underscore
+ *
+ * http://jquery.com
+ * http://documentcloud.github.com/underscore/
+ *
+ * minified versions of this file available / can generated at
+ *
+ * https://github.com/jmettraux/ruote-fluo
+ */
+
+var John = (function() {
+
+  function tryParse(s) {
+
+    try { return JSON.parse(s); } catch (e) {}; return undefined;
+  }
+
+  function extractString(s) {
+
+    s = s.trim();
+
+    var str = '';
+    var del = null;
+    var car = null;
+    var cdr = s;
+    var q = false;
+    var curly = false;
+
+    while(true) {
+
+      car = cdr.slice(0, 1); cdr = cdr.slice(1);
+
+      if (q == false && car.match(/['"]/)) {
+        q = car;
+      }
+      else if (q == false) {
+        str = str + car;
+        q = true;
+      }
+      else if (car == q) {
+        del = cdr.slice(0, 1);
+        cdr = cdr.slice(1);
+        break;
+      }
+      else if (q == true && curly == false && car.match(/[:,]/)) {
+        del = car;
+        break;
+      }
+      else if (car == '\\') {
+        ncar = cdr.slice(0, 1); ncdr = cdr.slice(1);
+        if (ncar.match(/[^"']/)) str = str + car;
+        car = ncar; cdr = ncdr;
+        str = str + ncar;
+      }
+      else {
+        str = str + car;
+
+        if (car == '{') curly = (curly || 0) + 1;
+        else if (car == '}') curly = (curly || 0) - 1;
+        if (curly < 1) curly = false;
+
+        if ( ! cdr) break;
+      }
+    }
+
+    if (q == true) str = str.trim();
+    if (del == '') del = null;
+    cdr = cdr.trim();
+
+    return [ str, del, cdr ];
+  }
+
+  function parseArray(s, accu) {
+
+    var es = extractString(s);
+    accu.push(parse(es[0]));
+
+    if (es[1]) parseArray(es[2], accu);
+
+    return accu;
+  }
+
+  function parseObject(s, accu) {
+
+    var ek = extractString(s);
+    var k = ek[0];
+    var v = null;
+    var del = ek[1];
+    var cdr = ek[2];
+    if (del == ':') {
+      ev = extractString(cdr);
+      v = parse(ev[0]);
+      del = ev[1];
+      cdr = ev[2];
+    }
+    accu[k] = v;
+
+    if (del == ',') parseObject(cdr, accu);
+
+    return accu;
+  }
+
+  function parse(s) {
+
+    s = s.trim();
+
+    if (s == 'null') return null;
+
+    var j = tryParse(s);
+    if (j != undefined) return j;
+
+    var m;
+
+    if (s.match(/^\[.*\]$/)) {
+      return parseArray(s.slice(1, -1), []);
+    } else if (s.match(/^{.*}$/)) {
+      return parseObject(s.slice(1, -1), {});
+    } else if (m = s.match(/^'(.*)'$/)) {
+      return m[1];
+    } else {
+      return s;
+    }
+  }
+
+  this._es = extractString; // for testing purposes
+  this.parse = parse;
+
+  return this;
+
+}).apply({});
 
 try {
   HTMLElement.prototype.firstChildOfClass = function(className) {
@@ -45,13 +169,6 @@ try {
   // when testing via spidermonkey
 }
 
-String.prototype.tstrip = function() {
-  var s = this;
-  while (s.charAt(0) == ' ') s = s.substring(1);
-  while (s.charAt(s.length - 1) == ' ') s = s.substring(0, s.length - 1);
-  return s;
-}
-
 var FluoEditor = function() {
 
   var TEXTS = {
@@ -61,59 +178,6 @@ var FluoEditor = function() {
     movedown_expression: 'move expression down',
     paste_expression: 'paste expression here'
   };
-
-  // it's easy to override this var to let FluoEditor point to another root
-  //
-  //     FluoEditor.imageRoot = 'http://my.image.server.exmaple.com/img'
-  //
-  var imageRoot = '/images';
-
-  var Attributes = function() {
-
-    function tryParse(s) {
-      try { return JSON.parse(s); } catch (e) {}
-      return undefined;
-    }
-
-    function parse(s) {
-
-      s = s.tstrip();
-
-      var r = tryParse("{" + s + "}");
-      if (r != undefined) return r;
-
-      var head = undefined;
-      var tail = undefined;
-
-      var m = s.match(/^([^",]+)(.*)$/)
-      if (m) {
-        r = tryParse(m[1]);
-        if (r != undefined) head = r;
-        else head = tryParse('"' + m[1] + '"');
-        tail = m[2];
-      }
-      else {
-        for (var i = 1; i <= s.length; i++) {
-          r = tryParse(s.slice(0, i));
-          if (r != undefined) {
-            head = r;
-            break;
-          }
-        }
-        tail = s.slice(i);
-      }
-
-      var h = {};
-      h[head] = null;
-      m = tail.match(/^[ ,]*(.*)$/);
-      var hh = tryParse("{" + m[1] + "}");
-      for (var k in hh) { h[k] = hh[k]; }
-
-      return h;
-    }
-
-    return { parse: parse };
-  }();
 
   var ExpressionHead = function() {
 
@@ -306,7 +370,7 @@ var FluoEditor = function() {
 
         if (m == null) return [ '---', {}, [] ];
 
-        var attributes = Attributes.parse(m[2]);
+        var attributes = John.parse(m[2]);
 
         return [ m[1], attributes, [] ];
       },
@@ -318,7 +382,7 @@ var FluoEditor = function() {
         var name = node.childNodes[0].firstChild.nodeValue;
         var atts = node.childNodes[1].firstChild.nodeValue;
 
-        atts = Attributes.parse(atts);
+        atts = John.parse(atts);
 
         var children = [];
 
@@ -402,7 +466,7 @@ var FluoEditor = function() {
     return node;
   }
 
-  function renderFlow (parentNode, flow) {
+  function render(parentNode, flow) {
 
     if ((typeof parentNode) == 'string') {
       parentNode = document.getElementById(parentNode);
@@ -420,7 +484,7 @@ var FluoEditor = function() {
     parentNode.currentTree = flow;
   }
 
-  function moveExpression (elt, delta) {
+  function moveExpression(elt, delta) {
 
     var p = elt.parentNode;
 
@@ -436,7 +500,7 @@ var FluoEditor = function() {
     FluoEditor.triggerChange(p);
   }
 
-  function insertExpression (before, exp) {
+  function insertExpression(before, exp) {
 
     var newNode = renderExpression(before.parentNode, exp);
 
@@ -445,7 +509,7 @@ var FluoEditor = function() {
     FluoEditor.triggerChange(before.parentNode);
   }
 
-  function triggerChange (elt) {
+  function triggerChange(elt) {
 
     var rfeRoot = findRfeRoot(elt);
     var tree = toTree(rfeRoot);
@@ -460,7 +524,7 @@ var FluoEditor = function() {
     root.currentTree = tree;
   }
 
-  function undo (root) {
+  function undo(root) {
 
     if ((typeof root) == 'string') root = document.getElementById(root);
     if (root.stack.length < 1) return;
@@ -475,13 +539,13 @@ var FluoEditor = function() {
     if (root.onChange) root.onChange(tree);
   }
 
-  function findRfeRoot (node) {
+  function findRfeRoot(node) {
 
       if (node.className == 'rfe_root') return node;
       return findRfeRoot(node.parentNode);
   }
 
-  function computeExpId (node, from, expid) {
+  function computeExpId(node, from, expid) {
 
     if (from == null) {
       from = findRfeRoot(node);
@@ -504,7 +568,7 @@ var FluoEditor = function() {
     return null;
   }
 
-  function toTree (node) {
+  function toTree(node) {
 
     node.focus();
       //
@@ -547,17 +611,15 @@ var FluoEditor = function() {
     TEXTS: TEXTS,
 
     ExpressionHead: ExpressionHead,
-    Attributes: Attributes, // for testing purposes
 
-    renderFlow: renderFlow,
+    render: render,
     addExpression: addExpression,
     removeExpression: removeExpression,
     moveExpression: moveExpression,
     insertExpression: insertExpression,
     triggerChange: triggerChange,
     undo: undo,
-    asJson: asJson,
-    imageRoot: imageRoot
+    asJson: asJson
   };
 }();
 
