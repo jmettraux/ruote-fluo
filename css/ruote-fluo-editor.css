@@ -94,6 +94,7 @@ a.rfe_paste:hover {
   width: 400px;
   background: #86e74c;
   border-radius: 15px;
+  outline: none;
   -webkit-border-radius: 15px;
   -moz-border-radius: 15px;
 }
