@@ -7,7 +7,7 @@
 
 
 //
-// high-level John.parse(s) testing
+// testing John.parse(s)
 
 function j_assert(source, expected, message) {
 
@@ -17,7 +17,7 @@ function j_assert(source, expected, message) {
     message)
 }
 
-test('atomic values', function() {
+test('John.parse(o) atomic values', function() {
 
   j_assert('"oh yeah"', 'oh yeah');
   j_assert('"わしらの電車"', 'わしらの電車');
@@ -34,42 +34,42 @@ test('atomic values', function() {
   j_assert('null', null);
 });
 
-test('single quoted strings', function() {
+test('John.parse(o) single quoted strings', function() {
 
   j_assert("'de nada'", 'de nada');
   j_assert("'わしらの電車'", 'わしらの電車');
   j_assert("'she said \"too bad!\"'", 'she said "too bad!"');
 });
 
-test('standalone strings', function() {
+test('John.parse(o) standalone strings', function() {
 
   j_assert("炊飯器", '炊飯器');
   j_assert("de nada", 'de nada');
 });
 
-test('vanilla arrays', function() {
+test('John.parse(o) vanilla arrays', function() {
 
   j_assert('[ 1, 2, "trois" ]', [ 1, 2, 'trois' ]);
 });
 
-test('vanilla objects', function() {
+test('John.parse(o) vanilla objects', function() {
 
   j_assert('{ "a": 1 }', { a: 1 });
 });
 
-test('relaxed arrays', function() {
+test('John.parse(o) relaxed arrays', function() {
 
   j_assert("[ 1, 2, 'trois' ]", [ 1, 2, 'trois' ]);
 });
 
-test('relaxed objects', function() {
+test('John.parse(o) relaxed objects', function() {
 
   j_assert("{ a: 0, b: 1 }", { a: 0, b: 1 });
 });
 
 
 //
-// testing extractString() behind the scenes
+// testing John.extractString(s) behind the scenes
 
 function es_assert(source, expected, message) {
 
@@ -79,7 +79,7 @@ function es_assert(source, expected, message) {
     message);
 }
 
-test('extractString()', function() {
+test('John.extractString(s)', function() {
 
   es_assert('abc', [ 'abc', null, '' ]);
   es_assert('"abc"', [ 'abc', null, '' ]);
@@ -100,5 +100,30 @@ test('extractString()', function() {
   es_assert('"abc", xxx', [ 'abc', ',', 'xxx' ]);
   es_assert("'abc', xxx", [ 'abc', ',', 'xxx' ]);
   es_assert('"de nada", xxx', [ 'de nada', ',', 'xxx' ]);
+});
+
+
+//
+// testing John.stringify(o)
+
+function s_assert(o, expected, message) {
+
+  equal(John.stringify(o), expected, message);
+}
+
+test('John.stringify(o)', function() {
+
+  s_assert(null, 'null');
+
+  s_assert('a', 'a');
+  s_assert('a b', '"a b"');
+
+  s_assert(1, '1');
+
+  s_assert([ 1, 2 ], '[ 1, 2 ]');
+
+  s_assert({ a: 0, b: 1 }, '{ a: 0, b: 1 }');
+  s_assert({ a: 'apple', b: 'pie' }, '{ a: apple, b: pie }');
+  s_assert({ a: null, b: 'burger' }, '{ a, b: burger }');
 });
 

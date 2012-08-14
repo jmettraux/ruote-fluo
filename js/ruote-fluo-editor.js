@@ -150,13 +150,48 @@ var John = (function() {
     }
   }
 
+  function stringify(o) {
+
+    if (o == null) return 'null'
+
+    var t = (typeof o);
+
+    if (t == 'number' || t == 'boolean') return '' + o;
+
+    if (o instanceof Array) {
+      var a = [];
+      o.forEach(function(e) { a.push(stringify(e)); });
+      if (a.length < 1) return '[]'
+      return '[ ' + a.join(', ') + ' ]';
+    }
+    if (t == 'object') {
+      var a = [];
+      for(var k in o) {
+        var s = stringify(k);
+        var v = o[k];
+        if (v != null) s = s + ': ' + stringify(v);
+        a.push(s);
+      }
+      if (a.length < 1) return '{}'
+      return '{ ' + a.join(', ') + ' }';
+    }
+
+    if (o.match(/[\s:,]/)) return JSON.stringify(o);
+
+    return o;
+  }
+
   this._es = extractString; // for testing purposes
   this.parse = parse;
+  this.stringify = stringify;
 
   return this;
 
 }).apply({});
 
+
+// TODO: use jquery instead
+//
 try {
   HTMLElement.prototype.firstChildOfClass = function(className) {
     for (var i=0; i < this.childNodes.length; i++) {
@@ -254,40 +289,6 @@ var FluoEditor = function() {
 
     var headPattern = /^(\S+)(.*)$/;
 
-    function renderAttributes(h) {
-
-      //var keys = [];
-      //for (var k in h) keys.push(k);
-      //keys = keys.sort();
-      //s = '';
-      //for (var i = 0; i < keys.length; i++) {
-      //  var k = keys[i];
-      //  s += k;
-      //  var v = JSON.stringify(h[k]);
-      //  if (v != 'null') s += (': ' + v);
-      //  s += ', ';
-      //}
-      //if (s.length > 1) s = s.substring(0, s.length - 2);
-      //return s;
-
-      var a = [];
-
-      for (var k in h) {
-        var v = h[k];
-        if (v == null) {
-          a.push(JSON.stringify(k));
-          break;
-        }
-      }
-      for (var k in h) {
-        var v = h[k];
-        if (v == null) continue;
-        a.push(JSON.stringify(k) + ': ' + JSON.stringify(v));
-      }
-
-      return a.join(', ');
-    }
-
     return {
 
       render: function(node, exp) {
@@ -297,7 +298,9 @@ var FluoEditor = function() {
         var text = '';
         if ((typeof exp[2][0]) == 'string') text = exp[2].shift();
 
-        var atts = renderAttributes(exp[1]);
+        var atts = John.stringify(exp[1]);
+        if (atts == '{}') atts = '';
+        else atts = atts.slice(1, -1);
 
         var d = document.createElement('div');
         d.setAttribute('class', 'rfe_exp');
@@ -315,7 +318,7 @@ var FluoEditor = function() {
 
         addHeadButtons(d);
 
-        var onblur = function () {
+        var onblur = function() {
 
           var p = d.parentNode;
           var d2 = ExpressionHead.render(p, ExpressionHead.parse(this.value));
@@ -326,7 +329,7 @@ var FluoEditor = function() {
 
         // blurring on "enter"
         //
-        var onkeyup = function (evt) {
+        var onkeyup = function(evt) {
 
           var e = evt || window.event;
           var c = e.charCode || e.keyCode;
@@ -337,7 +340,7 @@ var FluoEditor = function() {
 
         // preventing propagation of "enter"
         //
-        var onkeypress = function (evt) {
+        var onkeypress = function(evt) {
 
           var e = evt || window.event;
           var c = e.charCode || e.keyCode;
@@ -345,7 +348,7 @@ var FluoEditor = function() {
           return (c != 13);
         }
 
-        var onclick = function () {
+        var onclick = function() {
           d.removeChild(sen);
           var input = document.createElement('input');
           input.setAttribute('type', 'text');
@@ -364,7 +367,7 @@ var FluoEditor = function() {
         return d;
       },
 
-      parse: function (s) {
+      parse: function(s) {
 
         var m = s.match(headPattern);
 
@@ -375,7 +378,7 @@ var FluoEditor = function() {
         return [ m[1], attributes, [] ];
       },
 
-      toExp: function (node) {
+      toExp: function(node) {
 
         node = node.firstChild;
 
@@ -391,15 +394,14 @@ var FluoEditor = function() {
     };
   }();
 
-  function asJson (node) {
+  function asJson(node) {
 
-    if ((typeof node) == 'string')
-      node = document.getElementById(node);
+    if ((typeof node) == 'string') node = document.getElementById(node);
 
     return JSON.stringify(toTree(node));
   }
 
-  function renderEnding (node, exp) {
+  function renderEnding(node, exp) {
 
     var ending = document.createElement('div');
     ending.className = 'rfe_text';
@@ -407,7 +409,7 @@ var FluoEditor = function() {
     node.appendChild(ending);
   }
 
-  function addExpression (parentExpNode, exp) {
+  function addExpression(parentExpNode, exp) {
 
     var end = parentExpNode.lastChild;
     var node = renderExpression(parentExpNode, exp);
@@ -420,7 +422,7 @@ var FluoEditor = function() {
     triggerChange(parentExpNode);
   }
 
-  function removeExpression (expNode) {
+  function removeExpression(expNode) {
 
     var p = expNode.parentNode;
     p.removeChild(expNode);
@@ -433,7 +435,7 @@ var FluoEditor = function() {
     triggerChange(p);
   }
 
-  function renderExpression (parentNode, exp, isRootExp) {
+  function renderExpression(parentNode, exp, isRootExp) {
 
     //
     // draw expression
