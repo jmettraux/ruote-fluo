@@ -2,5 +2,6 @@
 [o] move to SVG
 
 [o] editor: when blanking a line, remove the expression
+[ ] editor: when entering with shift-enter begins edition of next line
 [ ] define: implicit sequence (arrows!)
 

@@ -198,9 +198,9 @@ var John = (function() {
 
 
 //
-// FluoEditor
+// RuoteFluoEditor
 //
-var FluoEditor = function() {
+var RuoteFluoEditor = function() {
 
   var TEXTS = {
     add_child_expression: 'add a child expression',
@@ -244,39 +244,39 @@ var FluoEditor = function() {
 
       buttons.appendChild(createButton(
         'rfe_add',
-        FluoEditor.TEXTS.add_child_expression,
+        RuoteFluoEditor.TEXTS.add_child_expression,
         function() {
-          FluoEditor.addExpression(expdiv.parentNode, [ '---', {}, [] ]);
+          RuoteFluoEditor.addExpression(expdiv.parentNode, [ '---', {}, [] ]);
         }));
 
       if (expdiv.parentNode.parentNode != root) {
 
         buttons.appendChild(createButton(
           'rfe_cut',
-          FluoEditor.TEXTS.cut_expression,
+          RuoteFluoEditor.TEXTS.cut_expression,
           function() {
-            FluoEditor.removeExpression(expdiv.parentNode);
+            RuoteFluoEditor.removeExpression(expdiv.parentNode);
           }));
         buttons.appendChild(createButton(
           'rfe_moveup',
-          FluoEditor.TEXTS.moveup_expression,
+          RuoteFluoEditor.TEXTS.moveup_expression,
           function() {
-            FluoEditor.moveExpression(expdiv.parentNode, -1);
+            RuoteFluoEditor.moveExpression(expdiv.parentNode, -1);
             buttons.style.opacity = outOpacity;
           }));
         buttons.appendChild(createButton(
           'rfe_movedown',
-          FluoEditor.TEXTS.movedown_expression,
+          RuoteFluoEditor.TEXTS.movedown_expression,
           function() {
-            FluoEditor.moveExpression(expdiv.parentNode, +1);
+            RuoteFluoEditor.moveExpression(expdiv.parentNode, +1);
             buttons.style.opacity = outOpacity;
           }));
         buttons.appendChild(createButton(
           'rfe_paste',
-          FluoEditor.TEXTS.paste_expression,
+          RuoteFluoEditor.TEXTS.paste_expression,
           function() {
             var clip = document._rfe_clipboard;
-            if (clip) FluoEditor.insertExpression(expdiv.parentNode, clip);
+            if (clip) RuoteFluoEditor.insertExpression(expdiv.parentNode, clip);
           }));
       }
 
@@ -498,7 +498,7 @@ var FluoEditor = function() {
       p.insertBefore(elt, elt.nextSibling.nextSibling);
     }
 
-    FluoEditor.triggerChange(p);
+    RuoteFluoEditor.triggerChange(p);
   }
 
   function insertExpression(before, exp) {
@@ -507,7 +507,7 @@ var FluoEditor = function() {
 
     before.parentNode.insertBefore(newNode, before);
 
-    FluoEditor.triggerChange(before.parentNode);
+    RuoteFluoEditor.triggerChange(before.parentNode);
   }
 
   function triggerChange(elt) {
@@ -607,4 +607,6 @@ var FluoEditor = function() {
     asJson: asJson
   };
 }();
+
+var FluoEditor = RuoteFluoEditor; // for backward compatibility
 

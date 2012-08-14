@@ -31,7 +31,7 @@
  * https://github.com/jmettraux/ruote-fluo
  */
 
-var Fluo = (function() {
+var RuoteFluo = (function() {
 
   // see
   // http://javascriptweblog.wordpress.com/2010/12/07/namespacing-in-javascript/
@@ -642,4 +642,6 @@ var Fluo = (function() {
   return this;
 
 }).apply({});
+
+var Fluo = RuoteFluo; // for compatibility with canvas ruote-fluo
 
