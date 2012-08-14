@@ -2,4 +2,5 @@
 [o] move to SVG
 
 [ ] define: implicit sequence (arrows!)
+[ ] editor: when blanking a line, remove the expression
 

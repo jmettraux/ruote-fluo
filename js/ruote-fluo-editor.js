@@ -370,7 +370,7 @@ var FluoEditor = function() {
 
         if (m == null) return [ '---', {}, [] ];
 
-        var attributes = John.parse(m[2]);
+        var attributes = John.parse('{' + m[2] + '}');
 
         return [ m[1], attributes, [] ];
       },
@@ -382,7 +382,7 @@ var FluoEditor = function() {
         var name = node.childNodes[0].firstChild.nodeValue;
         var atts = node.childNodes[1].firstChild.nodeValue;
 
-        atts = John.parse(atts);
+        atts = John.parse('{' + atts + '}');
 
         var children = [];
 
