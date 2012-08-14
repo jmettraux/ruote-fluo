@@ -291,8 +291,6 @@ var FluoEditor = function() {
       expdiv.appendChild(buttons);
     }
 
-    var headPattern = /^(\S+)(.*)$/;
-
     return {
 
       render: function(node, exp) {
@@ -326,10 +324,18 @@ var FluoEditor = function() {
         var onblur = function() {
 
           var p = d.parentNode;
-          var d2 = ExpressionHead.render(p, ExpressionHead.parse(this.value));
-          p.replaceChild(d2, d);
+          var pp = p.parentNode;
 
-          triggerChange(p); // trigger onChange()...
+          var exp = ExpressionHead.parse(this.value);
+
+          if (exp) {
+            p.replaceChild(ExpressionHead.render(p, exp), d);
+            triggerChange(p);
+          }
+          else {
+            pp.removeChild(p);
+            triggerChange(pp);
+          }
         };
 
         // blurring on "enter"
@@ -338,6 +344,7 @@ var FluoEditor = function() {
 
           var e = evt || window.event;
           var c = e.charCode || e.keyCode;
+          //console.log(e.shiftKey);
           if (c == 13) this.blur();
 
           return false;
@@ -354,6 +361,7 @@ var FluoEditor = function() {
         }
 
         var onclick = function() {
+
           d.removeChild(sen);
           var input = document.createElement('input');
           input.setAttribute('type', 'text');
@@ -374,13 +382,11 @@ var FluoEditor = function() {
 
       parse: function(s) {
 
-        var m = s.match(headPattern);
+        var m = s.match(/^(\S+)(.*)$/);
 
-        if (m == null) return [ '---', {}, [] ];
+        if (m == null || m[1].match(/^-+$/)) return null;
 
-        var attributes = John.parse('{' + m[2] + '}');
-
-        return [ m[1], attributes, [] ];
+        return [ m[1], John.parse('{' + m[2] + '}'), [] ];
       },
 
       toExp: function(node) {

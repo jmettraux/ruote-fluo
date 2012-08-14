@@ -1,6 +1,6 @@
 
 [o] move to SVG
 
+[o] editor: when blanking a line, remove the expression
 [ ] define: implicit sequence (arrows!)
-[ ] editor: when blanking a line, remove the expression
 
