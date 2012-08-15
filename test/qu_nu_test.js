@@ -84,3 +84,39 @@ test('Nu.map(object)', function() {
   equal(r.join(', '), '1, 5, 7');
 });
 
+test('Nu.reduce(array)', function() {
+
+  var r = Nu.reduce([ 0, 1, 2, 3, 4, 5 ], function(i, e) {
+    return (e % 2 == 0) ? i + e : i;
+  });
+
+  equal(r, 6);
+});
+
+test('Nu.reduce(array, memo)', function() {
+
+  var r = Nu.reduce([ 0, 1, 2, 3, 4, 5 ], 10, function(i, e) {
+    return (e % 2 == 0) ? i + e : i;
+  });
+
+  equal(r, 16);
+});
+
+test('Nu.reduce(object)', function() {
+
+  var r = Nu.reduce({ a: 1, b: 2, c: 3, d: 4 }, function(i, k, v) {
+    return i + v * 2;
+  });
+
+  equal(r, 19);
+});
+
+test('Nu.reduce(object, memo)', function() {
+
+  var r = Nu.reduce({ a: 1, b: 2, c: 3, d: 4 }, 10, function(i, k, v) {
+    return i + v * 2;
+  });
+
+  equal(r, 30);
+});
+

@@ -29,6 +29,9 @@
 //
 var Nu = (function() {
 
+  // TODO: at some point leverage browsers' own forEach, map, reduce, filter,
+  //       every, some and indexOf
+
   //
   // each
 
@@ -77,6 +80,21 @@ var Nu = (function() {
     return result;
   }
   this.map = this.collect;
+
+  //
+  // inject, foldl, reduce
+
+  this.inject = function(coll, memo, func) {
+    if (arguments.length == 2) func = memo;
+    var memoSet = arguments.length > 2;
+    rawEach(coll, function(k, v) {
+      if ( ! memoSet) { memo = v; memoSet = true; return; }
+      memo = (coll instanceof Array) ? func(memo, v, k) : func(memo, k, v);
+    });
+    return memo;
+  }
+  this.foldl = this.inject;
+  this.reduce = this.inject;
 
   //
   // over.
