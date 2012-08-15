@@ -9,12 +9,9 @@
 //
 // testing John.parse(s)
 
-function j_assert(source, expected, message) {
+function jequal(actual, expected, message) {
 
-  equal(
-    JSON.stringify(John.parse(source)),
-    JSON.stringify(expected),
-    message)
+  equal(JSON.stringify(actual), JSON.stringify(expected), message)
 }
 
 test('Nu.each(array)', function() {
@@ -36,7 +33,7 @@ test('Nu.each(array) with index', function() {
     a.push(e + ':' + i);
   });
 
-  equal(a.join(', '), '1:0, 2:1, 3:2');
+  jequal(a, [ '1:0', '2:1', '3:2' ]);
 });
 
 test('Nu.each(object)', function() {
@@ -47,7 +44,7 @@ test('Nu.each(object)', function() {
     a.push(k + ':' + v);
   });
 
-  equal(a.join(', '), 'a:1, b:2, c:3');
+  jequal(a, [ 'a:1', 'b:2', 'c:3' ]);
 });
 
 test('Nu.find(array)', function() {
@@ -65,14 +62,14 @@ test('Nu.find(object)', function() {
     return v > 40;
   });
 
-  equal(r.join(':'), 'bravo:50');
+  jequal(r, [ 'bravo', 50 ]);
 });
 
 test('Nu.map(array)', function() {
 
   var r = Nu.map([ 1, 2, 3 ], function(e) { return e * 2; });
 
-  equal(r.join(', '), '2, 4, 6');
+  jequal(r, [ 2, 4, 6 ]);
 });
 
 test('Nu.map(object)', function() {
@@ -81,7 +78,7 @@ test('Nu.map(object)', function() {
     return v / 10;
   });
 
-  equal(r.join(', '), '1, 5, 7');
+  jequal(r, [ 1, 5, 7 ]);
 });
 
 test('Nu.reduce(array)', function() {
@@ -118,5 +115,23 @@ test('Nu.reduce(object, memo)', function() {
   });
 
   equal(r, 30);
+});
+
+test('Nu.filter(array)', function() {
+
+  var r = Nu.filter([ 0, 1, 2, 3, 4, 5 ], function(e) {
+    return e % 2 == 1;
+  });
+
+  jequal(r, [ 1, 3, 5 ]);
+});
+
+test('Nu.filter(object)', function() {
+
+  var r = Nu.filter({ a: 1, b: 2, c: 3, d: 4 }, function(k, v) {
+    return v % 2 == 1;
+  });
+
+  jequal(r, { a: 1, c: 3});
 });
 

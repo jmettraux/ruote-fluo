@@ -97,6 +97,21 @@ var Nu = (function() {
   this.reduce = this.inject;
 
   //
+  // select, filter
+
+  this.select = function(coll, func) {
+    var ar = (coll instanceof Array);
+    var result = ar ? [] : {};
+    rawEach(coll, function(k, v) {
+      var r = ar ? func(v, k) : func(k, v);
+      if ( ! r) return;
+      if (ar) result.push(v); else result[k] = v;
+    });
+    return result;
+  };
+  this.filter = this.select;
+
+  //
   // over.
 
   return this;
