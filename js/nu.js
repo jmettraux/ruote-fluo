@@ -31,6 +31,13 @@ var Nu = (function() {
 
   // TODO: at some point leverage browsers' own forEach, map, reduce, filter,
   //       every, some and indexOf
+  //
+  // or not.
+
+  function isListy(o) {
+    //return (typeof obj.length == 'number');
+    return (o.length === +o.length);
+  }
 
   //
   // each
@@ -38,16 +45,18 @@ var Nu = (function() {
   var breaker = {};
 
   function rawEach(coll, func) {
-    for (var i in coll) {
-      var r = func(i, coll[i]);
-      if (r === breaker) break;
+    if (isListy(coll)) for (var i = 0; i < coll.length; i++) {
+      if (func(i, coll[i]) === breaker) break;
+    }
+    else for (var i in coll) {
+      if (func(i, coll[i]) === breaker) break;
     }
     return coll;
   }
 
   this.each = function(coll, func) {
     return rawEach(coll, function(k, v) {
-      if (coll instanceof Array) func(v, k); else func(k, v);
+      if (isListy(coll)) func(v, k); else func(k, v);
     });
   };
 
@@ -55,7 +64,7 @@ var Nu = (function() {
   // detect, find
 
   this.detect = function(coll, func) {
-    var ar = (coll instanceof Array);
+    var ar = isListy(coll);
     var result = undefined;
     rawEach(coll, function(k, v) {
       var r = (ar) ? func(v, k) : func(k, v);
@@ -72,7 +81,7 @@ var Nu = (function() {
   // collect, map
 
   this.collect = function(coll, func) {
-    var ar = (coll instanceof Array);
+    var ar = isListy(coll);
     var result = [];
     rawEach(coll, function(k, v) {
       result.push((ar) ? func(v, k) : func(k, v));
@@ -89,7 +98,7 @@ var Nu = (function() {
     var memoSet = arguments.length > 2;
     rawEach(coll, function(k, v) {
       if ( ! memoSet) { memo = v; memoSet = true; return; }
-      memo = (coll instanceof Array) ? func(memo, v, k) : func(memo, k, v);
+      memo = isListy(coll) ? func(memo, v, k) : func(memo, k, v);
     });
     return memo;
   }
@@ -100,7 +109,7 @@ var Nu = (function() {
   // select, filter
 
   this.select = function(coll, func) {
-    var ar = (coll instanceof Array);
+    var ar = isListy(coll);
     var result = ar ? [] : {};
     rawEach(coll, function(k, v) {
       var r = ar ? func(v, k) : func(k, v);
@@ -115,14 +124,10 @@ var Nu = (function() {
   // max and min
 
   this.max = function(ar) {
-    return this.reduce(ar, function(m, v) {
-      return m > v ? m : v;
-    });
+    return this.reduce(ar, function(m, v) { return m > v ? m : v; });
   };
   this.min = function(ar) {
-    return this.reduce(ar, function(m, v) {
-      return m > v ? v : m;
-    });
+    return this.reduce(ar, function(m, v) { return m > v ? v : m; });
   };
 
   //

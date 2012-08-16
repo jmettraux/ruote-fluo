@@ -47,6 +47,22 @@ test('Nu.each(object)', function() {
   jequal(a, [ 'a:1', 'b:2', 'c:3' ]);
 });
 
+test('Nu.each(listy)', function() {
+
+  var a = [];
+
+  l = { length: 3 };
+  l[0] = 'a';
+  l[1] = 'b';
+  l[2] = 'c';
+
+  Nu.each(l, function(v) {
+    a.push(v);
+  });
+
+  jequal(a, [ 'a', 'b', 'c' ]);
+});
+
 test('Nu.find(array)', function() {
 
   var r = Nu.find([ 'alpha', 'bravo', 'charly' ], function(e, i) {
