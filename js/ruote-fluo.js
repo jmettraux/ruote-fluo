@@ -166,9 +166,9 @@ var RuoteFluo = (function() {
     attributes = attributes || {};
 
     var elt = document.createElementNS('http://www.w3.org/2000/svg', eltName);
-    _.each(
+    Nu.each(
       attributes,
-      function(v, k) {
+      function(k, v) {
 
         var ns = null;
         var m = k.match(/^([a-z]+):([a-z-]+)$/)
@@ -204,7 +204,7 @@ var RuoteFluo = (function() {
 
     var $elt = svgElt($container, name, attributes);
 
-    _.each(children, function(t) { svgTree($elt, t) });
+    Nu.each(children, function(t) { svgTree($elt, t) });
 
     return $elt;
   }
@@ -241,15 +241,15 @@ var RuoteFluo = (function() {
 
   function maxWidth($elt) {
 
-    return _.max(_.map($elt.children(), function(c) { return width($(c)); }));
+    return Nu.max(Nu.map($elt.children(), function(c) { return width($(c)); }));
   }
 
   function totalHeight($elt) {
 
-    return _.reduce(
-      _.map($elt.children(), function(c) { return height($(c)); }),
-      function(c, val) { return c + val },
-      0);
+    return Nu.reduce(
+      Nu.map($elt.children(), function(c) { return height($(c)); }),
+      0,
+      function(c, val) { return c + val });
   }
 
   function textGroup($container, texts) {
@@ -257,7 +257,7 @@ var RuoteFluo = (function() {
     var $g = svg($container, 'g');
     var y = 0;
 
-    _.each(texts, function(text) {
+    Nu.each(texts, function(text) {
       var t = text;
       var c = '';
       if (text instanceof Array) { c = text[0]; t = text[1]; }
@@ -274,12 +274,12 @@ var RuoteFluo = (function() {
 
   function center(elts) {
 
-    var w = _.inject(
+    var w = Nu.inject(
       elts,
-      function(w, elt) { return _.max([ w, elt._width, elt._center || 0 ]); },
-      0);
+      0,
+      function(w, elt) { return Nu.max([ w, elt._width, elt._center || 0 ]); });
 
-    _.each(elts, function(elt) {
+    Nu.each(elts, function(elt) {
       var dx = (w - elt._width) / 2;
       var c = elt._center; if (c) dx = (w - c) / 2;
       translate(elt, dx, 0);
@@ -343,25 +343,12 @@ var RuoteFluo = (function() {
   //
   function splitAttributes(flow) {
 
-    //var atts = flow[1];
-    //var text = _.find(atts, function(v, k) { return (v == null); });
-      // doesn't work (as Ruby) with underscore-1.3.3
-    var atts = null;
-    var text = null;
+    var text = Nu.find(flow[1], function(k, v) { return (v == null); });
+    if (text) text = text[0]
 
-    _.each(flow[1], function(v, k) {
-      if (v == null && text == null) text = k;
-    });
+    var atts = Nu.select(flow[1], function(k, v) { return (v != null) });
 
-    if (text) {
-      //atts = _.select(flow[1], function(v, k) { return (k != text); });
-        // doesn't work (as Ruby) with underscore-1.3.3
-      atts = {};
-      _.each(flow[1], function(v, k) { if (k != text) atts[k] = v; });
-        // I wish I could foldl
-    }
-
-    return [ text, atts || flow[1] ];
+    return [ text, atts ];
   }
 
   //
@@ -384,7 +371,7 @@ var RuoteFluo = (function() {
     else {
       var s = splitAttributes(flow);
       var texts = [ [ 'expname', flow[0] + (s[0] ? ' ' + s[0] : '') ] ];
-      _.each(s[1], function(v, k) { texts.push(k + ': ' + v); });
+      Nu.each(s[1], function(k, v) { texts.push(k + ': ' + v); });
       $tg = textGroup($card, texts);
       translate($tg, MARGIN, 0);
     }
@@ -401,7 +388,7 @@ var RuoteFluo = (function() {
 
     $card._width = x + w + ($rect ? MARGIN : 0);
 
-    $card._height = _.max([ $tg._height, h ]);
+    $card._height = Nu.max([ $tg._height, h ]);
     if ( ! options['short'] && ! options['noCard']) {
        $card._height = $card._height + 2 * MARGIN;
     }
@@ -454,12 +441,12 @@ var RuoteFluo = (function() {
         var h = MARGIN;
         var w = 0;
 
-        _.each(flow[2], function(fl) {
+        Nu.each(flow[2], function(fl) {
           var $exp = renderExp($body, expid + '_' + i, fl);
           translate($exp, 0, h);
           i = i + 1;
           h = h + $exp._height + MARGIN;
-          w = _.max([ w, $exp._width ]);
+          w = Nu.max([ w, $exp._width ]);
         });
 
         return [ w, h ];
@@ -480,13 +467,13 @@ var RuoteFluo = (function() {
         var h = noCard ? 0 : MARGIN;
         var w = 0;
 
-        var $exps = _.map(flow[2], function(fl) {
+        var $exps = Nu.map(flow[2], function(fl) {
 
           var $exp = renderExp($body, expid + '_' + i, fl);
           translate($exp, 0, h);
           i = i + 1;
           h = h + $exp._height;
-          w = _.max([ w, $exp._width ]);
+          w = Nu.max([ w, $exp._width ]);
 
           if (i >= flow[2].length) return $exp;
             // TODO: there is no shortcircuit here... investigate...
@@ -526,7 +513,7 @@ var RuoteFluo = (function() {
         var i = 0;
         var w = 0;
 
-        var heights = _.map(flow[2], function(fl) {
+        var heights = Nu.map(flow[2], function(fl) {
 
           var $exp = renderExp($body, expid + '_' + i, fl);
           translate($exp, w, MARGIN);
@@ -537,7 +524,7 @@ var RuoteFluo = (function() {
           return $exp._height;
         });
 
-        return [ w - MARGIN, _.max(heights) ];
+        return [ w - MARGIN, Nu.max(heights) ];
       },
       { noRect: true, rightCentered: true });
 
@@ -581,7 +568,7 @@ var RuoteFluo = (function() {
   }
   RENDER.sleep = RENDER.wait;
 
-  _.each([
+  Nu.each([
     'set', 'rset', 'unset',
     'rewind', 'continue', 'back', 'break', 'stop', 'cancel', 'skip', 'jump'
   ], function(expname) {
