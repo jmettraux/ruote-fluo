@@ -135,3 +135,17 @@ test('Nu.filter(object)', function() {
   jequal(r, { a: 1, c: 3});
 });
 
+test('Nu.max(array)', function() {
+
+  var r = Nu.max([ 0, 2, 1, 3, 5, 4 ])
+
+  equal(r, 5);
+});
+
+test('Nu.min(array)', function() {
+
+  var r = Nu.min([ 0, 2, 1, 3, 5, -4 ])
+
+  equal(r, -4);
+});
+

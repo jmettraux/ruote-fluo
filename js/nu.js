@@ -112,6 +112,20 @@ var Nu = (function() {
   this.filter = this.select;
 
   //
+  // max and min
+
+  this.max = function(ar) {
+    return this.reduce(ar, function(m, v) {
+      return m > v ? m : v;
+    });
+  };
+  this.min = function(ar) {
+    return this.reduce(ar, function(m, v) {
+      return m > v ? v : m;
+    });
+  };
+
+  //
   // over.
 
   return this;
