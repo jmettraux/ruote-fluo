@@ -25,6 +25,18 @@ test('Nu.each(array)', function() {
   equal(i, 6);
 });
 
+test('Nu.each(nested_array)', function() {
+
+  var r = [];
+
+  Nu.each([ 1, [ 2, 3, [ 4, 5 ] ], "toto" ], function(e, i) {
+    r.push(i);
+    r.push((typeof e));
+  });
+
+  jequal(r, [ 0, 'number', 1, 'object', 2, 'string' ]);
+});
+
 test('Nu.each(array) with index', function() {
 
   var a = [];
@@ -163,5 +175,30 @@ test('Nu.min(array)', function() {
   var r = Nu.min([ 0, 2, 1, 3, 5, -4 ])
 
   equal(r, -4);
+});
+
+test('Nu.flatten(array)', function() {
+
+  var r = Nu.flatten([ 0, [ 1, 2, [ 3, 4 ] ], 5, 6, 7 ])
+
+  jequal(r, [ 0, 1, 2, 3, 4, 5, 6, 7 ])
+});
+
+test('Nu.flatten(array, 1)', function() {
+
+  var r = Nu.flatten(
+    [ 0, [ 1, 2, [ 3, 4 ] ], 5, 6, 7 ],
+    1)
+
+  jequal(r, [ 0, 1, 2, [ 3, 4 ], 5, 6, 7 ])
+});
+
+test('Nu.flatten(array, 2)', function() {
+
+  var r = Nu.flatten(
+    [ 0, [ 1, 2, [ 3, 4 ] ], 5, [ 6, [ 7, [ 8, [ 9 ] ] ] ] ],
+    2)
+
+  jequal(r, [ 0, 1, 2, 3, 4, 5, 6, 7, [ 8, [ 9 ] ] ])
 });
 

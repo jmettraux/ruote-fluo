@@ -34,6 +34,8 @@ var Nu = (function() {
   //
   // or not.
 
+  var self = this;
+
   function isListy(o) {
     //return (typeof obj.length == 'number');
     return (o.length === +o.length);
@@ -44,9 +46,9 @@ var Nu = (function() {
 
   var breaker = {};
 
-  function rawEach(coll, func) {
+  this.each = function(coll, func) {
     if (isListy(coll)) for (var i = 0; i < coll.length; i++) {
-      if (func(i, coll[i]) === breaker) break;
+      if (func(coll[i], i) === breaker) break;
     }
     else for (var i in coll) {
       if (func(i, coll[i]) === breaker) break;
@@ -54,24 +56,15 @@ var Nu = (function() {
     return coll;
   }
 
-  this.each = function(coll, func) {
-    return rawEach(coll, function(k, v) {
-      if (isListy(coll)) func(v, k); else func(k, v);
-    });
-  };
-
   //
   // detect, find
 
   this.detect = function(coll, func) {
-    var ar = isListy(coll);
     var result = undefined;
-    rawEach(coll, function(k, v) {
-      var r = (ar) ? func(v, k) : func(k, v);
-      if (r) {
-        result = ar ? v : [ k, v ];
-        return breaker;
-      }
+    self.each(coll, function(a, b) {
+      if ( ! func(a, b)) return;
+      result = isListy(coll) ? a : [ a, b ];
+      return breaker;
     });
     return result;
   }
@@ -81,11 +74,8 @@ var Nu = (function() {
   // collect, map
 
   this.collect = function(coll, func) {
-    var ar = isListy(coll);
     var result = [];
-    rawEach(coll, function(k, v) {
-      result.push((ar) ? func(v, k) : func(k, v));
-    });
+    self.each(coll, function(a, b) { result.push(func(a, b)); });
     return result;
   }
   this.map = this.collect;
@@ -95,10 +85,10 @@ var Nu = (function() {
 
   this.inject = function(coll, memo, func) {
     if (arguments.length == 2) func = memo;
-    var memoSet = arguments.length > 2;
-    rawEach(coll, function(k, v) {
-      if ( ! memoSet) { memo = v; memoSet = true; return; }
-      memo = isListy(coll) ? func(memo, v, k) : func(memo, k, v);
+    var nomemo = arguments.length < 3;
+    self.each(coll, function(a, b) {
+      if (nomemo) { memo = isListy(coll) ? a : b; nomemo = false; return; }
+      memo = func(memo, a, b);
     });
     return memo;
   }
@@ -111,7 +101,7 @@ var Nu = (function() {
   this.select = function(coll, func) {
     var ar = isListy(coll);
     var result = ar ? [] : {};
-    rawEach(coll, function(k, v) {
+    self.each(coll, function(k, v) {
       var r = ar ? func(v, k) : func(k, v);
       if ( ! r) return;
       if (ar) result.push(v); else result[k] = v;
@@ -129,6 +119,33 @@ var Nu = (function() {
   this.min = function(ar) {
     return this.reduce(ar, function(m, v) { return m > v ? v : m; });
   };
+
+  //
+  // flatten
+
+  this.flatten = function(ar, depth) {
+
+    if (arguments.length < 2 || depth < -1) depth = -1;
+
+    var more = false;
+    var result = [];
+
+    self.each(ar, function(e) {
+      if (isListy(e))
+        self.each(e, function(ee) {
+          if (isListy(ee)) more = true;
+          result.push(ee);
+        });
+      else
+        result.push(e);
+    });
+
+    if (more && (depth == -1 || depth > 1)) {
+      return self.flatten(result, depth - 1);
+    }
+
+    return result;
+  }
 
   //
   // over.
