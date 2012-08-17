@@ -608,7 +608,9 @@ var RuoteFluo = (function() {
 
     $g = renderExp(svg($div), '0', flow);
 
+    //if (options.noOuterBorder) $g.children('rect').attr('opacity', '0');
     if (options.noOuterBorder) $g.children('rect').remove();
+      // TODO: use rect.class!
 
     $svg = $g.parent();
 
@@ -651,7 +653,7 @@ var RuoteFluo = (function() {
 
     svg($e, 'rect', {
       'class': 'fluo_highlight',
-      x: -5, y: -5, width: d.width + 10, height: d.height + 10,
+      x: -4, y: -4, width: d.width + 8, height: d.height + 8,
       rx: 3, ry: 3,
       'fill': 'none', 'stroke-width': 5, 'stroke': '#dedede'
     });
