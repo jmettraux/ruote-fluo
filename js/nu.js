@@ -25,7 +25,7 @@
 //
 // Nu, not underscore.
 //
-// Inspired by Jeremy Ashkenas' underscore.
+// Inspired by Jeremy Ashkenas' underscore. Not the same API.
 //
 var Nu = (function() {
 
@@ -122,6 +122,15 @@ var Nu = (function() {
 
   //
   // flatten
+
+  //function toArray(o) {
+  //  var a = [];
+  //  for (var i = 0;; i++) {
+  //    if ( ! o.hasOwnProperty(i)) break;
+  //    a.push(o[i]);
+  //  }
+  //  return a;
+  //}
 
   this.flatten = function(ar, depth) {
 

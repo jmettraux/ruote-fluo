@@ -594,7 +594,7 @@ var RuoteFluo = (function() {
 
     options = options || {};
 
-    $div = $(_.isString(div) ? "#" + div : div);
+    $div = $(((typeof div) == 'string') ? '#' + div : div);
     $div.children().remove();
 
     $div[0].fluo_options = options;
