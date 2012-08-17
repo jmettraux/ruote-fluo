@@ -23,8 +23,6 @@
 
  <script>
 
-   //document.getElementById('fluo').noOuterBorder = true;
-
    $(document).ready(function () {
 
      RuoteFluo.render(
@@ -48,8 +46,9 @@
          ] ]
        ] ],
        {
-         'workitems': [ '0_0_0_0' ],
-         'pins': [
+         noOuterBorder: true,
+         workitems: [ '0_0_0_0' ],
+         pins: [
            [ '0_0_0_1', 'er' ],
            [ '0_0_0_2', 'na', [ '#C8F690', 'black' ] ],
            [ '0_0_1', '-' ] ] });

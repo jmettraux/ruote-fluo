@@ -602,6 +602,8 @@ var RuoteFluo = (function() {
 
     $g = renderExp(svg($div), '0', flow);
 
+    if (options.noOuterBorder) $g.children('rect').remove();
+
     $svg = $g.parent();
 
     $svg.attr('width', $g._width + 3);

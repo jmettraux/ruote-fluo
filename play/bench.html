@@ -80,10 +80,10 @@
 
         RuoteFluoEditor.render(editor, tree);
 
-        editor.onChange = function (tree) {
+        editor.onChange = function(tree) {
           Fluo.render('fluo', tree);
         };
-        editor.onOver = function (expid) {
+        editor.onOver = function(expid) {
           //Fluo.highlight('fluo', expid);
         };
       </script>
@@ -94,8 +94,7 @@
       <div id="fluo"></div>
 
       <script>
-        document.getElementById('fluo').noOuterBorder = true;
-        Fluo.render('fluo', tree);
+        Fluo.render('fluo', tree, { noOuterBorder: true });
       </script>
     </div>
 

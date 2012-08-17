@@ -27,8 +27,6 @@
 
  <script>
 
-   //document.getElementById('fluo').noOuterBorder = true;
-
    $(document).ready(function () {
 
      RuoteFluo.render(
@@ -37,7 +35,10 @@
          [ 'sequence', {}, [
            [ 'o<b>laf</b>', { 'task': 'clean <i>dishes</i>' }, [] ]
          ] ]
-       ] ]);
+       ] ],
+       {
+         noOuterBorder: true
+       });
    });
  </script>
 
