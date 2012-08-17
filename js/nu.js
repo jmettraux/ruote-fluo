@@ -152,6 +152,16 @@ var Nu = (function() {
   }
 
   //
+  // isEmpty
+
+  this.isEmpty = function(o) {
+
+    if (isListy(o)) return o.length == 0;
+    for (var k in o) { if (o.hasOwnProperty(k)) return false; }
+    return true;
+  }
+
+  //
   // over.
 
   return this;

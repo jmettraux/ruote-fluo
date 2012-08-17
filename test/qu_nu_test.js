@@ -202,3 +202,12 @@ test('Nu.flatten(array, 2)', function() {
   jequal(r, [ 0, 1, 2, 3, 4, 5, 6, 7, [ 8, [ 9 ] ] ])
 });
 
+test('Nu.isEmpty(o)', function() {
+
+  equal(Nu.isEmpty([]), true);
+  equal(Nu.isEmpty({}), true);
+
+  equal(Nu.isEmpty([ 1 ]), false);
+  equal(Nu.isEmpty({ a: null }), false);
+});
+
