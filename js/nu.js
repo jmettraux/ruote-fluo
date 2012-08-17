@@ -132,28 +132,23 @@ var Nu = (function() {
   //  return a;
   //}
 
-  this.flatten = function(ar, depth) {
+  function flatten(ar, depth, result) {
 
-    if (arguments.length < 2 || depth < -1) depth = -1;
-
-    var more = false;
-    var result = [];
+    if (depth < -1) depth = -1;
 
     self.each(ar, function(e) {
-      if (isListy(e))
-        self.each(e, function(ee) {
-          if (isListy(ee)) more = true;
-          result.push(ee);
-        });
+      if (Array.isArray(e) && (depth == -1 || depth > 0))
+        flatten(e, depth - 1, result);
       else
         result.push(e);
     });
 
-    if (more && (depth == -1 || depth > 1)) {
-      return self.flatten(result, depth - 1);
-    }
-
     return result;
+  }
+
+  this.flatten = function(ar, depth) {
+
+    return flatten(ar, depth || -1, []);
   }
 
   //

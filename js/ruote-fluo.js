@@ -272,17 +272,21 @@ var RuoteFluo = (function() {
     return $g;
   }
 
+  // expects an array of jQuery instances
+  //
   function center(elts) {
 
     var w = Nu.inject(
       elts,
       0,
-      function(w, elt) { return Nu.max([ w, elt._width, elt._center || 0 ]); });
+      function(w, $elt) {
+        return Nu.max([ w, $elt._width, $elt._center || 0 ]);
+      });
 
-    Nu.each(elts, function(elt) {
-      var dx = (w - elt._width) / 2;
-      var c = elt._center; if (c) dx = (w - c) / 2;
-      translate(elt, dx, 0);
+    Nu.each(elts, function($elt) {
+      var dx = (w - $elt._width) / 2;
+      var c = $elt._center; if (c) dx = (w - c) / 2;
+      translate($elt, dx, 0);
     });
   }
 
@@ -495,7 +499,7 @@ var RuoteFluo = (function() {
           return [ $exp, $arrow ];
         });
 
-        center(_.flatten($exps));
+        center(Nu.flatten($exps));
 
         return [ w, h ];
       },

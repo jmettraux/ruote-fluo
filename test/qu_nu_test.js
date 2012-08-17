@@ -187,7 +187,7 @@ test('Nu.flatten(array)', function() {
 test('Nu.flatten(array, 1)', function() {
 
   var r = Nu.flatten(
-    [ 0, [ 1, 2, [ 3, 4 ] ], 5, 6, 7 ],
+    [ 0, [ 1, 2, [ 3, 4 ] ], 5, [ 6, 7 ] ],
     1)
 
   jequal(r, [ 0, 1, 2, [ 3, 4 ], 5, 6, 7 ])
