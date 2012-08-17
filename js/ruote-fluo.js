@@ -588,6 +588,11 @@ var RuoteFluo = (function() {
     return $exp;
   }
 
+  function locateRoot(div) {
+
+    return $(((typeof div) == 'string') ? '#' + div : div);
+  }
+
   //
   // "public" functions
 
@@ -595,7 +600,8 @@ var RuoteFluo = (function() {
 
     options = options || {};
 
-    $div = $(((typeof div) == 'string') ? '#' + div : div);
+    $div = locateRoot(div);
+
     $div.children().remove();
 
     $div[0].fluo_options = options;
@@ -628,6 +634,30 @@ var RuoteFluo = (function() {
   // empty implementation (for compatibility with canvas ruote-fluo)
   //
   this.crop = function() {}
+
+  // highlight an expression given its expid
+  //
+  this.highlight = function(div, expid) {
+
+    $div = locateRoot(div);
+
+    $('#' + $div[0].id + ' rect.fluo_highlight').remove();
+
+    var $e = $('#exp_' + expid);
+
+    if ($e.length < 1) return;
+
+    var d = dimension($e);
+
+    svg($e, 'rect', {
+      'class': 'fluo_highlight',
+      x: -5, y: -5, width: d.width + 10, height: d.height + 10,
+      rx: 3, ry: 3,
+      'fill': 'none', 'stroke-width': 5, 'stroke': '#dedede'
+    });
+
+    // TODO: use CSS to style highlight!
+  }
 
   return this;
 
