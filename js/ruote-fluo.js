@@ -21,12 +21,9 @@
  */
 
 /*
- * depends on jQuery and underscore
+ * Depends on jQuery (http://jquery.com).
  *
- * http://jquery.com
- * http://documentcloud.github.com/underscore/
- *
- * minified versions of this file available / can generated at
+ * Minified versions of this file available / can generated at
  *
  * https://github.com/jmettraux/ruote-fluo
  */
@@ -459,7 +456,7 @@ var RuoteFluo = (function() {
 
   RENDER.sequence = function($container, expid, flow) {
 
-    var noCard = _.isEmpty(flow[1]);
+    var noCard = Nu.isEmpty(flow[1]);
 
     return renderCard(
       $container,
@@ -536,7 +533,7 @@ var RuoteFluo = (function() {
     var i = 0;
     var ccount = $card._body.children().length;
 
-    _($card._body.children()).each(function(c) {
+    Nu.each($card._body.children(), function(c) {
 
       i = i + 1;
       var $c = $(c);

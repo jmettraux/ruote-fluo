@@ -4,7 +4,7 @@
 
 == ruote-fluo 2.3.0      not yet released
 
-- moved to SVG (and jquery, underscore and qunit)
+- moved to SVG (+ jquery and qunit)
 
 
 == ruote-fluo 2.2.1      released continuously with ruote-kit

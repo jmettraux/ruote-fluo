@@ -13,6 +13,5 @@ Juan-Pedro Paredes
 Many thanks to the authors, the contributors and the communities of:
 
 * jquery.js
-* underscore.js
 * qunit.js
 
