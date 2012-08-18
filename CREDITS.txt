@@ -15,3 +15,5 @@ Many thanks to the authors, the contributors and the communities of:
 * jquery.js
 * qunit.js
 
+* http://upshots.org/
+

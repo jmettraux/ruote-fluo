@@ -24,10 +24,50 @@
  * Depends on jQuery (http://jquery.com).
  *
  * Minified versions of this file available / can generated at
- *
  * https://github.com/jmettraux/ruote-fluo
+ *
+ * Contains a copy of the excellent $.getStyleObject() from
+ * http://upshots.org/javascript/jquery-copy-style-copycss
  */
 
+// http://upshots.org/javascript/jquery-copy-style-copycss
+//
+$.fn.getStyleObject = function(){
+    var dom = this.get(0);
+    var style;
+    var returns = {};
+    if(window.getComputedStyle){
+        var camelize = function(a,b){
+            return b.toUpperCase();
+        };
+        style = window.getComputedStyle(dom, null);
+        for(var i = 0, l = style.length; i < l; i++){
+            var prop = style[i];
+            var camel = prop.replace(/\-([a-z])/g, camelize);
+            var val = style.getPropertyValue(prop);
+            returns[camel] = val;
+        };
+        return returns;
+    };
+    if(style = dom.currentStyle){
+        for(var prop in style){
+            returns[prop] = style[prop];
+        };
+        return returns;
+    };
+    if(style = dom.style){
+      for(var prop in style){
+        if(typeof style[prop] != 'function'){
+          returns[prop] = style[prop];
+        };
+      };
+      return returns;
+    };
+    return returns;
+}
+
+// RuoteFluo
+//
 var RuoteFluo = (function() {
 
   // see
@@ -655,20 +695,20 @@ var RuoteFluo = (function() {
     var p = position($e);
     var d = dimension($e);
 
-    svg(
+    var $h = svg(
       $e.parent(),
       'rect',
-      {
-        'class': 'fluo_highlight',
-        x: p.x - 4, y: p.y - 4, width: d.width + 8, height: d.height + 8,
-        rx: 3, ry: 3,
-        'fill': 'none', 'stroke-width': 5, 'stroke': '#dedede'
-      },
+      { 'class': 'fluo_highlight' },
       null,
       { prepend: true });
 
-    // TODO: use CSS to style highlight!
-    // TODO: self-introspect CSS to position x/y
+    var margin = parseFloat($h.getStyleObject()['stroke-width'] || '3') + 1;
+
+    $h.attr({
+      x: p.x - margin, y: p.y - margin,
+      width: d.width + 2 * margin, height: d.height + 2 * margin,
+      rx: margin, ry: margin
+    });
   }
 
   return this;

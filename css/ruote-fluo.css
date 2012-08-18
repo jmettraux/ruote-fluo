@@ -29,6 +29,12 @@ svg text.expname {
   font-weight: 500;
 }
 
+svg rect.fluo_highlight {
+  stroke: #dedede;
+  stroke-width: 3px;
+  fill: none;
+}
+
 p.fluo.expname {
   margin-bottom: 1em;
 }
