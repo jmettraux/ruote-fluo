@@ -157,10 +157,11 @@ var RuoteFluo = (function() {
 
   // Adds an [SVG] element to the DOM
   //
-  function svgElt($container, eltName, attributes, text) {
+  function svgElt($container, eltName, attributes, text, opts) {
 
     eltName = eltName || 'svg';
     attributes = attributes || {};
+    opts = opts || {};
 
     var elt = document.createElementNS('http://www.w3.org/2000/svg', eltName);
     Nu.each(
@@ -177,10 +178,12 @@ var RuoteFluo = (function() {
         elt.setAttributeNS(ns, k, v);
       });
 
-    if (text) elt.appendChild(document.createTextNode(text));
-    $container[0].appendChild(elt);
-
     var $elt = $(elt);
+
+    if (text) $elt.append(document.createTextNode(text));
+
+    $container[opts.prepend ? 'prepend' : 'append']($elt);
+
     if (eltName == 'svg') addDefinitions($elt);
 
     return $elt;
@@ -206,12 +209,12 @@ var RuoteFluo = (function() {
     return $elt;
   }
 
-  function svg($container, eltName, attributes, text) {
+  function svg($container, eltName, attributes, text, opts) {
 
     if (eltName instanceof Array)
       return svgTree($container, eltName);
     else
-      return svgElt($container, eltName, attributes, text);
+      return svgElt($container, eltName, attributes, text, opts);
   }
 
   // working around a ffox issue with $elt.width();
@@ -355,18 +358,18 @@ var RuoteFluo = (function() {
   //
   // render functions
 
-  function renderCard($container, expid, flow, bodyFunc, options) {
+  function renderCard($container, expid, flow, bodyFunc, opts) {
 
-    options = options || {};
+    opts = opts || {};
 
     var $card = svg($container, 'g', { 'class': 'fluo card' });
 
-    var $rect = (options.noCard || options.noRect) ?
+    var $rect = (opts.noCard || opts.noRect) ?
       null : svg($card, 'rect', { 'class': 'fluo' });
 
     var $tg = null;
 
-    if (options.noCard) {
+    if (opts.noCard) {
       $tg = { _height: 0, _width: 0 };
     }
     else {
@@ -378,7 +381,7 @@ var RuoteFluo = (function() {
     }
 
     var x = $tg._width;
-    if ( ! options.noCard) x = x + 2 * MARGIN;
+    if ( ! opts.noCard) x = x + 2 * MARGIN;
 
     var $body = svg($card, 'g', { 'class': 'fluo card_body' });
     translate($body, x, 0);
@@ -390,7 +393,7 @@ var RuoteFluo = (function() {
     $card._width = x + w + ($rect ? MARGIN : 0);
 
     $card._height = Nu.max([ $tg._height, h ]);
-    if ( ! options['short'] && ! options['noCard']) {
+    if ( ! opts['short'] && ! opts['noCard']) {
        $card._height = $card._height + 2 * MARGIN;
     }
 
@@ -401,7 +404,7 @@ var RuoteFluo = (function() {
       $rect.attr('height', '' + $card._height);
     }
 
-    if (options.rightCentered) {
+    if (opts.rightCentered) {
       $card._center = ($card._width - w / 2 - MARGIN) * 2;
     }
 
@@ -596,20 +599,20 @@ var RuoteFluo = (function() {
   //
   // "public" functions
 
-  this.render = function(div, flow, options) {
+  this.render = function(div, flow, opts) {
 
-    options = options || {};
+    opts = opts || {};
 
     $div = locateRoot(div);
 
-    $div.children().remove();
+    $div.empty();
 
-    $div[0].fluo_options = options;
+    $div[0].fluo_options = opts;
 
     $g = renderExp(svg($div), '0', flow);
 
-    //if (options.noOuterBorder) $g.children('rect').attr('opacity', '0');
-    if (options.noOuterBorder) $g.children('rect').remove();
+    //if (opts.noOuterBorder) $g.children('rect').attr('opacity', '0');
+    if (opts.noOuterBorder) $g.children('rect').remove();
       // TODO: use rect.class!
 
     $svg = $g.parent();
@@ -649,16 +652,23 @@ var RuoteFluo = (function() {
 
     if ($e.length < 1) return;
 
+    var p = position($e);
     var d = dimension($e);
 
-    svg($e, 'rect', {
-      'class': 'fluo_highlight',
-      x: -4, y: -4, width: d.width + 8, height: d.height + 8,
-      rx: 3, ry: 3,
-      'fill': 'none', 'stroke-width': 5, 'stroke': '#dedede'
-    });
+    svg(
+      $e.parent(),
+      'rect',
+      {
+        'class': 'fluo_highlight',
+        x: p.x - 4, y: p.y - 4, width: d.width + 8, height: d.height + 8,
+        rx: 3, ry: 3,
+        'fill': 'none', 'stroke-width': 5, 'stroke': '#dedede'
+      },
+      null,
+      { prepend: true });
 
     // TODO: use CSS to style highlight!
+    // TODO: self-introspect CSS to position x/y
   }
 
   return this;
