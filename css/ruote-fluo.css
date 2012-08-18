@@ -39,3 +39,11 @@ p.fluo.expname {
   margin-bottom: 1em;
 }
 
+svg .fluo_pin_workitem {
+  height: 30px;
+  width: 20px;
+  stroke: black;
+  stroke-width: 0.7px;
+  fill: yellow;
+}
+

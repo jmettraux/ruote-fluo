@@ -32,7 +32,7 @@
 
 // http://upshots.org/javascript/jquery-copy-style-copycss
 //
-$.fn.getStyleObject = function(){
+$.fn.computedStyle = function(){
     var dom = this.get(0);
     var style;
     var returns = {};
@@ -125,7 +125,7 @@ var RuoteFluo = (function() {
           orient: 'auto'
         },
         [
-          [ 'path', { 'class': 'fluo', d: 'M 0 0 L 100 50 L 0 100 z' } ]
+          [ 'path', { 'class': 'fluo', d: 'M 0 0 L 100 50 L 0 100 Z' } ]
         ]
       ])
 
@@ -262,7 +262,7 @@ var RuoteFluo = (function() {
   function width($elt) {
 
     if ($elt.width() == 0) { // FireFox...
-      return dimension($elt).width;
+      return box($elt).width;
     } else { // the rest
       return $elt.width();
     }
@@ -273,7 +273,7 @@ var RuoteFluo = (function() {
   function height($elt) {
 
     if ($elt.height() == 0) { // FireFox...
-      return dimension($elt).height;
+      return box($elt).height;
     } else { // the rest
       return $elt.height();
     }
@@ -330,11 +330,6 @@ var RuoteFluo = (function() {
     });
   }
 
-  function dimension($elt) {
-
-    return $elt[0].getBBox();
-  }
-
   function position($elt) {
 
     var m = (
@@ -344,6 +339,14 @@ var RuoteFluo = (function() {
     if ( ! m) return { x: 0, y: 0 };
 
     return { x: parseFloat(m[1]), y: parseFloat(m[2]) };
+  }
+
+  function box($elt) {
+
+    var d = $elt[0].getBBox();
+    var p = position($elt);
+
+    return { x: p.x, y: p.y, width: d.width, height: d.height };
   }
 
   function translate($elt, x, y) {
@@ -684,16 +687,14 @@ var RuoteFluo = (function() {
   //
   this.highlight = function(div, expid) {
 
-    $div = locateRoot(div);
+    var $div = locateRoot(div);
 
     $('#' + $div[0].id + ' rect.fluo_highlight').remove();
 
     var $e = $('#exp_' + expid);
-
     if ($e.length < 1) return;
 
-    var p = position($e);
-    var d = dimension($e);
+    var b = box($e);
 
     var $h = svg(
       $e.parent(),
@@ -702,13 +703,53 @@ var RuoteFluo = (function() {
       null,
       { prepend: true });
 
-    var margin = parseFloat($h.getStyleObject()['stroke-width'] || '3') + 1;
+    var margin = parseFloat($h.computedStyle()['stroke-width'] || '3') + 1;
 
     $h.attr({
-      x: p.x - margin, y: p.y - margin,
-      width: d.width + 2 * margin, height: d.height + 2 * margin,
+      x: b.x - margin, y: b.y - margin,
+      width: b.width + 2 * margin, height: b.height + 2 * margin,
       rx: margin, ry: margin
     });
+  }
+
+  // "pin" something on the flow diagram
+  //
+  this.pin = function(div, expid, klass, name) {
+
+    klass = 'fluo_pin_' + klass;
+    name = name || 'wi';
+
+    var $div = locateRoot(div);
+
+    var $e = $('#exp_' + expid);
+    if ($e.length < 1) return;
+
+    var b = box($e);
+
+    //var $pp = svg($e.parent(), 'path', { 'class': klass });
+    //var ps = $pp.computedStyle();
+    //$pp.remove();
+    //
+    //var w = ps['width'];
+    //var w2 = w / 2;
+    //var h = ps['height'];
+    //var h2 = h / 3;
+      // doesn't work...
+
+    var w = 20;
+    var w2 = 10;
+    var h = 40;
+    var h2 = 15;
+
+    var $p = svg(
+      $e.parent(),
+      'path',
+      {
+        'd': [ 'M', 0, h2, 'L', w2, h, 'L', w, h2, 'Q', w2, 0, 0, h2 ],
+        'class': klass
+      });
+
+    translate($p, b.x + b.width - 18, b.y - 20);
   }
 
   //
