@@ -675,14 +675,6 @@ var RuoteFluo = (function() {
     return $g;
   }
 
-  // alias (for compatibility with canvas ruote-fluo)
-  //
-  this.renderFlow = this.render;
-
-  // empty implementation (for compatibility with canvas ruote-fluo)
-  //
-  this.crop = function() {}
-
   // highlight an expression given its expid
   //
   this.highlight = function(div, expid) {
