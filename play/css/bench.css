@@ -9,8 +9,11 @@ h3 {
   margin-left: 28px;
 }
 
-#fluo { /* the canvas */
+#fluo {
   margin-top: 7px;
+}
+#fluo > svg {
+  padding: 7px;
 }
 
 .menubar {
