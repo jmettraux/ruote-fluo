@@ -39,11 +39,14 @@ p.fluo.expname {
   margin-bottom: 1em;
 }
 
-svg .fluo_pin_workitem {
+svg path.fluo_pin_workitem {
   height: 30px;
   width: 20px;
   stroke: black;
   stroke-width: 0.7px;
   fill: yellow;
+}
+svg text.fluo_pin_workitem {
+  font-size: 12px;
 }
 

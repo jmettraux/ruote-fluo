@@ -721,27 +721,37 @@ var RuoteFluo = (function() {
     //var $pp = svg($e.parent(), 'path', { 'class': klass });
     //var ps = $pp.computedStyle();
     //$pp.remove();
+    //console.log(ps);
     //
     //var w = ps['width'];
     //var w2 = w / 2;
     //var h = ps['height'];
     //var h2 = h / 3;
-      // doesn't work...
+      // doesn't work in Chrome.
 
     var w = 20;
     var w2 = 10;
     var h = 40;
     var h2 = 15;
 
+    var $g = svg($e.parent(), 'g');
+
     var $p = svg(
-      $e.parent(),
+      $g,
       'path',
       {
         'd': [ 'M', 0, h2, 'L', w2, h, 'L', w, h2, 'Q', w2, 0, 0, h2 ],
         'class': klass
       });
+    var $t = svg(
+      $g,
+      'text',
+      { 'class': klass, 'x': w / 4, 'y': h / 2 },
+      name);
 
-    translate($p, b.x + b.width - 18, b.y - 20);
+    center([ $p, $t ]);
+
+    translate($g, b.x + b.width - 18, b.y - 20);
   }
 
   //
