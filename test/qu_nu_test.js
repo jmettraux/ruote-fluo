@@ -228,3 +228,21 @@ test('Nu.compact(o)', function() {
   jequal(Nu.compact({ a: null, b: 2 }), { b: 2 });
 });
 
+test('Nu.each_with_object(a)', function() {
+
+  var r = Nu.eachWithObject([ 1, 2, 3, 4, 5 ], [], function(e, a) {
+    if (e < 4) a.push(e);
+  });
+
+  jequal(r, [ 1, 2, 3 ]);
+});
+
+test('Nu.each_with_object(o)', function() {
+
+  var r = Nu.eachWithObject({ a: 1, b: 2, c: 3 }, {}, function(k, v, h) {
+    if (v != 2) h[k] = v * 2;
+  });
+
+  jequal(r, { a: 2, c: 6 });
+});
+

@@ -39,7 +39,7 @@ var Nu = (function() {
   function isListy(o) {
     //return (typeof obj.length == 'number');
     return (o.length === +o.length);
-  }
+  };
 
   //
   // each
@@ -54,7 +54,7 @@ var Nu = (function() {
       if (func(i, coll[i]) === breaker) break;
     }
     return coll;
-  }
+  };
 
   //
   // detect, find
@@ -67,7 +67,7 @@ var Nu = (function() {
       return breaker;
     });
     return result;
-  }
+  };
   this.find = this.detect;
 
   //
@@ -77,7 +77,7 @@ var Nu = (function() {
     var result = [];
     self.each(coll, function(a, b) { result.push(func(a, b)); });
     return result;
-  }
+  };
   this.map = this.collect;
 
   //
@@ -91,7 +91,7 @@ var Nu = (function() {
       memo = func(memo, a, b);
     });
     return memo;
-  }
+  };
   this.foldl = this.inject;
   this.reduce = this.inject;
 
@@ -144,12 +144,12 @@ var Nu = (function() {
     });
 
     return result;
-  }
+  };
 
   this.flatten = function(ar, depth) {
 
     return flatten(ar, depth || -1, []);
-  }
+  };
 
   //
   // isEmpty
@@ -159,26 +159,43 @@ var Nu = (function() {
     if (isListy(o)) return o.length == 0;
     for (var k in o) { if (o.hasOwnProperty(k)) return false; }
     return true;
-  }
+  };
+
+  //
+  // eachWithObject
+
+  this.eachWithObject = function(coll, memo, func) {
+
+    if (Array.isArray(coll)) {
+      return this.inject(coll, memo, function(m, e) {
+        func(e, m);
+        return m;
+      });
+    }
+    else {
+      return this.inject(coll, memo, function(m, k, v) {
+        func(k, v, m);
+        return m;
+      });
+    }
+  };
 
   //
   // compact
 
-  this.compact = function(o) {
+  this.compact = function(coll) {
 
-    if (Array.isArray(o)) {
-      return this.inject(o, [], function(a, e) {
+    if (Array.isArray(coll)) {
+      return this.eachWithObject(coll, [], function(e, a) {
         if (e != undefined && e != null) a.push(e);
-        return a;
       });
     }
     else {
-      return this.inject(o, {}, function(h, k, v) {
+      return this.eachWithObject(coll, {}, function(k, v, h) {
         if (v != undefined && v != null) h[k] = v;
-        return h;
       });
     }
-  }
+  };
 
   //
   // over.
