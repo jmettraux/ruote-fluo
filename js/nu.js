@@ -162,6 +162,25 @@ var Nu = (function() {
   }
 
   //
+  // compact
+
+  this.compact = function(o) {
+
+    if (Array.isArray(o)) {
+      return this.inject(o, [], function(a, e) {
+        if (e != undefined && e != null) a.push(e);
+        return a;
+      });
+    }
+    else {
+      return this.inject(o, {}, function(h, k, v) {
+        if (v != undefined && v != null) h[k] = v;
+        return h;
+      });
+    }
+  }
+
+  //
   // over.
 
   return this;

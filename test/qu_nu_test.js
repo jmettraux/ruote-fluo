@@ -211,3 +211,20 @@ test('Nu.isEmpty(o)', function() {
   equal(Nu.isEmpty({ a: null }), false);
 });
 
+test('Nu.compact(a)', function() {
+
+  jequal(Nu.compact([]), []);
+  jequal(Nu.compact([ null ]), []);
+  jequal(Nu.compact([ 1 ]), [ 1 ]);
+  jequal(Nu.compact([ 1, null ]), [ 1 ]);
+  jequal(Nu.compact([ 1, null, 2 ]), [ 1, 2 ]);
+});
+
+test('Nu.compact(o)', function() {
+
+  jequal(Nu.compact({}), {});
+  jequal(Nu.compact({ a: 1 }), { a: 1 });
+  jequal(Nu.compact({ a: null }), {});
+  jequal(Nu.compact({ a: null, b: 2 }), { b: 2 });
+});
+
