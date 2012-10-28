@@ -63,7 +63,7 @@ test('Nu.each(listy)', function() {
 
   var a = [];
 
-  l = { length: 3 };
+  var l = { length: 3 };
   l[0] = 'a';
   l[1] = 'b';
   l[2] = 'c';

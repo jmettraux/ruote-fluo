@@ -114,10 +114,10 @@ var Nu = (function() {
   // max and min
 
   this.max = function(ar) {
-    return this.reduce(ar, function(m, v) { return m > v ? m : v; });
+    return self.reduce(ar, function(m, v) { return m > v ? m : v; });
   };
   this.min = function(ar) {
-    return this.reduce(ar, function(m, v) { return m > v ? v : m; });
+    return self.reduce(ar, function(m, v) { return m > v ? v : m; });
   };
 
   //
@@ -167,13 +167,13 @@ var Nu = (function() {
   this.eachWithObject = function(coll, memo, func) {
 
     if (Array.isArray(coll)) {
-      return this.inject(coll, memo, function(m, e) {
+      return self.inject(coll, memo, function(m, e) {
         func(e, m);
         return m;
       });
     }
     else {
-      return this.inject(coll, memo, function(m, k, v) {
+      return self.inject(coll, memo, function(m, k, v) {
         func(k, v, m);
         return m;
       });
@@ -186,12 +186,12 @@ var Nu = (function() {
   this.compact = function(coll) {
 
     if (Array.isArray(coll)) {
-      return this.eachWithObject(coll, [], function(e, a) {
+      return self.eachWithObject(coll, [], function(e, a) {
         if (e != undefined && e != null) a.push(e);
       });
     }
     else {
-      return this.eachWithObject(coll, {}, function(k, v, h) {
+      return self.eachWithObject(coll, {}, function(k, v, h) {
         if (v != undefined && v != null) h[k] = v;
       });
     }
