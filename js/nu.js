@@ -47,7 +47,7 @@ var Nu = (function() {
   var breaker = {};
 
   this.each = function(coll, func) {
-    if (isListy(coll)) for (var i = 0; i < coll.length; i++) {
+    if (isListy(coll)) for (var i = 0, l = coll.length; i < l; i++) {
       if (func(coll[i], i) === breaker) break;
     }
     else for (var i in coll) {
@@ -196,6 +196,21 @@ var Nu = (function() {
       });
     }
   };
+
+  //
+  // include
+
+  if ([].indexOf)
+    this.include = function(ar, o) {
+      return (ar.indexOf(o) > -1);
+    };
+  else
+    this.include = function(ar, o) {
+      for (var i = 0, l = ar.length; i < l; i++) {
+        if (ar[i] == o) return true
+      }
+      return false;
+    }
 
   //
   // over.

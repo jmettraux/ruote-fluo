@@ -241,3 +241,11 @@ test('Nu.each_with_object(o)', function() {
   deepEqual(r, { a: 2, c: 6 });
 });
 
+test('Nu.include(array, o)', function() {
+
+  var a = [ 1, 2, 3, 4 ];
+
+  equal(Nu.include(a, 2), true);
+  equal(Nu.include(a, 5), false);
+});
+
