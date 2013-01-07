@@ -7,10 +7,7 @@
 
 function jpequal(actual, expected, message) {
 
-  equal(
-    JSON.stringify(John.parse('{' + actual + '}')),
-    JSON.stringify(expected),
-    message)
+  deepEqual(John.parse('{' + actual + '}'), expected, message)
 }
 
 test('attributes parse test', function() {

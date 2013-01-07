@@ -9,11 +9,6 @@
 //
 // testing John.parse(s)
 
-function jequal(actual, expected, message) {
-
-  equal(JSON.stringify(actual), JSON.stringify(expected), message)
-}
-
 test('Nu.each(array)', function() {
 
   var i = 0;
@@ -34,7 +29,7 @@ test('Nu.each(nested_array)', function() {
     r.push((typeof e));
   });
 
-  jequal(r, [ 0, 'number', 1, 'object', 2, 'string' ]);
+  deepEqual(r, [ 0, 'number', 1, 'object', 2, 'string' ]);
 });
 
 test('Nu.each(array) with index', function() {
@@ -45,7 +40,7 @@ test('Nu.each(array) with index', function() {
     a.push(e + ':' + i);
   });
 
-  jequal(a, [ '1:0', '2:1', '3:2' ]);
+  deepEqual(a, [ '1:0', '2:1', '3:2' ]);
 });
 
 test('Nu.each(object)', function() {
@@ -56,7 +51,7 @@ test('Nu.each(object)', function() {
     a.push(k + ':' + v);
   });
 
-  jequal(a, [ 'a:1', 'b:2', 'c:3' ]);
+  deepEqual(a, [ 'a:1', 'b:2', 'c:3' ]);
 });
 
 test('Nu.each(listy)', function() {
@@ -72,7 +67,7 @@ test('Nu.each(listy)', function() {
     a.push(v);
   });
 
-  jequal(a, [ 'a', 'b', 'c' ]);
+  deepEqual(a, [ 'a', 'b', 'c' ]);
 });
 
 test('Nu.find(array)', function() {
@@ -90,14 +85,14 @@ test('Nu.find(object)', function() {
     return v > 40;
   });
 
-  jequal(r, [ 'bravo', 50 ]);
+  deepEqual(r, [ 'bravo', 50 ]);
 });
 
 test('Nu.map(array)', function() {
 
   var r = Nu.map([ 1, 2, 3 ], function(e) { return e * 2; });
 
-  jequal(r, [ 2, 4, 6 ]);
+  deepEqual(r, [ 2, 4, 6 ]);
 });
 
 test('Nu.map(object)', function() {
@@ -106,7 +101,7 @@ test('Nu.map(object)', function() {
     return v / 10;
   });
 
-  jequal(r, [ 1, 5, 7 ]);
+  deepEqual(r, [ 1, 5, 7 ]);
 });
 
 test('Nu.reduce(array)', function() {
@@ -151,7 +146,7 @@ test('Nu.filter(array)', function() {
     return e % 2 == 1;
   });
 
-  jequal(r, [ 1, 3, 5 ]);
+  deepEqual(r, [ 1, 3, 5 ]);
 });
 
 test('Nu.filter(object)', function() {
@@ -160,7 +155,7 @@ test('Nu.filter(object)', function() {
     return v % 2 == 1;
   });
 
-  jequal(r, { a: 1, c: 3});
+  deepEqual(r, { a: 1, c: 3});
 });
 
 test('Nu.max(array)', function() {
@@ -181,7 +176,7 @@ test('Nu.flatten(array)', function() {
 
   var r = Nu.flatten([ 0, [ 1, 2, [ 3, 4 ] ], 5, 6, 7 ])
 
-  jequal(r, [ 0, 1, 2, 3, 4, 5, 6, 7 ])
+  deepEqual(r, [ 0, 1, 2, 3, 4, 5, 6, 7 ])
 });
 
 test('Nu.flatten(array, 1)', function() {
@@ -190,7 +185,7 @@ test('Nu.flatten(array, 1)', function() {
     [ 0, [ 1, 2, [ 3, 4 ] ], 5, [ 6, 7 ] ],
     1)
 
-  jequal(r, [ 0, 1, 2, [ 3, 4 ], 5, 6, 7 ])
+  deepEqual(r, [ 0, 1, 2, [ 3, 4 ], 5, 6, 7 ])
 });
 
 test('Nu.flatten(array, 2)', function() {
@@ -199,7 +194,7 @@ test('Nu.flatten(array, 2)', function() {
     [ 0, [ 1, 2, [ 3, 4 ] ], 5, [ 6, [ 7, [ 8, [ 9 ] ] ] ] ],
     2)
 
-  jequal(r, [ 0, 1, 2, 3, 4, 5, 6, 7, [ 8, [ 9 ] ] ])
+  deepEqual(r, [ 0, 1, 2, 3, 4, 5, 6, 7, [ 8, [ 9 ] ] ])
 });
 
 test('Nu.isEmpty(o)', function() {
@@ -213,19 +208,19 @@ test('Nu.isEmpty(o)', function() {
 
 test('Nu.compact(a)', function() {
 
-  jequal(Nu.compact([]), []);
-  jequal(Nu.compact([ null ]), []);
-  jequal(Nu.compact([ 1 ]), [ 1 ]);
-  jequal(Nu.compact([ 1, null ]), [ 1 ]);
-  jequal(Nu.compact([ 1, null, 2 ]), [ 1, 2 ]);
+  deepEqual(Nu.compact([]), []);
+  deepEqual(Nu.compact([ null ]), []);
+  deepEqual(Nu.compact([ 1 ]), [ 1 ]);
+  deepEqual(Nu.compact([ 1, null ]), [ 1 ]);
+  deepEqual(Nu.compact([ 1, null, 2 ]), [ 1, 2 ]);
 });
 
 test('Nu.compact(o)', function() {
 
-  jequal(Nu.compact({}), {});
-  jequal(Nu.compact({ a: 1 }), { a: 1 });
-  jequal(Nu.compact({ a: null }), {});
-  jequal(Nu.compact({ a: null, b: 2 }), { b: 2 });
+  deepEqual(Nu.compact({}), {});
+  deepEqual(Nu.compact({ a: 1 }), { a: 1 });
+  deepEqual(Nu.compact({ a: null }), {});
+  deepEqual(Nu.compact({ a: null, b: 2 }), { b: 2 });
 });
 
 test('Nu.each_with_object(a)', function() {
@@ -234,7 +229,7 @@ test('Nu.each_with_object(a)', function() {
     if (e < 4) a.push(e);
   });
 
-  jequal(r, [ 1, 2, 3 ]);
+  deepEqual(r, [ 1, 2, 3 ]);
 });
 
 test('Nu.each_with_object(o)', function() {
@@ -243,6 +238,6 @@ test('Nu.each_with_object(o)', function() {
     if (v != 2) h[k] = v * 2;
   });
 
-  jequal(r, { a: 2, c: 6 });
+  deepEqual(r, { a: 2, c: 6 });
 });
 

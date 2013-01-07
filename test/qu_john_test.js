@@ -11,10 +11,7 @@
 
 function j_assert(source, expected, message) {
 
-  equal(
-    JSON.stringify(John.parse(source)),
-    JSON.stringify(expected),
-    message)
+  deepEqual(John.parse(source), expected, message);
 }
 
 test('John.parse(o) atomic values', function() {
@@ -73,10 +70,7 @@ test('John.parse(o) relaxed objects', function() {
 
 function es_assert(source, expected, message) {
 
-  equal(
-    JSON.stringify(John._es(source)),
-    JSON.stringify(expected),
-    message);
+  deepEqual(John._es(source), expected, message)
 }
 
 test('John.extractString(s)', function() {
