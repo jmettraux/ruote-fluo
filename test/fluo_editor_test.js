@@ -31,10 +31,10 @@ test('attributes parse test', function() {
 
   eq('"name": "my def", "revision": 0', { name: 'my def', revision: 0 });
 
-  eq('${f:nada}', { '${f:nada}': null });
+  //eq('${f:nada}', { '${f:nada}': null });
   eq('"${f:nada}"', { '${f:nada}': null });
 
-  eq('${f:next}, "if": "${f:ok}"', { '${f:next}': null, 'if': '${f:ok}' });
+  //eq('${f:next}, "if": "${f:ok}"', { '${f:next}': null, 'if': '${f:ok}' });
   eq('"${f:next}", "if": "${f:ok}"', { '${f:next}': null, 'if': '${f:ok}' });
 });
 
