@@ -129,10 +129,10 @@ var RuoteFluoEditor = function() {
         var expname = exp[0];
 
         var text = '';
-        if ((typeof exp[2][0]) == 'string') text = exp[2].shift();
+        if ((typeof exp[2][0]) === 'string') text = exp[2].shift();
 
         var atts = John.stringify(exp[1]);
-        if (atts == '{}') atts = '';
+        if (atts === '{}') atts = '';
         else atts = atts.slice(1, -1);
         atts = atts.trim();
 
@@ -176,7 +176,7 @@ var RuoteFluoEditor = function() {
           var e = evt || window.event;
           var c = e.charCode || e.keyCode;
           //console.log(e.shiftKey);
-          if (c == 13) this.blur();
+          if (c === 13) this.blur();
 
           return false;
         }
@@ -215,7 +215,7 @@ var RuoteFluoEditor = function() {
 
         var m = s.match(/^(\S+)(.*)$/);
 
-        if (m == null || m[1].match(/^-+$/)) return null;
+        if (m === null || m[1].match(/^-+$/)) return null;
 
         return [ m[1], John.parse('{' + m[2] + '}'), [] ];
       },
@@ -234,7 +234,7 @@ var RuoteFluoEditor = function() {
 
   function asJson(node) {
 
-    if ((typeof node) == 'string') node = document.getElementById(node);
+    if ((typeof node) === 'string') node = document.getElementById(node);
 
     return JSON.stringify(toTree(node));
   }
@@ -254,7 +254,7 @@ var RuoteFluoEditor = function() {
     parentExpNode.replaceChild(node, end);
     parentExpNode.appendChild(end);
 
-    if (end.childNodes.length == 0)
+    if (end.childNodes.length === 0)
       end.appendChild(document.createTextNode('end'));
 
     triggerChange(parentExpNode);
@@ -265,7 +265,7 @@ var RuoteFluoEditor = function() {
     var p = expNode.parentNode;
     p.removeChild(expNode);
 
-    if (p.childNodes.length == 2)
+    if (p.childNodes.length === 2)
       p.lastChild.removeChild(p.lastChild.firstChild);
 
     document._rfe_clipboard = toTree(expNode);
@@ -308,7 +308,7 @@ var RuoteFluoEditor = function() {
 
   function render(parentNode, flow) {
 
-    if ((typeof parentNode) == 'string') {
+    if ((typeof parentNode) === 'string') {
       parentNode = document.getElementById(parentNode);
     }
 
@@ -328,7 +328,7 @@ var RuoteFluoEditor = function() {
 
     var p = elt.parentNode;
 
-    if (delta == -1) { // move up
+    if (delta === -1) { // move up
       if (elt.previousSibling.className != 'rfe_expression') return;
       p.insertBefore(elt, elt.previousSibling);
     }
@@ -366,7 +366,7 @@ var RuoteFluoEditor = function() {
 
   function undo(root) {
 
-    if ((typeof root) == 'string') root = document.getElementById(root);
+    if ((typeof root) === 'string') root = document.getElementById(root);
     if (root.stack.length < 1) return;
 
     while (root.firstChild != null) root.removeChild(root.firstChild);
@@ -381,17 +381,17 @@ var RuoteFluoEditor = function() {
 
   function findRfeRoot(node) {
 
-      if (node.className == 'rfe_root') return node;
+      if (node.className === 'rfe_root') return node;
       return findRfeRoot(node.parentNode);
   }
 
   function computeExpId(node, from, expid) {
 
-    if (from == null) {
+    if (from === null) {
       from = findRfeRoot(node);
       expid = '';
     }
-    if (from == node) return expid.substring(1, expid.length);
+    if (from === node) return expid.substring(1, expid.length);
 
     var divs = from.childNodes;
     var childid = -1;

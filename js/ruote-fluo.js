@@ -211,7 +211,7 @@ var RuoteFluo = (function() {
         var ns = null;
         var m = k.match(/^([a-z]+):([a-z-]+)$/)
         if (m) ns = m[1];
-        if (ns == 'xlink') ns = 'http://www.w3.org/1999/xlink';
+        if (ns === 'xlink') ns = 'http://www.w3.org/1999/xlink';
 
         if (v instanceof Array) v = v.join(' ');
 
@@ -224,7 +224,7 @@ var RuoteFluo = (function() {
 
     $container[opts.prepend ? 'prepend' : 'append']($elt);
 
-    if (eltName == 'svg') addDefinitions($elt);
+    if (eltName === 'svg') addDefinitions($elt);
 
     return $elt;
   };
@@ -261,7 +261,7 @@ var RuoteFluo = (function() {
   //
   function width($elt) {
 
-    if ($elt.width() == 0) { // FireFox...
+    if ($elt.width() === 0) { // FireFox...
       return box($elt).width;
     } else { // the rest
       return $elt.width();
@@ -272,7 +272,7 @@ var RuoteFluo = (function() {
   //
   function height($elt) {
 
-    if ($elt.height() == 0) { // FireFox...
+    if ($elt.height() === 0) { // FireFox...
       return box($elt).height;
     } else { // the rest
       return $elt.height();
@@ -390,7 +390,7 @@ var RuoteFluo = (function() {
   //
   function splitAttributes(flow) {
 
-    var text = Nu.find(flow[1], function(k, v) { return (v == null); });
+    var text = Nu.find(flow[1], function(k, v) { return (v === null); });
     if (text) text = text[0]
 
     var atts = Nu.select(flow[1], function(k, v) { return (v != null) });
@@ -636,7 +636,7 @@ var RuoteFluo = (function() {
 
   function locateRoot(div) {
 
-    return $(((typeof div) == 'string') ? '#' + div : div);
+    return $(((typeof div) === 'string') ? '#' + div : div);
   }
 
   //
