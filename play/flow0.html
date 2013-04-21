@@ -4,13 +4,13 @@
 
 <head>
 
-  <title>fluo</title>
+  <title>xxx</title>
 
   <meta http-equiv="content-type" content="text/html; charset=UTF-8">
 
   <script src="./js/jquery-1.9.1.min.js"></script>
+  <script src="./js/foolbox-all-1.0.0.min.js"></script>
 
-  <script src="../js/nu.js"></script>
   <script src="../js/ruote-fluo.js"></script>
 
   <link rel="stylesheet" type="text/css" href="./css/reset.css" />
@@ -19,44 +19,46 @@
 
 <body>
 
- <div id="fluo" style="margin: 7px"></div>
+  <div id="fluo" style="margin: 7px"></div>
 
- <script>
+  <script>
 
-   $(document).ready(function () {
+    $(document).ready(function () {
 
-     RuoteFluo.render(
-       'fluo',
-       [ 'define', { 'name': 'nada' }, [
-         [ 'sequence', {}, [
-           [ 'olaf', { 'task': 'clean dishes' }, [] ],
-           [ 'concurrence', { 'count': 1 }, [
-             [ 'alpha', {}, [] ],
-             [ 'sequence', {}, [
-               [ 'arthur', {}, [] ],
-               [ 'bob', {}, [] ]
-             ] ],
-             [ 'charly', { 'task': 'reset lab' }, [] ]
-           ] ],
-           [ 'david', { 'timeout': '5d' }, [] ],
-           [ 'participant', { 'jeff': null, 'timeout': '5d' }, [] ],
-           [ 'set', { 'v:x': [ 1, 2, 3 ] }, [] ],
-           [ 'wait', { '4d2h': null }, [] ],
-           [ 'junpei', { 'task': 'clean dishwasher' }, [] ]
-         ] ]
-       ] ],
-       {
-         noOuterBorder: true,
-         workitems: [ '0_0_0_0' ],
-         pins: [
-           [ '0_0_0_1', 'er' ],
-           [ '0_0_0_2', 'na', [ '#C8F690', 'black' ] ],
-           [ '0_0_1', '-' ] ] });
+      $('title').text(document.location.toString().split('/').slice(-1, 1));
 
-     RuoteFluo.highlight('fluo', '0_0_2');
-     RuoteFluo.pin('fluo', '0_0_3', 'workitem')
-   });
- </script>
+      RuoteFluo.render(
+        'fluo',
+        [ 'define', { 'name': 'nada' }, [
+          [ 'sequence', {}, [
+            [ 'olaf', { 'task': 'clean dishes' }, [] ],
+            [ 'concurrence', { 'count': 1 }, [
+              [ 'alpha', {}, [] ],
+              [ 'sequence', {}, [
+                [ 'arthur', {}, [] ],
+                [ 'bob', {}, [] ]
+              ] ],
+              [ 'charly', { 'task': 'reset lab' }, [] ]
+            ] ],
+            [ 'david', { 'timeout': '5d' }, [] ],
+            [ 'participant', { 'jeff': null, 'timeout': '5d' }, [] ],
+            [ 'set', { 'v:x': [ 1, 2, 3 ] }, [] ],
+            [ 'wait', { '4d2h': null }, [] ],
+            [ 'junpei', { 'task': 'clean dishwasher' }, [] ]
+          ] ]
+        ] ],
+        {
+          noOuterBorder: true,
+          workitems: [ '0_0_0_0' ],
+          pins: [
+            [ '0_0_0_1', 'er' ],
+            [ '0_0_0_2', 'na', [ '#C8F690', 'black' ] ],
+            [ '0_0_1', '-' ] ] });
+
+      RuoteFluo.highlight('fluo', '0_0_2');
+      RuoteFluo.pin('fluo', '0_0_3', 'workitem')
+    });
+  </script>
 
 </body>
 </html>
