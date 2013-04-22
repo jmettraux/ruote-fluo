@@ -3,28 +3,44 @@ require 'rake'
 require 'rake/clean'
 
 
+LIBRARY =
+  `pwd`.split('/').last.strip
+LICENSE_URI =
+  "http://github.com/jmettraux/#{LIBRARY}/LICENSE.txt"
+
+COMPRESSOR =
+  %w[ yui-compressor yuicompressor ].find { |com| `which #{com}`.strip != '' }
+
+raise(
+  "did not find yui-compressor (or yuicompressor) on this system"
+) unless COMPRESSOR
+
+
 #
 # tasks
 
-CLEAN.include('pkg')
+#CLEAN.include('pkg')
+  # no cleaning for now
 
 task :default => [ :clean ]
 
 desc %q{
-  packages the ruote-fluo js files to pkg/
+  packages/minifies the js files to pkg/
 }
 task :package => :clean do
 
-  FileUtils.rm_rf('pkg')
-  FileUtils.mkdir_p('pkg/css')
-
   version = File.read(
-    'js/ruote-fluo.js'
+    "js/#{LIBRARY}.js"
   ).match(
     / var VERSION *= *['"]([^'"]+)/
   )[1]
 
   sha = `git log -1 --format="%H"`.strip[0, 7]
+
+  sh 'mkdir -p pkg'
+
+  js_count = Dir['js/*.js'].length
+    # don't create -all- files if there is only 1 js file
 
   Dir['js/*.js'].each do |path|
 
@@ -32,37 +48,61 @@ task :package => :clean do
 
     FileUtils.cp(path, "pkg/#{fname}-#{version}.js")
 
-    sh "yuicompressor #{path} -o pkg/#{fname}-#{version}.min.js"
-
-    File.open("pkg/ruote-fluo-all-#{version}.js", 'ab') do |f|
-      f.puts(File.read(path))
-    end
-
     sh(
-      "yuicompressor " +
-      "pkg/ruote-fluo-all-#{version}.js " +
-      "-o pkg/ruote-fluo-all-#{version}.min.js")
+      COMPRESSOR + ' ' +
+      path + ' ' +
+      "-o pkg/#{fname}-#{version}.min.js")
+
+    File.open("pkg/#{LIBRARY}-all-#{version}.js", 'ab') do |f|
+      f.puts(File.read(path))
+    end if js_count > 1
   end
 
-  sh 'cp css/* pkg/css/'
+  sh(
+    COMPRESSOR + ' ' +
+    "pkg/#{LIBRARY}-all-#{version}.js " +
+    "-o pkg/#{LIBRARY}-all-#{version}.min.js"
+  ) if js_count > 1
 
   Dir['pkg/*.min.js'].each do |path|
 
     fname = File.basename(path)
 
-    header = "/* #{fname} | MIT license: http://git.io/RAWt2w */\n"
+    header = "/* #{fname} | MIT license: #{LICENSE_URI} */\n"
 
     s = header + File.read(path)
     File.open(path, 'wb') { |f| f.print(s) }
   end
 
-  footer = "\n/* compiled from commit #{sha} */\n"
+  footer = "\n/* compressed from commit #{sha} */\n"
 
   Dir['pkg/*.js'].each { |path| File.open(path, 'ab') { |f| f.puts(footer) } }
+
+  sh(
+    "mkdir -p pkg/css-#{version}; cp css/* pkg/css-#{version}/"
+  ) if File.exist?('css')
 end
 
 desc %q{
   alias for 'package'
 }
 task :pkg => :package
+
+desc %q{
+  alias for 'package'
+}
+task :p => :package
+
+desc %q{
+  serve the current dir over HTTP for testing
+}
+task :serve do
+
+  sh 'python -m SimpleHTTPServer 1234'
+end
+
+desc %q{
+  alias for 'serve'
+}
+task :s => :serve
 
