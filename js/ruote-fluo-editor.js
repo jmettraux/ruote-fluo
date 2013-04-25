@@ -215,7 +215,7 @@ var RuoteFluoEditor = function() {
 
         var m = s.match(/^(\S+)(.*)$/);
 
-        if (m === null || m[1].match(/^-+$/)) return null;
+        if (( ! m) || m[1].match(/^-+$/)) return null;
 
         return [ m[1], John.parse('{' + m[2] + '}'), [] ];
       },
@@ -387,11 +387,13 @@ var RuoteFluoEditor = function() {
 
   function computeExpId(node, from, expid) {
 
-    if (from === null) {
+    if ( ! from) {
       from = findRfeRoot(node);
       expid = '';
     }
-    if (from === node) return expid.substring(1, expid.length);
+    if (from === node) {
+      return expid.substring(1, expid.length);
+    }
 
     var divs = from.childNodes;
     var childid = -1;
