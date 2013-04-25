@@ -126,6 +126,8 @@ var RuoteFluoEditor = function() {
 
       render: function(node, exp) {
 
+        node = refine(node);
+
         var expname = exp[0];
 
         var text = '';
@@ -234,8 +236,6 @@ var RuoteFluoEditor = function() {
 
   function asJson(node) {
 
-    if ((typeof node) === 'string') node = document.getElementById(node);
-
     return JSON.stringify(toTree(node));
   }
 
@@ -249,6 +249,8 @@ var RuoteFluoEditor = function() {
 
   function addExpression(parentExpNode, exp) {
 
+    parentExpNode = refine(parentExpNode);
+
     var end = parentExpNode.lastChild;
     var node = renderExpression(parentExpNode, exp);
     parentExpNode.replaceChild(node, end);
@@ -261,6 +263,8 @@ var RuoteFluoEditor = function() {
   }
 
   function removeExpression(expNode) {
+
+    expNode = refine(expNode);
 
     var p = expNode.parentNode;
     p.removeChild(expNode);
@@ -308,11 +312,9 @@ var RuoteFluoEditor = function() {
 
   function render(parentNode, flow) {
 
-    if ((typeof parentNode) === 'string') {
-      parentNode = document.getElementById(parentNode);
-    }
+    parentNode = refine(parentNode);
 
-    parentNode.className = 'rfe_root';
+    $(parentNode).addClass('rfe_root');
 
     while(parentNode.firstChild) {
       parentNode.removeChild(parentNode.firstChild);
@@ -325,6 +327,8 @@ var RuoteFluoEditor = function() {
   }
 
   function moveExpression(elt, delta) {
+
+    elt = refine(elt);
 
     var p = elt.parentNode;
 
@@ -341,6 +345,8 @@ var RuoteFluoEditor = function() {
   }
 
   function insertExpression(before, exp) {
+
+    before = refine(before);
 
     var newNode = renderExpression(before.parentNode, exp);
 
@@ -366,7 +372,7 @@ var RuoteFluoEditor = function() {
 
   function undo(root) {
 
-    if ((typeof root) === 'string') root = document.getElementById(root);
+    root = refine(root);
     if (root.stack.length < 1) return;
 
     while (root.firstChild != null) root.removeChild(root.firstChild);
@@ -381,7 +387,9 @@ var RuoteFluoEditor = function() {
 
   function findRfeRoot(node) {
 
-      if (node.className === 'rfe_root') return node;
+      node = refine(node);
+
+      if ($(node).hasClass('rfe_root')) return node;
       return findRfeRoot(node.parentNode);
   }
 
@@ -412,7 +420,7 @@ var RuoteFluoEditor = function() {
 
   function toTree(node) {
 
-    var $node = $(node);
+    var $node = $(refine(node));
 
     $node.focus(); // making sure all the input boxes get blurred...
 
@@ -427,6 +435,14 @@ var RuoteFluoEditor = function() {
     });
 
     return exp;
+  }
+
+  function refine(o) {
+
+    if (o.jquery) return o[0];
+    if ((typeof o) !== 'string') return o;
+    if (o.match(/[\.#\[]/)) return $(o)[0];
+    return document.getElementById(o);
   }
 
   //

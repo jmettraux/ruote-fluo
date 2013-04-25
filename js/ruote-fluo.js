@@ -634,9 +634,12 @@ var RuoteFluo = (function() {
     return $exp;
   }
 
-  function locateRoot(div) {
+  function locateRoot(o) {
 
-    return $(((typeof div) === 'string') ? '#' + div : div);
+    if (o.jquery) return o;
+    if ((typeof o) !== 'string') return $(o);
+    if (o.match(/[\.#\[]/)) return $(o);
+    return $('#' + o);
   }
 
   //

@@ -22,27 +22,15 @@
 
   <script>
     function undo() {
-      RuoteFluoEditor.undo('editor');
+      RuoteFluoEditor.undo('#editor');
       return false;
     }
     function as(type) {
-      document.getElementById('definition_out_type').value =
-        type;
-      document.getElementById('definition_input').value =
-        RuoteFluoEditor.asJson('editor');
-      document.getElementById('definition_form').submit();
+      $('#definition_out_type').val(type);
+      $('#definition_input').val(RuoteFluoEditor.asJson('#editor'));
+      $('#definition_form').submit();
       return false;
     }
-    //function toggleMinor() {
-    //  Fluo.toggleMinor('fluo');
-    //  Fluo.crop('fluo');
-    //  return false;
-    //}
-    //function rotate() {
-    //  Fluo.toggleVertical('fluo');
-    //  Fluo.crop('fluo');
-    //  return false;
-    //}
   </script>
 
   <div class="menubar">
@@ -67,7 +55,8 @@
 
       <script>
 
-        var editor = document.getElementById('editor');
+        var editor = $('#editor')[0];
+
         var tree =
           [ 'define', { test0: null }, [
             [ 'concurrence', { count: 1 }, [
@@ -80,10 +69,10 @@
         RuoteFluoEditor.render(editor, tree);
 
         editor.onChange = function(tree) {
-          Fluo.render('fluo', tree);
+          RuoteFluo.render('#fluo', tree);
         };
         editor.onOver = function(expid) {
-          Fluo.highlight('fluo', expid);
+          RuoteFluo.highlight('#fluo', expid);
         };
       </script>
     </div>
@@ -93,7 +82,7 @@
       <div id="fluo"></div>
 
       <script>
-        Fluo.render('fluo', tree, { noOuterBorder: true });
+        RuoteFluo.render('#fluo', tree, { noOuterBorder: true });
       </script>
     </div>
 

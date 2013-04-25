@@ -28,7 +28,7 @@
       $('title').text(document.location.toString().split('/').slice(-1, 1));
 
       RuoteFluo.render(
-        'fluo',
+        '#fluo',
         [ 'define', { 'name': 'nada' }, [
           [ 'sequence', {}, [
             [ 'olaf', { 'task': 'clean dishes' }, [] ],
@@ -55,8 +55,8 @@
             [ '0_0_0_2', 'na', [ '#C8F690', 'black' ] ],
             [ '0_0_1', '-' ] ] });
 
-      RuoteFluo.highlight('fluo', '0_0_2');
-      RuoteFluo.pin('fluo', '0_0_3', 'workitem')
+      RuoteFluo.highlight('#fluo', '0_0_2');
+      RuoteFluo.pin('#fluo', '0_0_3', 'workitem')
     });
   </script>
 
