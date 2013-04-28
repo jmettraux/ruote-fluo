@@ -38,3 +38,17 @@ test('attributes parse test', function() {
   eq('"${f:next}", "if": "${f:ok}"', { '${f:next}': null, 'if': '${f:ok}' });
 });
 
+
+var def =
+  [ 'define', { name: 'test' }, [
+    [ 'alpha', { task: 'clean car' }, [] ],
+    [ 'bravo', { task: 'sell car' }, [] ]
+  ] ]
+
+test('asJson()', function() {
+
+  RuoteFluoEditor.render('#editor', def);
+
+  equal(RuoteFluoEditor.asJson('#editor'), JSON.stringify(def));
+});
+
