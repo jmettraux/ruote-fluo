@@ -52,3 +52,15 @@ test('asJson()', function() {
   equal(RuoteFluoEditor.asJson('#editor'), JSON.stringify(def));
 });
 
+test('asRadial()', function() {
+
+  RuoteFluoEditor.render('#editor', def);
+
+  var s =
+"define name: test\n\
+  alpha task: \"clean car\"\n\
+  bravo task: \"sell car\"";
+
+  equal(RuoteFluoEditor.asRadial('#editor'), s);
+});
+
