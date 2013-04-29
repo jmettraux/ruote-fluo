@@ -64,3 +64,16 @@ test('asRadial()', function() {
   equal(RuoteFluoEditor.asRadial('#editor'), s);
 });
 
+test('asRuby()', function() {
+
+  RuoteFluoEditor.render('#editor', def);
+
+  var s =
+"define \"name\":\"test\" do\n\
+  alpha \"task\":\"clean car\"\n\
+  bravo \"task\":\"sell car\"\n\
+end";
+
+  equal(RuoteFluoEditor.asRuby('#editor'), s);
+});
+

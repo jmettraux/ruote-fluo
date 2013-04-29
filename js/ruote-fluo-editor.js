@@ -261,6 +261,33 @@ var RuoteFluoEditor = function() {
     return toRadial(toTree(node), 0);
   }
 
+  function toRuby(tree, indent) {
+
+    var s = '';
+
+    for (var i = 0; i < indent; i++) { s = s + '  ' };
+
+    s = s + tree[0];
+
+    var atts = JSON.stringify(tree[1]).slice(1, -1);
+    if (atts !== '') s = s + ' ' + atts;
+
+    if (tree[2].length > 0) {
+      s = s + ' do';
+      for (var i = 0, l = tree[2].length; i < l; i++) {
+        s = s + "\n" + toRuby(tree[2][i], indent + 1);
+      }
+      s = s + "\nend";
+    }
+
+    return s;
+  }
+
+  function asRuby(node) {
+
+    return toRuby(toTree(node), 0);
+  }
+
   function renderEnding(node, exp) {
 
     var ending = document.createElement('div');
@@ -484,7 +511,8 @@ var RuoteFluoEditor = function() {
     triggerChange: triggerChange,
     undo: undo,
     asJson: asJson,
-    asRadial: asRadial
+    asRadial: asRadial,
+    asRuby: asRuby
   };
 }();
 
