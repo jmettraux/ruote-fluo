@@ -269,7 +269,7 @@ var RuoteFluoEditor = function() {
 
     s = s + tree[0];
 
-    var atts = JSON.stringify(tree[1]).slice(1, -1);
+    var atts = John.sfy(tree[1], { ruby: true });
     if (atts !== '') s = s + ' ' + atts;
 
     if (tree[2].length > 0) {
