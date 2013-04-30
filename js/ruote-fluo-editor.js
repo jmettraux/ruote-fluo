@@ -265,9 +265,9 @@ var RuoteFluoEditor = function() {
 
     var s = '';
 
-    for (var i = 0; i < indent; i++) { s = s + '  ' };
+    var left = ''; for (var i = 0; i < indent; i++) { left = left + '  ' };
 
-    s = s + tree[0];
+    s = s + left + tree[0];
 
     var atts = John.sfy(tree[1], { ruby: true });
     if (atts !== '') s = s + ' ' + atts;
@@ -277,7 +277,7 @@ var RuoteFluoEditor = function() {
       for (var i = 0, l = tree[2].length; i < l; i++) {
         s = s + "\n" + toRuby(tree[2][i], indent + 1);
       }
-      s = s + "\nend";
+      s = s + "\n" + left + "end";
     }
 
     return s;

@@ -39,41 +39,86 @@ test('attributes parse test', function() {
 });
 
 
-var def =
+var def0 =
   [ 'define', { name: 'test' }, [
     [ 'alpha', { task: 'clean car' }, [] ],
     [ 'bravo', { task: 'sell car' }, [] ]
-  ] ]
+  ] ];
+var def1 =
+  [ "define",{ test0: null }, [
+    [ "concurrence", { count: 1}, [
+      [ "alpha", {}, [] ],
+      [ "bravo", {}, [] ] ]
+    ],
+    [ "charly", { task: "wash cups" }, [] ]
+  ] ];
 
-test('asJson()', function() {
+test('asJson() 0', function() {
 
-  RuoteFluoEditor.render('#editor', def);
+  RuoteFluoEditor.render('#editor', def0);
 
-  equal(RuoteFluoEditor.asJson('#editor'), JSON.stringify(def));
+  equal(RuoteFluoEditor.asJson('#editor'), JSON.stringify(def0));
 });
 
-test('asRadial()', function() {
+test('asJson() 1', function() {
 
-  RuoteFluoEditor.render('#editor', def);
+  RuoteFluoEditor.render('#editor', def1);
 
-  var s =
+  equal(RuoteFluoEditor.asJson('#editor'), JSON.stringify(def1));
+});
+
+test('asRadial() 0', function() {
+
+  RuoteFluoEditor.render('#editor', def0);
+
+  var s0 =
 "define name: test\n\
   alpha task: \"clean car\"\n\
   bravo task: \"sell car\"";
 
-  equal(RuoteFluoEditor.asRadial('#editor'), s);
+  equal(RuoteFluoEditor.asRadial('#editor'), s0);
 });
 
-test('asRuby()', function() {
+test('asRadial() 1', function() {
 
-  RuoteFluoEditor.render('#editor', def);
+  RuoteFluoEditor.render('#editor', def1);
 
-  var s =
+  var s1 =
+"define test0\n\
+  concurrence count: 1\n\
+    alpha\n\
+    bravo\n\
+  charly task: \"wash cups\"";
+
+  equal(RuoteFluoEditor.asRadial('#editor'), s1);
+});
+
+test('asRuby() 0', function() {
+
+  RuoteFluoEditor.render('#editor', def0);
+
+  var s0 =
 "define name: \"test\" do\n\
   alpha task: \"clean car\"\n\
   bravo task: \"sell car\"\n\
 end";
 
-  equal(RuoteFluoEditor.asRuby('#editor'), s);
+  equal(RuoteFluoEditor.asRuby('#editor'), s0);
+});
+
+test('asRuby() 1', function() {
+
+  RuoteFluoEditor.render('#editor', def1);
+
+  var s1 =
+"define test0 do\n\
+  concurrence count: 1 do\n\
+    alpha\n\
+    bravo\n\
+  end\n\
+  charly task: \"wash cups\"\n\
+end";
+
+  equal(RuoteFluoEditor.asRuby('#editor'), s1);
 });
 
