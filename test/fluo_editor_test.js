@@ -122,3 +122,16 @@ end";
   equal(RuoteFluoEditor.asRuby('#editor'), s1);
 });
 
+test('asXml() 0', function() {
+
+  RuoteFluoEditor.render('#editor', def0);
+
+  var s0 =
+"<define name=\"test\">\
+<alpha task=\"clean car\"></alpha>\
+<bravo task=\"sell car\"></bravo>\
+</define>";
+
+  equal(RuoteFluoEditor.asXml('#editor'), s0);
+});
+

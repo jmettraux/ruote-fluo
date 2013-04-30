@@ -288,6 +288,23 @@ var RuoteFluoEditor = function() {
     return toRuby(toTree(node), 0);
   }
 
+  function toXml(tree) {
+
+    var n = document.createElement(tree[0]);
+    for (k in tree[1]) { n.setAttribute(k, tree[1][k]); };
+
+    for (var i = 0, l = tree[2].length; i < l; i++) {
+      n.appendChild(toXml(tree[2][i]));
+    }
+
+    return n;
+  }
+
+  function asXml(node) {
+
+    return (new XMLSerializer()).serializeToString(toXml(toTree(node)));
+  }
+
   function renderEnding(node, exp) {
 
     var ending = document.createElement('div');
@@ -512,7 +529,8 @@ var RuoteFluoEditor = function() {
     undo: undo,
     asJson: asJson,
     asRadial: asRadial,
-    asRuby: asRuby
+    asRuby: asRuby,
+    asXml: asXml
   };
 }();
 
