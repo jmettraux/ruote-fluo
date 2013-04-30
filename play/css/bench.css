@@ -79,4 +79,8 @@ A:link.menubar_link,A:visited.menubar_link {
   -webkit-box-shadow: 0 1px 12px #000;
   -moz-box-shadow: 0 1px 12px #000;
 }
+#output textarea {
+  width: 100%;
+  border: 0;
+}
 

@@ -22,9 +22,9 @@
 
   <div id="overlay"></div>
   <div id="output">
-    <pre>
+    <textarea>
       NADA
-    </pre>
+    </textarea>
   </div>
 
   <div class="menubar">
@@ -91,7 +91,7 @@
 
     function as(type) {
 
-      $('#output pre').text(RuoteFluoEditor['as' + type]('#editor'));
+      $('#output textarea').val(RuoteFluoEditor['as' + type]('#editor'));
 
       $('#overlay').css('height', '' + $(document).height() + 'px');
       $('#overlay').slideDown(function() { $('#output').show(); });
