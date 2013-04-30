@@ -42,6 +42,8 @@ task :package => :clean do
   js_count = Dir['js/*.js'].length
     # don't create -all- files if there is only 1 js file
 
+  FileUtils.rm_f("pkg/#{LIBRARY}-all-#{version}.js")
+
   Dir['js/*.js'].each do |path|
 
     fname = File.basename(path, '.js')
