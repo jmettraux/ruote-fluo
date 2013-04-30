@@ -20,6 +20,12 @@ h3 {
   height: 28px;
   background-image: url(../images/menubar.png);
 }
+.menubar .menubar_links:first-child {
+  float: left;
+}
+.menubar .menubar_links:last-child {
+  float: right;
+}
 
 A:link.menubar_link,A:visited.menubar_link {
   color: white;
@@ -29,5 +35,48 @@ A:link.menubar_link,A:visited.menubar_link {
   padding-top: 7px;
   padding-left: 28px;
   padding-right: 28px;
+}
+
+#leftpane {
+  float:left;
+  width: 53%;
+}
+#rightpane {
+  float:left;
+  width: 45%;
+}
+#editor {
+  margin-left: 10px;
+  margin-top: 10px
+}
+
+#overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: black;
+  opacity: 0.7;
+  width: auto;
+  height: auto;
+  z-index: 99;
+}
+#output {
+  position: absolute;
+  top: 10%;
+  left: 10%;
+  right: 10%;
+  width: 80%;
+  height: auto;
+  background: #ffffff;
+  z-index: 999;
+  padding: 14px;
+  border-radius: 15px;
+  -webkit-border-radius: 15px;
+  -moz-border-radius: 15px;
+  box-shadow: 0 1px 12px #000;
+  -webkit-box-shadow: 0 1px 12px #000;
+  -moz-box-shadow: 0 1px 12px #000;
 }
 
