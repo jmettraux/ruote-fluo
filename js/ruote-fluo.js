@@ -203,6 +203,8 @@ var RuoteFluo = (function() {
     attributes = attributes || {};
     opts = opts || {};
 
+    if (eltName == 'svg') attributes['class'] = 'ruote_fluo';
+
     var elt = document.createElementNS('http://www.w3.org/2000/svg', eltName);
     Nu.each(
       attributes,
@@ -711,7 +713,7 @@ var RuoteFluo = (function() {
   //
   this.pin = function(div, expid, klass, name) {
 
-    klass = 'fluo_pin_' + klass;
+    klass = 'fluo_pin fluo_pin_' + klass;
     name = name || 'wi';
 
     var $div = locateRoot(div);

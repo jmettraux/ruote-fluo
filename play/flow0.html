@@ -47,16 +47,13 @@
             [ 'junpei', { 'task': 'clean dishwasher' }, [] ]
           ] ]
         ] ],
-        {
-          noOuterBorder: true,
-          workitems: [ '0_0_0_0' ],
-          pins: [
-            [ '0_0_0_1', 'er' ],
-            [ '0_0_0_2', 'na', [ '#C8F690', 'black' ] ],
-            [ '0_0_1', '-' ] ] });
+        { noOuterBorder: true, })
 
       RuoteFluo.highlight('#fluo', '0_0_2');
+      RuoteFluo.pin('#fluo', '0_0_0', 'workitem')
       RuoteFluo.pin('#fluo', '0_0_3', 'workitem')
+      RuoteFluo.pin('#fluo', '0_0_4', 'error', 'er')
+      RuoteFluo.pin('#fluo', '0_0_2', 'info', 'in')
     });
   </script>
 
