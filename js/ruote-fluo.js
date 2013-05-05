@@ -203,8 +203,6 @@ var RuoteFluo = (function() {
     attributes = attributes || {};
     opts = opts || {};
 
-    if (eltName == 'svg') attributes['class'] = 'ruote_fluo';
-
     var elt = document.createElementNS('http://www.w3.org/2000/svg', eltName);
     Nu.each(
       attributes,
@@ -665,17 +663,15 @@ var RuoteFluo = (function() {
 
     $svg = $g.parent();
 
+    $svg.attr('class', ('ruote_fluo ' + ($svg.attr('class') || '')).trim());
+      // cannot use $.addClass directly :-(
+
     $svg.attr('width', $g._width + 3);
     $svg.attr('height', $g._height + 3);
       // this is only necessary for FireFox...
-
-    //var e = document.getElementById('exp_0_0_6');
-    //var ctm = e.getScreenCTM();
-    //svg($g, 'path', {
-    //  d: 'M ' + ctm.e + ' ' + ctm.f + ' L 100 100 L 90 110',
-    //  fill: 'none', stroke: 'black',
-    //  'stroke-width': '1'
-    //});
+    //$svg.attr('viewport', '0 0 ' + ($g._width + 3) + ' ' + ($g._height + 3));
+    //$svg.attr('width', '100%');
+    //$svg.attr('height', '100%');
 
     return $g;
   }
