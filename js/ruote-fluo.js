@@ -666,12 +666,17 @@ var RuoteFluo = (function() {
     $svg.attr('class', ('ruote_fluo ' + ($svg.attr('class') || '')).trim());
       // cannot use $.addClass directly :-(
 
-    $svg.attr('width', $g._width + 3);
-    $svg.attr('height', $g._height + 3);
-      // this is only necessary for FireFox...
-    //$svg.attr('viewport', '0 0 ' + ($g._width + 3) + ' ' + ($g._height + 3));
-    //$svg.attr('width', '100%');
-    //$svg.attr('height', '100%');
+    var w = $g._width + 3;
+    var h = $g._height + 3;
+
+    $svg.attr('width', '' + w + 'px');
+    $svg.attr('height', '' + h + 'px');
+
+    $svg[0].setAttributeNS(null, 'viewBox', '0 0 ' + w + ' ' + h);
+    $svg[0].setAttributeNS(null, 'preserveAspectRatio', 'xMidYMid meet')
+      //
+      // changes on width/height from external scripts will thus
+      // scale the SVG
 
     return $g;
   }
