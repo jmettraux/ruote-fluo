@@ -104,7 +104,7 @@ var RuoteFluo = (function() {
   var RECT_R = 7;
   var MARGIN = 4;
 
-  var THIS = this;
+  var self = this;
 
   //
   // misc functions
@@ -626,7 +626,7 @@ var RuoteFluo = (function() {
 
     var $exp = (
       RENDER[flow[0]] || RENDER.any
-    ).call(THIS, $container, expid, flow);
+    ).call(self, $container, expid, flow);
 
     $exp[0].id = 'exp_' + expid;
       // TODO: some kind of prefix?
@@ -649,6 +649,9 @@ var RuoteFluo = (function() {
 
     opts = opts || {};
 
+    //
+    // rendering itself
+
     $div = locateRoot(div);
 
     $div.empty();
@@ -661,22 +664,40 @@ var RuoteFluo = (function() {
     if (opts.noOuterBorder) $g.children('rect').remove();
       // TODO: use rect.class!
 
+    //
+    // the scaling business
+
+    var gw = $g._width + 3;
+    var gh = $g._height + 3;
+    var w = gw;
+    var h = gh;
+
+    var ow = opts['width'] || opts['w'];
+    var oh = opts['height'] || opts['h'];
+
+    if (opts['fit']) {
+      w = $div.innerWidth() - 8;
+      h = $div.innerHeight() - 8;
+    }
+    else if (ow) {
+      w = ow;
+      h = oh;
+    }
+
+    var par = opts['preserveAspectRatio'] || opts['par'] || 'xMidYMid meet';
+
     $svg = $g.parent();
 
     $svg.attr('class', ('ruote_fluo ' + ($svg.attr('class') || '')).trim());
       // cannot use $.addClass directly :-(
 
-    var w = $g._width + 3;
-    var h = $g._height + 3;
+    $svg[0].setAttributeNS(null, 'viewBox', '0 0 ' + gw + ' ' + gh);
+    $svg[0].setAttributeNS(null, 'preserveAspectRatio', par);
 
     $svg.attr('width', '' + w + 'px');
     $svg.attr('height', '' + h + 'px');
 
-    $svg[0].setAttributeNS(null, 'viewBox', '0 0 ' + w + ' ' + h);
-    $svg[0].setAttributeNS(null, 'preserveAspectRatio', 'xMidYMid meet')
-      //
-      // changes on width/height from external scripts will thus
-      // scale the SVG
+    // over.
 
     return $g;
   }
