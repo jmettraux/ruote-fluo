@@ -1,0 +1,56 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+
+<head>
+
+  <title>xxx</title>
+
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+
+  <script src="./js/jquery-1.9.1.min.js"></script>
+  <script src="./js/foolbox-all-1.0.0.min.js"></script>
+
+  <script src="../js/ruote-fluo.js"></script>
+
+  <link rel="stylesheet" type="text/css" href="./css/reset.css" />
+  <link rel="stylesheet" type="text/css" href="../css/ruote-fluo.css" />
+
+  <style>
+    .fluo-container {
+      display: inline-block;
+      margin: 7px;
+      width: 300px;
+      height: 300px;
+      border: 2px solid blue;
+    }
+  </style>
+</head>
+
+<body>
+
+  <span id="fluo0" class="fluo-container"></span>
+  <span id="fluo1" class="fluo-container"></span>
+  <span id="fluo2" class="fluo-container"></span>
+
+  <script>
+
+    $(document).ready(function () {
+
+      $('title').text(document.location.toString().split('/').slice(-1, 1));
+
+      var pdef =
+        ["define",{"name":"receipt_processing_skerou"},[["concurrent_iterator",{"on_field":"receipt_subpicture_uuids","to_var":"uuid"},[["synchronize",{"key":"uploaded_subpicture-${v:uuid}"},[]],["set",{"field":"uuid","value":"${v:uuid}"},[]],["set",{"field":"inbox_path","value":"inbox/${f:editor_inbox}/${v:uuid}.jpg"},[]],["process_image",{},[]],["store_image_processing",{},[]],["create_line_instances",{},[]],["concurrent_iterator",{"on_field":"textons","merge_type":"union"},[["read_texton",{"texton_index":"${v:ii}"},[]]]],["store_textons_processing",{},[]],["store_ocr_interpretations",{},[]]]],["ocr_analysis",{},[]]]];
+
+      RuoteFluo.render(
+        '#fluo0', pdef, { noOuterBorder: true, fit: true});
+      RuoteFluo.render(
+        '#fluo1', pdef, { noOuterBorder: true, fit: true});
+      RuoteFluo.render(
+        '#fluo2', pdef, { noOuterBorder: true, w: 200, h: 200 });
+    });
+  </script>
+
+</body>
+</html>
+
