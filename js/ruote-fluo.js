@@ -92,14 +92,8 @@ var RuoteFluo = (function() {
 //
 //  var MINORS = [ 'set', 'set-fields', 'unset', 'description' ];
 //  var DEFINERS = [ 'process-definition', 'workflow-definition', 'define' ];
-//
-//  var COLOURS = {
-//    'wi': [ '#F4D850', 'black' ],
-//    'er': [ 'red', 'black' ],
-//    '-': [ '#C8F690', 'black' ] // some green
-//  };
 
-  var VERSION = '2.3.0';
+  var VERSION = '2.3.1';
 
   var RECT_R = 7;
   var MARGIN = 4;
