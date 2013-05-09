@@ -684,7 +684,7 @@ var RuoteFluo = (function() {
     if (w < 0 || h < 0) { w = 20; h = 20; }
       // render something, do not break
 
-    var par = opts['preserveAspectRatio'] || opts['par'] || 'xMidYMid meet';
+    var par = opts['preserveAspectRatio'] || opts['par'] || 'xMidYMin meet';
 
     $svg = $g.parent();
 
