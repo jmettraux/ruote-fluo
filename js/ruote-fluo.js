@@ -678,6 +678,9 @@ var RuoteFluo = (function() {
       h = oh;
     }
 
+    if (opts['fit'] === 'down' && gw < w) { w = gw; h = gh; }
+      // don't grow diagram if fit is "down"
+
     if (w < 0 || h < 0) { w = 20; h = 20; }
       // render something, do not break
 
@@ -693,6 +696,9 @@ var RuoteFluo = (function() {
 
     $svg.attr('width', '' + w + 'px');
     $svg.attr('height', '' + h + 'px');
+
+    $svg.attr('data-ruote-fluo-scale', '' + (w / gw));
+      // how much is the diagram grown/shrinked
 
     // over.
 

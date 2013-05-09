@@ -32,6 +32,7 @@
   <span id="fluo0" class="fluo-container"></span>
   <span id="fluo1" class="fluo-container"></span>
   <span id="fluo2" class="fluo-container"></span>
+  <span id="fluo3" class="fluo-container"></span>
 
   <script>
 
@@ -45,9 +46,11 @@
       RuoteFluo.render(
         '#fluo0', pdef, { noOuterBorder: true, fit: true});
       RuoteFluo.render(
-        '#fluo1', pdef, { noOuterBorder: true, fit: true});
+        '#fluo1', [ 'define', { name: 'test2' }, [] ], { noOuterBorder: true, fit: 'down'});
       RuoteFluo.render(
-        '#fluo2', pdef, { noOuterBorder: true, w: 200, h: 200 });
+        '#fluo2', [ 'define', { name: 'test2' }, [] ], { noOuterBorder: true, fit: true});
+      RuoteFluo.render(
+        '#fluo3', pdef, { noOuterBorder: true, w: 200, h: 200 });
     });
   </script>
 
