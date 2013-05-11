@@ -650,7 +650,9 @@ var RuoteFluo = (function() {
 
     $div.empty();
 
-    $div[0].fluo_options = opts;
+    $div[0].ruote_fluo_options = opts;
+    $div[0].ruote_fluo_definition = flow;
+      // TODO: what about pins?
 
     $g = renderExp(svg($div), '0', flow);
 
