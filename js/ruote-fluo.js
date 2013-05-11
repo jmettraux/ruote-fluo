@@ -786,6 +786,24 @@ var RuoteFluo = (function() {
     translate($g, b.x + b.width - 18, b.y - 20);
   }
 
+  // Given a rendered fluo, computes the height for a given width
+  // in case of resize (zoom)...
+  //
+  this.computeHeight = function(div, width) {
+
+    var $div =
+      locateRoot(div);
+    var viewBox =
+      $div.children('svg')[0].attributes['viewBox'].value.split(' ');
+
+    var w = parseInt(viewBox[2], 10);
+    var h = parseInt(viewBox[3], 10);
+
+    var r = w / width;
+
+    return Math.round(h / r);
+  }
+
   //
   // over.
 
