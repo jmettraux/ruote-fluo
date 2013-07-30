@@ -328,7 +328,7 @@ var RuoteFluo = (function() {
 
     var m = (
       $elt.attr('transform') || ''
-    ).match(/^translate\((\d+(?:\.\d+)?), (\d+(?:\.\d+)?)\)$/);
+    ).match(/^translate\((\d+(?:\.\d+)?),? (\d+(?:\.\d+)?)\)$/);
 
     if ( ! m) return { x: 0, y: 0 };
 
