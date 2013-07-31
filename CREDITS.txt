@@ -3,6 +3,7 @@
 
 John Mettraux - http://lambda.io/processi
 Jamandru Reynolds - http://geometron.net
+Marcello Barnaba - https://github.com/vjt
 Rob Taylor - https://github.com/robtaylor
 Patrice Cappelaere - https://github.com/cappelaere
 Juan-Pedro Paredes
